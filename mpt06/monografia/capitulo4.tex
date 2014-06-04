@@ -1,0 +1,380 @@
+\chapter{Simula\c{c}\~ao do OSPF no NS-3}
+\label{Simulacao do OSPF no NS-3}
+
+Este capítulo, descreve a execução de simulações com o protocolo OSPF no simulador de redes NS-3. Primeiro, são apresentadas as instruções utilizadas para criar a simulação no NS-3. Em seguida, são descritos os procedimentos necessários para utilizar o módulo DCE nas simulações do OSPF. O capítulo termina com os resultados das simulações que utilizam o módulo DCE.
+
+%simulações que utilizam os recursos disponíveis no simulador NS-3
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+\section{OSPF no NS-3}
+
+A primeira etapa para realizar a simulação de uma rede é definir a topologia desta rede. A Figura \ref{fig:topologia} mostra a topologia escolhida para as simulações, com cinco roteadores contectados por enlaces pono-a-ponto.
+
+\begin{figure}[hb]
+  \centering
+  \includegraphics[scale=0.5]{rede_tg.jpg}
+  \caption{Representação da topologia da rede utilizada nas simulações do protocolo OSPF.}
+  \label{fig:topologia}
+\end{figure}
+
+%Em seguida, é necessário montar a topologia da rede no NS-3. Este procedimento é dividido em diversas etapas, descritas a seguir.
+
+Em seguida, é necessário montar a topologia da rede no NS-3. Porém, antes de escrever códigos no NS-3 é importante entender os conceitos e abstrações do sistema.
+
+Na Internet, um dispositivo computacional que conecta-se a uma rede é chamado de \textit{host}. Devido ao fato do NS-3 ser um simulador de rede, e não um simulador da Internet, o termo \textit{host} é intencionalmente não utilizado, pois está intimamente associado com a Internet e seus protocolos. Ao invés disso, é utilizado o termo \textit{node} (nó) que é um termo mais genérico e também usado por outros simuladores. A abstração de um dispositivo computacional básico é chamado então de nó. Essa abstração é representada em C++ pela classe \textit{Node}. Esta classe fornece métodos para gerenciar as representações de dispositivos computacionais nas simulações. O nó deve ser pensado como um computador no qual se adicionam funcionalidades, tal como aplicativos, pilhas de protocolos e periféricos com seus \textit{drivers} associados que permitem ao computador executar tarefas úteis.
+
+Normalmente, programas de computador são divididos em duas classes. \textit{Programas de sistema} que organizam recursos do computador, tais como memória, processador, disco, rede, entre outros. Tais programas normalmente não são utilizados diretamente pelos usuários. Na maioria das vezes, os usuários fazem uso de \textit{aplicações}, que usam os recursos controlados pelos programas de sistema para atingir seus objetivos. Geralmente, a separação entre programas de sistema e aplicações de usuários é feita pela mudança no nível de privilégios que acontece na troca de contexto feita pelo sistema operacional. No NS-3, não existe um conceito de sistema operacional real, não há o conceito de níveis de privilégios nem chamadas de sistema. Há apenas aplicações que são executadas nos nós para uma determinada simulação. No NS-3, a abstração básica para um programa de usuário que gera alguma atividade a ser simulada é a aplicação. Esta abstração é representada em C++ pela classe \textit{Application}, que fornece métodos para gerenciar a representação de suas versões de aplicações a serem simuladas.
+% Os desenvolvedores devem especializar a classe Application para criar novas aplicações. Neste tutorial serão utilizadas duas especializações da classe Application, chamadas UdpEchoClientApplication e UdpEchoServerApplication. Estas aplicações compõem um modelo cliente/servidor usado para gerar pacotes simulados de eco na rede.
+
+No mundo real, computadores estão conectados em uma rede. Normalmente, o meio sobre o qual os dados trafegam é chamada de canal (\textit{channel}). Quando um cabo Ethernet é ligado ao conector na parede, na verdade está se conectando a um canal de comunicação Ethernet. No mundo simulado do NS-3, um nó é conectado a um objeto que representa um canal de comunicação. A abstração de canal de comunicação é representada em C++ pela classe \textit{Channel}. A classe textit{Channel} fornece métodos para gerenciar objetos de comunicação de sub-redes e nós conectados a eles.
+% Os Channels também podem ser especializados por desenvolvedores (no sentido de programação orientada a objetos). Uma especialização de Channel pode ser algo como um simples fio. Pode também ser algo mais complexo, como um comutador Ethernet ou ainda ser uma rede sem fio (wireless) em um espaço tridimensional com obstáculos. Neste tutorial, são utilizadas versões especializadas de Channel chamadas CsmaChannel, PointToPointChannel e WifiChannel. O CsmaChannel, por exemplo, é uma versão do modelo de rede que implementa controle de acesso ao meio CSMA (Carrier Sense Multiple Access). Ele fornece uma funcionalidade similar a uma rede Ethernet.
+
+Para conectar os computadores em uma rede é necessário uma placa de rede. A placa de rede não funciona sem o driver que a controle. No Unix (ou Linux), um periférico (como a placa de rede) é classificado como um dispositivo (\textit{device}). As placas de rede, também chamadas de dispositivos de rede (\textit{net devices}), são controladas através de \textit{drivers} de dispositivo de rede (\textit{network device drivers}). No NS-3 a abstração do \textit{dispositivo de rede} cobre tanto o \textit{hardware} (placa de rede) quanto o \textit{software} (\textit{driver}). Um dispositivo de rede é ``instalado'' em um nó para permitir que este se comunique com outros na simulação, usando os canais de comunicação (\textit{channels}). Assim como em um computador real, um nó pode ser conectado a mais que um canal via múltiplos dispositivos de rede. A abstração do dispositivo de rede é representado em C++ pela classe \textit{NetDevice}, que fornece métodos para gerenciar conexões para objetos \textit{Node} e \textit{Channel}.
+% Os dispositivos, assim como os canais e as aplicações, também podem ser especializados. Várias versões do NetDevice são utilizadas neste tutorial, tais como: CsmaNetDevice, PointToPointNetDevice e WifiNetDevice. Assim como uma placa de rede Ethernet é projetada para trabalhar em uma rede Ethernet, um CsmaNetDevice é projetado para trabalhar com um CsmaChannel. O PointToPointNetDevice deve trabalhar com um PointToPointChannel e o WifiNetNevice com um WifiChannel.
+
+São necessárias diversas operações distintas para criar um dispositivo, instalar o dispositivo em um nó, configurar a pilha de protocolos no nó em questão e por fim, conectar o dispositivo a um canal. Além disso é necessário conectar múltiplos dispositivos e então fazer a interconexão das várias redes. Para facilitar o trabalho, são disponibilizados objetos que são assistentes de topologia (\textit{topology helpers}), que combinam estas operações distintas de modo conveniente. A seguir são utilizados diversos destes assistentes para montar a topologia da rede utilizada nas simulações.
+
+As próximas duas linhas de código criam os objetos do tipo \textit{Node} que representarão os roteadores na simulação.
+
+\begin{lstlisting}
+NodeContainer routers;
+routers.Create (6);
+\end{lstlisting}
+
+O assistente \textit{NodeContainer} fornece uma forma conveniente de criar, gerenciar e acessar qualquer objeto \textit{Node} que criamos para executar a simulação. A primeira linha declara um \textit{NodeContainer} chamado \textit{routers}. A segunda linha chama o método \textit{Create} sobre o objeto \textit{routers} e pede para criar seis nós.
+
+%Primeiro, é preciso criar objetos do tipo \textit{Node} que representarão os roteadores na simulação. Nas instruções é declarado um \textit{NodeContainer} chamado de routers. Em seguida é chamado o método \textit{Create} sobre o objeto routers para criar seis nós.
+
+%\begin{lstlisting}
+%NodeContainer routers;
+%routers.Create (6);
+%\end{lstlisting}
+
+%Em seguida os objetos criados são agrupados.
+
+%\begin{lstlisting}
+%NodeContainer ptp01 (routers.Get (0), routers.Get (1));
+%NodeContainer ptp02 (routers.Get (0), routers.Get (2));
+%NodeContainer ptp13 (routers.Get (1), routers.Get (3));
+%NodeContainer ptp14 (routers.Get (1), routers.Get (4));
+%NodeContainer ptp24 (routers.Get (2), routers.Get (4));
+%NodeContainer ptp35 (routers.Get (3), routers.Get (5));
+%NodeContainer ptp45 (routers.Get (4), routers.Get (5));
+%\end{lstlisting}
+
+%O assistente \textit{NodeContainer} fornece uma forma conveniente de criar, gerenciar e acessar qualquer objeto \textit{Node} criado para executar a simulação.
+
+Os roteadores, como estão no código, não fazem nada. O próximo passo é conectar os roteadores com enlaces. Uma forma simples de conectar dois roteadores em uma rede é com um enlace ponto-a-ponto. A instrução seguinte, instancia o objeto \textit{PointToPointHelper} que é utilizado para configurar as placas de rede e os enlaces ponto-a-ponto que conectam os roteadores.
+
+\begin{lstlisting}
+PointToPointHelper pointToPoint;
+\end{lstlisting}
+
+A próxima instrução, informa ao objeto \textit{PointToPointHelper} para usar o valor de ``5Mbps'' (cinco megabits por segundo) como \textit{DataRate} (taxa de transferência) das placas de rede que são utilizadas pelos roteadores.
+% quando for criado um objeto \textit{PointToPointNetDevice}.
+
+\begin{lstlisting}
+pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("5Mbps"));
+\end{lstlisting}
+
+%Semelhante ao \textit{DataRate} presente no \textit{PointToPointNetDevice} também existe o atributo \textit{Delay} (atraso) associado ao \textit{PointToPointChannel}. A instrução a seguir, informa ao \textit{PointToPointHelper} para usar o valor de \textit{2ms} (dois milissegundos) como valor de atraso de transmissão para o canal ponto-a-ponto criado.
+
+Semelhante ao \textit{DataRate} presente na placa de rede também existe o atributo \textit{Delay} (atraso) associado ao enlace. A instrução a seguir, informa ao \textit{PointToPointHelper} para usar o valor de ``2ms'' (dois milissegundos) como valor de atraso de transmissão para os enlaces utilizados para conectar os roteadores.
+
+\begin{lstlisting}
+pointToPoint.SetChannelAttribute ("Delay", StringValue ("2ms"));
+\end{lstlisting}
+
+Agora que o \textit{PointToPointHelper} contém as configurações das placas de rede e dos enlaces é preciso criar, configurar e instalar estes dispositivos. Para isso é utilizado o método \textit{Install} do \textit{PointToPointHelper} que recebe como parâmetro dois roteadores que dividem um enlace na nossa representação da topologia. Internamente, para cada roteador é criada uma placa de rede (\textit{NetDevice}). Além disso, é criado um enlace (\textit{Channel}) e as duas placas de rede são conectadas. Como os objetos são criados pelo \textit{PointToPointHelper}, os atributos, passados anteriormente, são configurados pelo assistente. No código abaixo o \textit{NetDeviceContainer} e\verb|_|$ij$ representa um enlace no qual $i$ e $j$ são os identificadores dos roteadores que dividem este enlace.
+
+\begin{lstlisting}
+NetDeviceContainer e_01 = pointToPoint.Install (routers.Get (0), routers.Get (1));
+\end{lstlisting}
+
+Por exemplo, o \textit{NetDeviceContainer} e\verb|_|01 é o enlace responsável pela conexão entre o roteador 0 e o roteador 1. As instruções a seguir são responsáveis pela criação e configuração dos outros enlaces da rede.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}
+NetDeviceContainer e_02 = pointToPoint.Install (routers.Get (0), routers.Get (2));
+NetDeviceContainer e_13 = pointToPoint.Install (routers.Get (1), routers.Get (3));
+NetDeviceContainer e_14 = pointToPoint.Install (routers.Get (1), routers.Get (4));
+NetDeviceContainer e_24 = pointToPoint.Install (routers.Get (2), routers.Get (4));
+NetDeviceContainer e_35 = pointToPoint.Install (routers.Get (3), routers.Get (5));
+NetDeviceContainer e_45 = pointToPoint.Install (routers.Get (4), routers.Get (5));
+\end{lstlisting}
+\end{minipage}
+
+Após a execução de todas as instruções anteriores, a rede vai conter seis roteadores conectados por canais ponto-a-ponto. Todos os dispositivos são configurados para ter uma taxa de transferência de dados de cinco \textit{megabits} por segundo que, por sua vez, tem um atraso de transmissão de dois milissegundos. Os roteadores e suas placas de rede estão configurados, porém não existe nenhuma pilha de protocolos instalada. As próximas instruções são responsáveis por isso.
+
+\begin{lstlisting}
+InternetStackHelper stack;
+stack.Install (routers);
+\end{lstlisting}
+
+O \textit{InternetStackHelper} é um assistente de topologia inter-rede. O método \textit{Install} utiliza como parâmetro o \textit{NodeContainer} \textit{routers} que contém todos os roteadores da rede. Quando o método é executado, ele irá instalar em todos os roteaores a pilha de protocolos da Internet incluindo, por exemplo, os protocolos IP, UDP, TCP, entre outros.
+
+Em seguida é necessário associar endereços IP's aos roteadores. Para isso existe um assistente de topologia (\textit{Ipv4AddressHelper}) que gerencia a alocação de endereços IP's.
+%Na próxima instrução é declarado um assistente de endereçamento  que é responsável pelo endereçamento dos roteadores.
+
+\begin{lstlisting}
+Ipv4AddressHelper ipv4AddrHelper;
+\end{lstlisting}
+
+%As próximas instruções, realizam efetivamente o endereçamento.
+Para facilitar na identificação dos roteadores, que pertencem a um determinado enlace, são utilizados IP's no formato 10.$i$.$j$.0 no qual $i$ e $j$ são os identificadores dos roteadores que pertencem ao enlace. No código abaixo o método \textit{SetBase} do \textit{Ipv4AddressHelper} configura alocação de IP's no formato definido. Além disso é utilizada a máscara 255.255.255.0. Por padrão, os endereços alocados iniciam do primeiro endereço IP disponível e são incrementados um a um. Como são utilizados enlaces ponto-a-ponto um dos roteadores recebe o endereço 10.$i$.$j$.1 e o outro roteador recebe 10.$i$.$j$.2. O endereçamento é feito a partir dos enlaces e\verb|_|$ij$ criados anteriormente. O método \textit{Assign} recebe como parâmetro um destes enlaces e atribui os endereços IP aos roteadores deste enlace. Cada \textit{Ipv4InterfaceContainer} i\verb|_|$ij$ contém uma lista das interfaces de rede criadas pelo assistente de topologia na qual $i$ e $j$ são os identificadores dos roteadores que pertem à esta lista. O NS-3 mantém todos os endereços IP's alocados e gera um erro fatal se o mesmo endereço for usado duas vezes. 
+%Cada \textit{Ipv4InterfaceContainer} i\verb|_|$ij$ representa uma lista dos dispositivos de rede criados pelo assistente de topologia no qual $i$ e $j$ são os identificadores dos roteadores que pertem à esta lista. O NS-3 mantém todos os endereços IP's alocados e gera um erro fatal se o mesmo endereço for usado duas vezes. 
+
+\begin{lstlisting}
+ipv4AddrHelper.SetBase ("10.0.1.0", "255.255.255.0");
+Ipv4InterfaceContainer i_01 = ipv4AddrHelper.Assign (e_01);
+\end{lstlisting}
+
+Nas intruções acima os roteadores do enlace e\verb|_|01 recebem os endereços IP 10.0.1.1 e 10.0.1.2. O \textit{Ipv4InterfaceContainer} i\verb|_|01 guarda esta informação para consultas futuras. Este procedimento deve ser repetido para os demais enlaces da rede.
+
+\begin{lstlisting}
+ipv4AddrHelper.SetBase ("10.0.2.0", "255.255.255.0");
+Ipv4InterfaceContainer i_02 = ipv4AddrHelper.Assign (e_02);
+ipv4AddrHelper.SetBase ("10.1.3.0", "255.255.255.0");
+Ipv4InterfaceContainer i_13 = ipv4AddrHelper.Assign (e_13);
+ipv4AddrHelper.SetBase ("10.1.4.0", "255.255.255.0");
+Ipv4InterfaceContainer i_14 = ipv4AddrHelper.Assign (e_14);
+ipv4AddrHelper.SetBase ("10.2.4.0", "255.255.255.0");
+Ipv4InterfaceContainer i_24 = ipv4AddrHelper.Assign (e_24);
+ipv4AddrHelper.SetBase ("10.3.5.0", "255.255.255.0");
+Ipv4InterfaceContainer i_35 = ipv4AddrHelper.Assign (e_35);
+ipv4AddrHelper.SetBase ("10.4.5.0", "255.255.255.0");
+Ipv4InterfaceContainer i_45 = ipv4AddrHelper.Assign (e_45);
+\end{lstlisting}
+
+Após a execução do código anterior todos os roteadores possuem um endereço IP para cada enlace ao qual eles fazem parte. Neste ponto, a rede está funcionando, com pilhas de protocolos instaladas e endereços IP's configurados. Agora é neccessário que os roteadores presentes na rede utilizem o protocolo OSPF. Para isso é utilizado o \textit{Global Route Manager} que é responsável por preencher as tabelas de roteamento do roteadores. Entretanto, o \textit{Global Route Manager} não implementa o protocolo OSPF. Uma vez que, ele somente calcula caminhos estáticos, pois as tabelas de roteamento são preenchidas antes de iniciar o tráfego de pacotes na rede. Portanto, não são utilizados pacotes de controle e quando ocorre uma falha na rede os rotedores não são informados. Porém, a criação das tabelas de roteamento funciona de maneira semelhante ao OSPF, pois o \textit{Global Route Manager} é baseado na implementação do OSPF feita pela \textit{Quagga Routing Suite}.
+
+Na instrução a seguir, o método \textit{PopulateRoutingTables} do \textit{Ipv4GlobalRoutingHelper} tem a função de preencher as tabelas de rotemento. Este método cria as representações locais da topologia da rede. Em seguida, o algoritmo de Dijkstra calcula os caminhos mínimos e inicializa as tabelas de roteamento dos roteadores na simulação.
+
+\begin{lstlisting}
+Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+\end{lstlisting}
+
+A próxima etapa é executar o simulador. Isto é feito usando a instrução a seguir.
+
+\begin{lstlisting}
+Simulator::Run ();
+\end{lstlisting}
+
+%Quando as aplicações utilizadas terminarem suas execuções. A simulação está completa. Por fim é preciso liberar os recursos utilizados pelos elementos da simulação.
+
+%\begin{lstlisting}
+%Simulator::Destroy ();
+%\end{lstlisting}
+
+O código da simulação está completo e pronto para uso. Porém não existe nenhuma aplicação instalada em nenhum dos roteadores. Portanto a simulação não produz nenhum resultado. O NS-3 oferece diversas aplicações com diversas funcionalidades e cada uma delas produz um resultado diferente. Entretanto os resultados das aplicações seguem um padrão. As aplicações são utilizadas para gerar tráfego de rede. Além disso, as aplicações mostram para o usuário informações sobre os pacote enviados ou recebidos. A informações exibidas são, por exemplo, o IP de origem ou destino e o tamanho do pacote.
+
+O NS-3 fornece diversos mecanismos de monitoramento. Um deles é o uso da biblioteca \textit{pcap}, que permite a captura de pacotes \cite{Reference18}. Com o uso da \textit{pcap} é possível visualizar informações detalhadas de todos os pacotes enviados ou recebidos por qualquer roteador da rede. Para habilitar o rastreamento \textit{pcap} é usado o assistente \textit{PointToPointHelper} que informa ao NS-3 para criar arquivos que guardam informações do pacotes transmitidos em enlaces ponto-a-ponto. Os arquivos são criados no seguinte formato, o prefixo \textit{ospf}, o número do roteador, o número da interface deste roteador e o sufixo \textit{.pcap}. O programa mais conhecido para ler o mostrar este formato é o \textit{Wireshark} \cite{Reference19}. Entretanto, existem muitos analisadores de tráfego que usam este formato como, por exemplo, o \textit{tcpdump} \cite{Reference20}. %tcpdump -nn -tt -r ospf-0-0.pcap
+
+\begin{lstlisting}
+pointToPoint.EnablePcapAll ("ospf");
+\end{lstlisting}
+
+Um dos principais objetivos das simulações é observar o comportamento do protocolo OSPF em situações que ocorrem falhas na rede. Para isso é preciso simular uma falha na rede. Existe mais de uma maneira de simular uma falha. Um método é simular a falha de um enlace. Isto pode ser feito no NS-3 ao destivar a interface de rede de um roteador. O código a seguir é responsável por isso.
+
+\begin{lstlisting}
+Ptr<Node> r0 = routers.Get (0);
+Ptr<Ipv4> router_0 = r0->GetObject<Ipv4> ();
+uint32_t interface_1 = 1;
+\end{lstlisting}
+
+Na primeira instrução \textit{Ptr$<$Node$>$ r0} representa um apontador para o roteador 0 que contém a interface que irá falhar. Na segunda instrução \textit{Ptr$<$Ipv4$>$ router\_0} representa um apontador para o conjunto de interfaces de redes do roteador 0. Na terceira instrução \textit{uint32\_t interface\_1} representa qual das interfaces do roteador 0 foi selecionada para falhar.
+
+%Na simulação, são necessárias aplicações para gerar o tráfego de rede. Diversas aplicações foram utilizadas durante as simulações.
+
+%Todos os enlaces da rede estão configurados com os mesmos atributos. Pois o algoritmo de Dijkstra utilizado pelo protocolo OSPF vai calcular os caminhos mais curtos. Os roteadores da rede utilizam a métrica de contagem de saltos para o cálculo do caminho mínimo. Entretanto, é possível configurar cada enlace separadamente com atributos diferentes. Porém, para alterar o comportanmento do OSPF é preciso configurar os roteadores para utilizarem métricas diferentes no calculo do caminho mínimo.
+
+%Um dos principais objetivos das simulações é determinar o comportamento do protocolo OSPF em situações que ocorrem falhas na rede. Para isso é preciso simular uma falha na rede. Existe mais de uma maneira de simular uma falhar na rede. Um método de simular uma falha na rede é através da falha de um enlace. A falha de um enlace pode ser simulada ao adicionar a seguinte função.
+
+%\begin{lstlisting}
+%void FailLink (Ptr<NetDevice> nd)
+%{
+%    Ptr<RateErrorModel> error = CreateObject<RateErrorModel> ();
+%    error->SetAttribute ("ErrorRate", DoubleValue (1.0));
+%
+%    nd->SetAttribute ("ReceiveErrorModel", PointerValue (error));
+%}
+%\end{lstlisting}
+
+%Além disso é necessário criar um evento na simulação para executar a função responsável pela alteração do estado do enlace.
+
+%\begin{lstlisting}
+%Simulator::Schedule (Seconds (10.0), FailLink, pp01.Get(1));
+%\end{lstlisting}
+
+Além disso, é necessário criar um evento na simulação. A instrução a seguir cria um evento que é executado aos 10 segundos da simulação. O parâmetro \textit{Ipv4::SetDown} determina que o evento deve desativar um das interfaces de rede de um roteador. Os últimos parâmetros informam que a interface 1 do roteador 0 deve ser desativada. A interface 0 dos roteadores é atribuída ao endereço de \textit{loopback}. Portanto a interface 1 é atribuída ao enlace entre o roteador 0 e o roteador 1.
+
+\begin{lstlisting}
+Simulator::Schedule (Seconds (10.0), &Ipv4::SetDown, router_0, interface_1);
+\end{lstlisting}
+
+É possível perceber nas simulações que quando ocorre uma falha os pacotes que utilizam o caminho falho não chegam aos seus destinos. Ao utilizar um aplicação para gerar tráfego no caminho com falha é posível observar que os pacotes são enviados porém não são recebidos. Esse comportamento se mantém por tempo indefinido. Deste modo, é possível perceber que a implementação do \textit{Global Route Manager} é muito limitada. Uma vez que, quando um enlace falha, os roteadores da rede deveriam calcular novos caminhos. Porém isso não acontece nas simulações. Neste ponto é perceptível que não é simulado o funcionamento dos protocolos \textit{Hello} e \textit{Flooding}. Somente o funcionamento do protocolo \textit{Exchange} é simulado no NS-3. Sendo assim, o módulo DCE passa a ser uma alternativa para simular o protocolo OSPF. Pois o DCE possui a implementação do protocolo OSPF feita pela \textit{Quagga Routing Suite}. No DCE todos os subprotocolos que compôem o OSPF estão implementados. Portanto, é possível executar simulações com falhas na redes.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+\section{OSPF no DCE}
+
+Para utilizar o protocolo OSPF disponibilizado pelo DCE são necessárias algumas modificações no código. Primeiramente, são adicionados dois procedimentos para auxiliar na configuração das interfaces dos roteadores. Como foi visto anteriormente, o DCE permite utilizar a implementação do protocolo da Internet presente no sistema operacional Linux. Os procedimentos a seguir fazem uso dessa funcionalidade.
+
+No primeiro procedimento a seguir é utilizado um assistente \textit{DceApplicationHelper} denominado \textit{process} para configurar algumas da aplicações que serão executadas nas simulações. O objeto \textit{ApplicationContainer} chamado de \textit{apps} é utilizado para gerenciar as aplicações. A função \textit{SetBinary} define qual aplicação será usada. Como este procedimento tem o objetivo de auxiliar na configuração das interfaces de rede dos roteadores é usado o executável \textit{ip}, nativo do Linux. Em seguida, a função \textit{SetStackSize} define o tamanho da pilha utilizada pelo executável \textit{ip}, neste caso é usado um valor padrão do DCE. Em seguida, a função \textit{ResetArguments} retira os parâmetros, do executável \textit{ip}, que estão configurados no sistema operacional. A função \textit{ParseArguments} adiciona uma \textit{string} como parâmetro para o executável \textit{ip}. A função \textit{Install} instala o executável no \textit{Ptr$<$Node$>$ router} que representa um roteador. Por fim, a função \textit{Start} define em qual momento da simulação o executável deve iniciar sua execução. Para isso é utilizado o parâmetro \textit{at} que representa um valor dentro do intervalo de duração da simulação.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}
+static void RunIp (Ptr<Node> router, Time at, std::string str) {
+    DceApplicationHelper process;
+    ApplicationContainer apps;
+    process.SetBinary ("ip");
+    process.SetStackSize (1 << 16);
+    process.ResetArguments ();
+    process.ParseArguments (str.c_str ());
+    apps = process.Install (router);
+    apps.Start (at); }
+\end{lstlisting}
+\end{minipage}
+
+O segundo procedimento é utilizado para adicionar endereços a um determinado roteador \textit{Ptr$<$Node$>$ router}. Primeiro é criada uma variável \textit{std::ostringstream oss} para guardar as configurações do endereço. Na instrução seguinte, o parâmetro ``-f inet'' informa que é um endereço do tipo IPv4. o parâmetro ``addr add \textit{address}'' define qual endereço será utilizado. o parâmetro ``dev \textit{name}'' informa qual interface de rede receberá o endereço definido. Por fim, é chamado o procedimento \textit{RunIp} para utilizar o executável \textit{ip} com as configurações definidas.
+
+\begin{lstlisting}
+static void AddAddress (Ptr<Node> router, Time at, const char *name, const char *address)
+{
+    std::ostringstream oss;
+    oss << "-f inet addr add " << address << " dev " << name;
+    RunIp (router, at, oss.str ());
+}
+\end{lstlisting}
+
+O executável \textit{ip} é utilizado para realizar o endereçamento dos roteadores presentes na rede. Portanto as instruções reponsáveis por instalar a pilha de protocolos e associar os endereços IP são modificadas. Para instalar a pilha de protocolos é utilizado um assistente \textit{DceManagerHelper} denominado \textit{processManager}. O método \textit{SetTaskManagerAttribute} é usado para definir alguns atributos do DCE relacionados a execução de processos. Um desses atributos é o \textit{FiberManagerType} que é usado para alternar o contexto de execução entre \textit{threads} e processos. Por padrão este atributo é configurado para auxiliar na depuração de código, mas neste caso, o parâmetro \textit{EnumValue (0)} altera seu comportamento para funcionar de maneira mais eficiente. O método \textit{SetNetworkStack} é responsável por informar ao assistente qual pilha de protocolos da Internet deve ser usada. Neste caso deve ser usada a pilha de protocolos da Internet nativa do Linux. Por fim, o método \textit{Install} configura todos os roteadores da rede com os atributos definidos.
+
+%Para substituir estas funcionalidades o DCE utiliza as seguintes instruções.
+
+%\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}
+DceManagerHelper processManager;
+processManager.SetTaskManagerAttribute ("FiberManagerType", EnumValue (0));
+processManager.SetNetworkStack ("ns3::LinuxSocketFdFactory", "Library", StringValue("liblinux.so"));
+processManager.Install (routers);
+\end{lstlisting}
+%\end{minipage}
+
+%O endereçamento é feito através do comando \textit{ip}, para cada interface do roteador é preciso associar um endereço IP e torna-la ativa.
+O próximo passo é definir os endereços IP dos roteadores. Para isso são utilizados os procedimentos \textit{AddAddress} e \textit{RunIp} criados no início desta seção. 
+
+\begin{lstlisting}
+AddAddress (routers.Get (0), Seconds (0.1), "sim0", "10.0.1.1/24");
+AddAddress (routers.Get (0), Seconds (0.1), "sim1", "10.0.2.1/24");
+\end{lstlisting}
+
+O procedimento \textit{AddAddress} define que no tempo 0.1 as interface sim0 e sim1, do roteador 0, devem receber os endereços 10.0.1.1 e 10.0.2.1 respectivamente. Além disso é informado que somente o um \textit{byte} é usado para endereçamento de \textit{hosts}. Os outros três \textit{bytes} são usados para endereçamento de redes. De maneira semelhante a simulação criada sem utilizar o DCE, são utilizados IP's no formato 10.$i$.$j$.0 no qual $i$ e $j$ são os identificadores dos roteadores que pertencem ao enlace. No código a seguir é utilizado o procedimento \textit{RunIp} para tornar ativas as interfaces do roteador 0 que no tempo 0.11. Os valores de \textit{tempo} utilizados são padrões do DCE. 
+
+\begin{lstlisting}
+RunIp (routers.Get (0), Seconds (0.11), "link set lo up");
+RunIp (routers.Get (0), Seconds (0.11), "link set sim0 up");
+RunIp (routers.Get (0), Seconds (0.11), "link set sim1 up");
+\end{lstlisting}
+
+As instruções anteriores configuram somente as interfaces do primeiro roteador. Entretanto, as interfaces de todos os roteadores devem ser configuradas. Para isso basta utilizar as mesmas instruções e torcar o valor roteador escolhido e os endereços IP das interfaces deste roteador.
+
+%\begin{lstlisting}
+%AddAddress (routers.Get (1), Seconds (0.1), "sim0", "10.0.1.2/24");
+%AddAddress (routers.Get (1), Seconds (0.1), "sim1", "10.1.3.1/24");
+%AddAddress (routers.Get (1), Seconds (0.1), "sim2", "10.1.4.1/24");
+%RunIp (routers.Get (1), Seconds (0.11), "link set lo up");
+%RunIp (routers.Get (1), Seconds (0.11), "link set sim0 up");
+%RunIp (routers.Get (1), Seconds (0.11), "link set sim1 up");
+%RunIp (routers.Get (1), Seconds (0.11), "link set sim2 up");  
+%AddAddress (routers.Get (2), Seconds (0.1), "sim0", "10.0.2.2/24");
+%AddAddress (routers.Get (2), Seconds (0.1), "sim1", "10.2.4.1/24");
+%RunIp (routers.Get (2), Seconds (0.11), "link set lo up");
+%RunIp (routers.Get (2), Seconds (0.11), "link set sim0 up");
+%RunIp (routers.Get (2), Seconds (0.11), "link set sim1 up");
+%AddAddress (routers.Get (3), Seconds (0.1), "sim0", "10.1.3.2/24");
+%AddAddress (routers.Get (3), Seconds (0.1), "sim1", "10.3.5.1/24");
+%RunIp (routers.Get (3), Seconds (0.11), "link set lo up");
+%RunIp (routers.Get (3), Seconds (0.11), "link set sim0 up");
+%RunIp (routers.Get (3), Seconds (0.11), "link set sim1 up");
+%AddAddress (routers.Get (4), Seconds (0.1), "sim0", "10.1.4.2/24");
+%AddAddress (routers.Get (4), Seconds (0.1), "sim1", "10.2.4.2/24");
+%AddAddress (routers.Get (4), Seconds (0.1), "sim2", "10.4.5.1/24");
+%RunIp (routers.Get (4), Seconds (0.11), "link set lo up");
+%RunIp (routers.Get (4), Seconds (0.11), "link set sim0 up");
+%RunIp (routers.Get (4), Seconds (0.11), "link set sim1 up");
+%RunIp (routers.Get (4), Seconds (0.11), "link set sim2 up");
+%AddAddress (routers.Get (5), Seconds (0.1), "sim0", "10.3.5.2/24");
+%AddAddress (routers.Get (5), Seconds (0.1), "sim1", "10.4.5.2/24");
+%RunIp (routers.Get (5), Seconds (0.11), "link set lo up");
+%RunIp (routers.Get (5), Seconds (0.11), "link set sim0 up");
+%RunIp (routers.Get (5), Seconds (0.11), "link set sim1 up");
+%\end{lstlisting}
+
+% É possível visualizar a configuração dos roteadores durante a simulação através das seguintes instruções.
+
+%\begin{lstlisting}
+%RunIp (routers.Get (0), Seconds (0.2), "link show");
+%RunIp (routers.Get (0), Seconds (0.3), "route show table all");
+%RunIp (routers.Get (0), Seconds (0.4), "addr list");
+%\end{lstlisting}
+
+Neste ponto só resta informar aos roteadores que eles devem utilizar o protocolo de roteamento OSPF. Para isso é utilizado o assitente \textit{QuaggaHelper} denominado \textit{quagga}.
+
+\begin{lstlisting}
+QuaggaHelper quagga;
+\end{lstlisting}
+
+É necessário informar aos roteadores quais interfaces devem utilizar o protocolo OSPF. Para isso é usado método \textit{EnableOspf} que informa aos roteadores de um determinado enlace para usarem o OSPF na interface com o endereço IP determinado. A instrução a seguir mostra o método \textit{EnableOspf} configurando os roterdores do enlace e\verb|_|01 para usarem OSPF na interface com IP 10.0.1.0.
+
+\begin{lstlisting}
+quagga.EnableOspf (e_01, "10.0.1.0/24");
+\end{lstlisting}
+
+Como cada enlace é consideredo uma rede ponto-a-ponto com IP's diferentes é preciso repetir o procedimento anterior para todos os enlaces. Cada enlace com seu endereço respectivo.
+
+\begin{lstlisting}
+quagga.EnableOspf (e_02, "10.0.2.0/24");
+quagga.EnableOspf (e_13, "10.1.3.0/24");
+quagga.EnableOspf (e_14, "10.1.4.0/24");
+quagga.EnableOspf (e_24, "10.2.4.0/24");
+quagga.EnableOspf (e_35, "10.3.5.0/24");
+quagga.EnableOspf (e_45, "10.4.5.0/24");
+\end{lstlisting}
+
+O \textit{NodeContainer routers} contém todos os roteadores da rede. A seguir, \textit{routers} é usado pelo método \textit{EnableOspfDebug} para informar aos roteadores que as mensagens de depuração do protocolo OSPF devem ser exibidas no resultado da simulação.
+
+\begin{lstlisting}
+quagga.EnableOspfDebug (routers);
+\end{lstlisting}
+%quagga.EnableZebraDebug (routers);
+
+De maneira semelhante a todos os assistentes do NS-3, o método \textit{Install} aplica as configurações definidas em todos os roteadores.
+
+\begin{lstlisting}
+quagga.Install (routers);
+\end{lstlisting}
+
+Com as últimas alterações o NS-3 está configurado para simular o protocolo OSPF do DCE. Portanto, é possível observar o novo comportamento do OSPF nas simulações que ocorrem falhas na rede. Entretanto a instrução para simular uma falha na rede deve ser modificada. A falha na rede é simulada ao destivar uma interface de algum roteador. Para isso é usado o método \textit{RunIp} que utiliza como parâmetro um roteador, o intervalo da simulação que deve ocorrer a falha e qual interface deve ser desativada. Na instrução a seguir foi selecionada a interface sim1 do roteador 0 para ser destivada aos 62 segundos da simulação. Para desativar alguma interface dos outros roteadores basta alterar os parâmetros desta instrução.
+
+\begin{lstlisting}
+RunIp (routers.Get (0), Seconds (62), "link set sim1 down");
+\end{lstlisting}
+
+Ao executar as simulações é possível observar o comportamento do OSPF implementado no módulo DCE. O funcionamento da implementação do DCE é semelhante ao da implementação do \textit{Global Route Manager}. Entretanto, é possível notar a diferença entre as duas implementações nas simulações que ocorrem falhas na rede. Ao utilizar o \textit{Global Route Manager}, quando ocorre um falha de enlace todos os pacotes, que utilizavam o caminho afetado, são perdidos. No OSPF do DCE somente alguns pacotes são perdidos, pois através do OSPF os roteadores percebem a falha do enlace e encontram um novo caminho mínimo. Além disso é utilizado o executável \textit{iperf} para medir a diferença na vazão da rede em simulações com falhas. Através do uso desta ferramenta é possível perceber o seguinte. Durante as simulações sem falhas a taxa de transferência é de 4.19 \textit{Mbits} por segundo. Nas simulações que a falha ocorre em um enlace escolhido pelo algoritmo de Dijkstra esta taxa cai para 3.15 \textit{Mbits} por segundo. Além disso, ao analisar os arquivos gerados pelo \textit{pcap} é possível perceber que os roteadores demoram, em média, 300 milissegundos para encontrar um novo caminho mínimo. Outro aspecto observado foi que o protocolo OSPF não faz balanceamento de tráfego quando existe mais de um caminho mínimo para o roteador destino.
+
+%Os resultados foram obtidos através de simulações realizadas na topologia descrita no início do capítulo. Para simular rede maiores é  usar geradores de topologia, para não precisar configurar cada roteador manualmente. Atualmente existe um módulo do NS-3 chamado \textit{Boston university Representative Internet Topology gEnerator} (BRITE) que tem a função de gerar grandes topologias. Entretanto, este módulo não faz integração com o módulo DCE. Ou seja, ao utilizar este módulo para criar a topologia da rede os roteadores não podem executar o protocolo OSPF fornecido pelo DCE.
+
+O DCE fornece uma implementação completa do OSPF. Entretanto, o DCE não é nativo do NS-3 e isso adiciona complexidade ao procedimento simular o OSPF. Primeiramente, se o NS-3 foi instalado de acordo com sua documentação, o módulo DCE não é instalado. Além disso, a maneira de configurar a simulação passa por diversas mudanças quando é utilizado o DCE. Deste modo, grande parte do conhecimento adquirido ao utilizar o NS-3, sem o DCE, se torna obsoleto. Sendo assim, é necessário consultar a documentação do DCE para compreender alguns dos procedimentos usados na configuração das novas simulações. Porém a documentação do DCE, especialmente a parte relacionada ao OSPF, é insuficiente e incompleta. Além disso, alguns procedimentos exigem conhecimento de executáveis externos ao NS-3 como, por exemplo para configurar as interfaces de rede dos roteadores é preciso conhecer o executável ``ip''. Na verdade, usar o DCE implica em trabalhar com a própria implementação do protocolo no sistema operacional, o que elimina a vantagem da simulação, na medida em que múltiplos detalhes devem ser considerados mesmo para testes simples.
+
+%Todo o aprendizado do ns3 se torna inutil com o dce, pois tudo muda, exceto a criação dos roteadores
+
+%a instalação do ns3 foi feita inicialmente de acordo com a documentação do ns3, entretanto ele fica inutil pois é necessario fazer uma nova instalação para configurar o dce
+
+%a documentaçao do dce é incompleta
+
+%a criação dos enlaces muda, nao foi possivel csma+p2p
+
+%o endereçamento muda, exige conhecimento do executavel ip

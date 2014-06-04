@@ -1,0 +1,4 @@
+c3sl 20 32
+Joe 8 35
+Broadcom 17 40
+gvt-1f7f 20 40

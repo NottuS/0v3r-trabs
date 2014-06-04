@@ -1,0 +1,79 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: dissertacao.aux
+The style file: brazil.bst
+Database file #1: bibliografia.bib
+Warning--to sort, need author or key in Reference12
+Warning--to sort, need author or key in Reference14
+Warning--to sort, need author or key in Reference17
+Warning--to sort, need author or key in Reference13
+Warning--to sort, need author or key in Reference18
+Warning--to sort, need author or key in Reference19
+Warning--to sort, need author or key in Reference20
+Warning--empty author in Reference18
+Warning--empty title in Reference18
+Warning--empty author in Reference19
+Warning--empty title in Reference19
+Warning--empty author in Reference20
+Warning--empty title in Reference20
+Warning--empty author in Reference12
+Warning--empty title in Reference12
+Warning--empty author in Reference14
+Warning--empty title in Reference14
+Warning--empty author in Reference17
+Warning--empty title in Reference17
+Warning--empty author in Reference13
+Warning--empty title in Reference13
+Warning--empty title in Reference8
+Warning--empty title in Reference15
+Warning--empty title in Reference2
+Warning--empty title in Reference16
+Warning--empty title in Reference10
+Warning--empty title in Reference9
+Warning--empty title in Reference3
+Warning--empty title in Reference4
+Warning--empty title in Reference5
+Warning--empty title in Reference1
+Warning--empty title in Reference6
+Warning--empty title in Reference7
+You've used 19 entries,
+            2118 wiz_defined-function locations,
+            595 strings with 5726 characters,
+and the built_in function-call counts, 3934 in all, are:
+= -- 358
+> -- 146
+< -- 0
++ -- 63
+- -- 44
+* -- 294
+:= -- 667
+add.period$ -- 31
+call.type$ -- 19
+change.case$ -- 60
+chr.to.int$ -- 0
+cite$ -- 52
+duplicate$ -- 190
+empty$ -- 331
+format.name$ -- 44
+if$ -- 786
+int.to.chr$ -- 0
+int.to.str$ -- 19
+missing$ -- 19
+newline$ -- 72
+num.names$ -- 24
+pop$ -- 86
+preamble$ -- 1
+purify$ -- 60
+quote$ -- 0
+skip$ -- 141
+stack$ -- 0
+substring$ -- 95
+swap$ -- 19
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 76
+warning$ -- 33
+while$ -- 24
+width$ -- 21
+write$ -- 159
+(There were 33 warnings)

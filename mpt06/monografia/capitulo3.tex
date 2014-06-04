@@ -1,0 +1,164 @@
+\chapter{Instalando o Simulador NS-3 Para Executar OSPF}
+\label{Instalando o Simulador NS-3 Para Executar OSPF}
+
+Este capítulo descreve os procedimentos necessários para instalar e configurar o simulador de redes \textit{Network Simulator 3} (NS-3) \cite{Reference12}. Inicialmente, são apresentadas as características e as funcionalidades do NS-3. Em seguida, são descritas as instruções utilizadas para instalar e configurar o NS-3.
+% Primeiro, são apresentadas as características e as funcionalidades do \textit{NS-3}. Em seguida, são descritos os procedimentos necessários para o uso do \textit{NS-3}.% O capítulo termina com uma descrição detalhada do protocolo OSPF.
+
+\lstset{
+  backgroundcolor=\color{mybckg},  % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  %captionpos=b,                    % sets the caption-position to bottom
+  %commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  columns=flexible,
+  %keywordstyle=\color{blue},       % keyword style
+  %language=bash,                   % the language of the code
+  %morekeywords={*,...},            % if you want to add more keywords to the set
+  %numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  %numbersep=5pt,                   % how far the line-numbers are from the code
+  %numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  %showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  %showstringspaces=false,          % underline spaces within strings only
+  %showtabs=false,                  % show tabs within strings adding particular underscores
+  %stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  %stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  %title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+  basicstyle=\ttfamily
+}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+\section{Características e Funcionalidades}
+
+%ns-2 build of 2009 is not actively maintainer (and is not being accepted for journal publications)
+
+O NS-3 é um simulador de rede de eventos discretos, voltado principalmente para pesquisa e uso educacional \cite{Reference12}. O simulador NS-3 é um software livre, licenciado sob a licença GNU GPLv2, e está disponível publicamente para a pesquisa e desenvolvimento.
+
+O simulador NS-3 oferece suporte à pesquisa em redes IP e redes não baseadas em IP. No entanto, a grande maioria de seus usuários se concentra em simulações de redes sem fio que envolvem modelos para, por exemplo, Wi-Fi, WiMAX ou LTE. 
+
+Outra funcionalidade do simulador está na reutilização de aplicações reais. Atualmente, estão sendo testados módulos do NS-3 para a execução de aplicações reais e o uso dos protocolos da Internet implementados no kernel do Linux.
+
+O NS-3 é construído como um sistema de bibliotecas de \textit{software}. Estas bibliotecas são escritas na linguagem orientada a objetos conhecida como C++. Entretanto os \textit{scripts} de simulação não precisam ser escritos em C++, eles podem ser escritos em Pyhton.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+\section{Instalação e Configuração}
+
+Atualmente, existe uma ferramenta para auxiliar na instalação do simulador NS-3 chamada \textit{Bake} \cite{Reference17}. \textit{Bake} é uma ferramenta utilizada na instalação e configuração do NS-3 e seus módulos. A máquina utilizada para simulações do protocolo OSPF usa um sistema operacional baseado no Ubuntu 12.04. Portanto, os pacotes necessários foram instalados através do gerenciador de pacotes do Ubuntu, o \textit{apt-get}. A seguir é apresentada uma série de procedimentos necessários para o uso do simulador NS-3.
+
+Para usar a ferramenta \textit{Bake} é preciso ter a linguagem Python (versão 2.6 ou superior) instalada. Além disso é necessária a ferramenta de controle de versão Mercurial utilizada para fazer o \textit{download} do \textit{Bake}.
+
+\begin{lstlisting}
+sudo apt-get install python python-dev mercurial
+\end{lstlisting}
+
+Em seguida é necessário fazer o \textit{download} da ferramenta \textit{Bake} usando o Mercurial.
+
+\begin{lstlisting}
+hg clone http://code.nsnam.org/bake
+\end{lstlisting}
+
+Isso cria um repositório da ferramenta \textit{Bake} no diretório. Para facilitar o uso da ferramenta \textit{Bake}, é preciso adicionar ao \textit{PATH} o endereço do diretório onde foi criado o repositório do \textit{Bake}.
+
+\begin{lstlisting}
+export BAKE_HOME=`pwd`/bake
+export PATH=$PATH:$BAKE_HOME
+export PYTHONPATH=$PYTHONPATH:$BAKE_HOME
+\end{lstlisting}
+
+Depois disso, é possível utilizar o \textit{Bake} para encontrar os pacotes pendentes. Para descobrir quais pacotes estam faltando e são necessários para a instalação do NS-3 e seus módulos basta executar o segtuinte comando:
+
+\begin{lstlisting}
+bake.py check
+\end{lstlisting}
+
+Com isso é possível visualizar a seguinte lista de pacotes a serem utilizados:
+
+Compilador GNU C++.
+
+\begin{lstlisting}
+sudo apt-get install gcc g++
+\end{lstlisting}
+
+CVS, GIT e Bazaar.
+
+\begin{lstlisting}
+sudo apt-get install cvs git-core bzr
+\end{lstlisting}
+
+Ferramentas Tar, Unzip e Unrar. Além dos compressores de dados 7z e XZ.
+
+\begin{lstlisting}
+sudo apt-get install tar unzip unrar p7zip-full xz-utils
+\end{lstlisting}
+
+Make e cMake.
+
+\begin{lstlisting}
+sudo apt-get install make cmake
+\end{lstlisting}
+
+Patch tool.
+
+\begin{lstlisting}
+sudo apt-get install patch
+\end{lstlisting}
+
+Autoreconf tool.
+
+\begin{lstlisting}
+sudo apt-get install autoconf
+\end{lstlisting}
+
+Também foram instalados alguns pacotes adicionais para visualizar os resultados das simulações e fazer depuração de código.
+
+\begin{lstlisting}
+sudo apt-get install tcpdump gdb valgrind
+\end{lstlisting}
+
+Na implementação do NS-3 existe um conjunto de classes que tem o objetivo de simular o funcionamento de um protocolo de roteamento baseado no OSPF. Como foi visto anteriormente, o protocolo OSPF é dividido em três subprotocolos: os protocolos \textit{Hello}, \textit{Exchange} e \textit{Flooding}. Entretanto, a implementação do simulador NS-3 não simula o funcionamento dos protocolos \textit{Hello} e \textit{Flooding}. É possível observar que somente o funcionamento do protocolo \textit{Exchange} é simulado no NS-3. Sendo assim, o NS-3 não simula o funcionamento completo do protocolo OSPF. Deste modo, o estudo do protocolo OSPF fica muito limitado. Para aprofundar a análise do OSPF é necessário o uso de uma ferramenta adicional. Existe um módulo para o simulador NS-3 chamado \textit{Direct Code Execution} (DCE) \cite{Reference13}. O módulo DCE permite a execução de algumas aplicações reais dentro do NS-3. Umas das aplicações que o DCE fornece suporte é a implementação do protocolo OSPF presente na \textit{Quagga Routing Suite} \cite{Reference14}. Ao utilizar o módulo DCE é possível ampliar o estudo do protocolo OSPF e deixá-lo mais abragente. O DCE precisa dos seguintes pacotes.
+
+\begin{lstlisting}
+sudo apt-get install automake flex bison wget indent pkg-config gawk libssl-dev libsysfs-dev libc6-dbg
+\end{lstlisting}
+
+Neste ponto todos os pacotes necessários para instalar o NS-3 e simular o OSPF estão instalados. Agora é preciso configurar o \textit{Bake} para utilizar os seguintes módulos. O módulo dce-quagga que permite usar o protocolo OSPF, implementado pelo Quagga, nas simulações. Além do módulo dce-linux que permite utilizar a implementação do protocolo IP nativo do Linux.
+
+\begin{lstlisting}
+mkdir dce
+cd dce
+bake.py configure -e dce-linux-1.1 -e dce-quagga-1.1
+\end{lstlisting}
+
+É possível vizualizar quais módulos serão utilizados e os requisitos específicos do sistema para esta configuração, através do seguinte comando.
+
+\begin{lstlisting}
+bake.py show
+\end{lstlisting}
+
+Por último, para baixar, configurar e instalar o simulador NS-3 além dos módulos necessários basta executar o segtuinte comando:
+
+\begin{lstlisting}
+bake.py deploy
+\end{lstlisting}
+
+Após a execução do comando anterior é possível verificar se a instalação do módulo Quagga foi bum sucedida.
+
+\begin{lstlisting}
+cd source/ns-3-dce
+./test.py -s dce-quagga
+\end{lstlisting}
+
+Depois da conclusão da instalação, o simulador NS-3 está disponível. Além disso, o protocolo OSPF, implementado na \textit{Quagga Routing Suite}, está acessível para realizar simulações através do NS-3.
+
+

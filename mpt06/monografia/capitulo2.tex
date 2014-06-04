@@ -1,0 +1,291 @@
+\chapter{O Protocolo OSPF}
+\label{O Protocolo OSPF}
+
+Este capítulo descreve o protocolo de roteamento da Internet \textit{Open Shortest Path First} (OSPF). Antes, uma visão geral do roteamento na Internet apresenta os conceitos de sistemas autônomos e protocolos de roteamento interno e externo. Em seguida, são descritas as tecnologias de roteamento denominadas vetor de distância e estado de enlace. O capítulo termina com uma descrição detalhada do protocolo OSPF.
+
+\lstset{
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  basicstyle=\footnotesize,
+  breaklines=true,                 % sets automatic line breaking
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  columns=flexible,
+  literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {½}{{\oe}}1 {¼}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {¤}{{\EUR}}1 {£}{{\pounds}}1,
+  %basicstyle=\ttfamily
+}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+\section{Roteamento na Internet}
+
+A Internet é organizada em regiões chamadas sistemas autônomos \cite{Reference1}. Cada sistema autônomo consiste em um conjunto de roteadores sob o controle de uma única entidade administrativa. Dentro de um sistema autônomo os roteadores trocam informações através do protocolo de roteamento interno; para trocar informações entre sistemas autônomos é utilizado o protocolo de roteamento externo.
+
+Todos os roteadores que pertencem a um único sistema autônomo devem permanecer conectados entre si \cite{Reference3}. Isto significa que os roteadores devem trocar informações para manter a conectividade do sistema autônomo. Um protocolo de roteamento interno é usado para configurar e manter as tabelas de roteamento dentro dos sistemas autônomos \cite{Reference4}. Segundo Comer \cite{Reference2}, os roteadores pertencentes ao mesmo sistema autônomo se comunicam periodicamente entre si a fim de trocar informações de roteamento. Existem diversos protocolos para uso dentro de um sistema autônomo. Parte do motivo para a diversidade vem das várias topologias e tecnologias em uso. Como resultado, vários protocolos se tornaram populares. Como não existe um padrão único, o termo \textit{Interior Gateway Protocol} (IGP) é utilizado como uma descrição genérica para qualquer protocolo que os roteadores internos usam quando trocam informações de roteamento. Um único roteador pode utilizar dois protocolos de roteamento diferentes simultaneamente, um para comunicação fora de seu sistema autônomo e outro para comunicação dentro de seu sistema autônomo.
+
+De acordo com Huitema \cite{Reference3}, dividir a Internet em vários sistemas autônomos visa reduzir a sobrecarga de roteamento e facilitar a gestão da rede. As tabelas de roteamento de um sistema autônomo devem permitir que pacotes sejam enviados para todos os possíveis destinos da Internet. As tabelas de roteamento são mantidas pelos protocolos de roteamento. Porém as mensagens do protocolo de roteamento interno só transitam dentro do sistema autônomo. Os roteadores devem obter informações sobre redes externas. Para obter informações sobre redes externas é necessário realizar a troca de mensagens através de roteadores externos, que são pontos de entrada em sistemas autônomos adjacentes. A função do protocolo de roteamento externo é realizar a troca de informações de acessibilidade. Esta informação consiste de um conjunto de redes alcançáveis. Quando um roteador externo recebe informações de um outro roteador externo, ele utiliza o protocolo de roteamento interno para distribuir estas informações dentro do sistema autônomo.
+
+Kurose e Ross \cite{Reference4} ressaltam algumas das diferenças entre o protocolo de roteamento interno e externo. Os protocolos de roteamento externo têm como prioridade transmitir políticas específicas de roteamento. Como o roteamento externo é orientado a políticas, não há preferência ou custos associados aos caminhos. Contudo, nos protocolos de roteamento interno as preocupações políticas podem ser ignoradas. Deste modo, os algoritmos de roteamento interno priorizam calcular, de maneira rápida, os melhores caminhos.
+
+Segundo Kurose e Ross \cite{Reference4}, três protocolos de roteamento têm sido usados para roteamento dentro de sistemas autônomos na Internet: o \textit{Routing Information Protocol} (RIP), o \textit{Open Shortest Pah First} (OSPF) e o \textit{Enhanced Interior Gateway Routing Protocol} (EIGRP), proprietário da Cisco. A versão 2 do protocolo de roteamento interno RIP está definida na RFC 2453 \cite{Reference5}. A versão 2 do protocolo de roteamento interno OSPF está definida na RFC 2328 \cite{Reference6}. O protocolo OSPF possui uma nova versão dedicada ao IPv6 que está definida na RFC 5340 \cite{Reference15}. Atualmente o protocolo utilizado para roteamento entre sistemas autônomos é o \textit{Border Gateway Protocol} (BGP). A versão 4 do protocolo de roteamento externo BGP está definida na RFC 4271 \cite{Reference7}.
+
+%A principal função de um protocolo de roteamento externo é permitir que um sistema autônomo se comunique com outro \cite{Reference2}. Para realizar sua função, o protocolo de roteamento externo, anuncia a alcançabilidade da rede para outros sistemas autônomos \cite{Reference2,Reference3}. Atualmente, o único protocolo de roteamento externo utilizado na Internet é o \textit{Border Gateway Protocol (BGP)} \cite{Reference3}. O protocolo BGP 
+
+%Todos os protocolos de roteamento TCP/IP têm maneiras de descobrir, para cada endereço IP, o próximo salto para encaminhar o tráfego de dados. Como a rede muda os protocolos de roteamento reavaliam continuamente o próximo salto utilizado para acessar cada endereço. O processo para encontrar o novo próximo salto após uma mudança na rede é chamado de convergência. Nós preferimos protocolos de roteamento que encontrem o novo próximo salto de maneira rápida, isto é, protocolos com baixo tempo de convergência. Entretanto conforme o tamanho e a complexidade da rede aumentam o tempo de convergência também aumenta. \cite{Reference1}
+
+%Os protocolos de roteamento interno priorizam calcular, de maneira rápida, os melhores caminhos. No entanto, os protocolos de roteamento externo têm como prioridade transmitir políticas específicas de roteamento. Normalmente a diferença entre as duas classes de protocolos de roteamento associa o uso da tecnologia de estado de enlace aos protocolos de roteamento interno. \cite{Reference1}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+\section{Classificação de Protocolos de Roteamento}
+
+Os protocolos de roteamento são tipicamente classificados em dois tipos: vetor de distância e estado de enlace, descritos a seguir.
+
+\subsection{Vetor de Distância}
+
+De acordo com Kurose e Ross \cite{Reference4}, um protocolo do tipo vetor de distância é iterativo, assíncrono e distribuído. É distribuído porque cada roteador recebe informações de um ou mais vizinhos diretamente ligados a ele. Com as informações recebidas, o roteador realiza cálculos e distribui os resultados para seus vizinhos. É iterativo porque esse processo continua até que mais nenhuma informação seja trocada entre vizinhos. É assíncrono porque não requer que todos os roteadores executem determinadas operações em intervalos regulares. A principal estrutura de dados de um protocolo vetor de distância é a tabela de distâncias. Cada roteador mantém uma tabela de distâncias. A tabela de distâncias contém uma linha para cada destino na rede e uma coluna para cada um de seus vizinhos adjacentes. Cada célula da tabela de distâncias indica o custo do caminho até o destino correspondente (linha) através do vizinho adjacente (coluna). Assim, para identificar o caminho de menor custo para um determinado destino basta procurar o resgistro com o menor valor na linha correspondente. Com as informações presentes na tabela de distâncias é possível montar a tabela de roteamento de cada roteador. A tabela de roteamento mostra qual enlace de saída deve ser utilizado para encaminhar os pacotes até um dado destino.
+
+Periodicamente, cada roteador envia uma cópia da sua tabela de roteamento aos seus roteadores adjacentes. Quando um roteador recebe uma mensagem contendo uma tabela de roteamento, ele examina o conjunto de destinos informados e a distância a cada deles. Se na mensagem recebida houver uma mudança em um caminho conhecido ou um destino novo, o roteador deve atualizar sua tabela. O roteador também deve atualizar sua tabela de distâncias caso detecte uma falha em algum de seus enlaces.
+
+Na Internet, o protocolo RIP (roteamento interno) é do tipo vetor de distância e executa o algoritmo de Bellman-Ford \cite{Reference8,Reference9}. De acordo com Kurose e Ross \cite{Reference4}, o BGP (roteamento externo) tem quase a mesma característica do protocolo vetor de distância, porém ele é mais apropriadamente caracterizado como um protocolo vetor de caminho. Isso porque o BGP em um roteador não propaga informação de custo.
+
+\subsection{Estado de Enlace}
+
+Comer \cite{Reference2} descreve que um roteador que executa um protocolo de roteamento de estado de enlace desempenha duas funções. Primeiro, ele testa ativamente o estado de todos os roteadores vizinhos. Segundo, um roteador periodicamente propaga as informações de estado do enlace para todos os outros roteadores. Para testar o estado de um vizinho diretamente conectado, os dois vizinhos trocam mensagens curtas. Estas mensagens servem para verificar se o outro vizinho está ativo e acessível. Para informar todos os outros roteadores, cada roteador difunde periodicamente uma mensagem que relata o estado de cada um dos seus enlaces. Sempre que o estado do enlace muda, o roteador utiliza um algoritmo para recalcular os caminhos. O algoritmo calcula os caminhos mais curtos até todos os destinos de uma única origem.
+
+De acordo com Huitema \cite{Reference3}, os protocolos de estado de enlace são baseados no conceito de manutenção distribuída da topologia da rede. Nestes protocolos todos os nós mantêm uma representação local da topologia da rede, que é atualizada regularmente. A topologia de rede é representada por um grafo, onde cada aresta representa um enlace na rede. Cada aresta é inserida por um roteador que é responsável pelo enlace respectivo. Os enlaces contêm um identificador de interface, o identificador do enlace e informações que descrevem seu estado. Cada roteador pode calcular o caminho mais curto de si mesmo para todos os outros roteadores. Como todos os roteadores têm a mesma representação local da topologia e executam o mesmo algoritmo, as rotas são coerentes e ciclos não podem ocorrer. Quando um roteador detecta a mudaça no estado de um enlace, ele deve atualizar a aresta respectiva em seu grafo da topologia da rede. Além disso, ele deve transmitir esta informação para os demais roteadores. É necessário tomar precauções para que mensagens antigas, que ainda circulam na rede, não alterem o grafo com informações incorretas. Portanto, cada mensagem contém um contador. Deste modo, é possível ignorar mensagens antigas. Quando um roteador recebe uma nova mensagem, ele procura pelas arestas, contidas na mensagem, em seu grafo. Se alguma das arestas ainda não está presente, então adiciona a aresta no grafo e retransmite a mensagem para os demais roteadores. Se o contador na aresta do grafo for menor do que o contador da mensagem, então atualiza grafo com o valor da aresta da mensagem e retransmite a mensagem para os demais roteadores. Se o contador na aresta do grafo for maior, então transmite o valor desta aresta em uma nova mensagem.
+
+%De acordo com Huitema \cite{Reference3}, os protocolos de estado de enlace são baseados no conceito de mapa distribuído. Nos protocolos de estado de enlace todos os nós têm uma cópia do mapa de rede, que é atualizado regularmente. O mapa de rede é mantido em um banco de dados, onde cada registro representa um enlace na rede. Cada registro é inserido por um roteaor que é responsável pelo enlace respectivo. Os registros contêm um identificador de interface, o identificador do enlace e informações que descrevem o estado do enlace. Cada roteador pode calcular o caminho mais curto de si mesmo para todos os outros roteadores. Como todos os roteadores têm o mesmo banco de dados e executam o mesmo algoritmo, as rotas são coerentes e \textit{loops} não pode ocorrer. Quando um roteador detecta a mudaça no estado de um enlace, ele deve atualizar os registros afetados em seu banco de dados. Além disso, ele deve transmitir esta informação para os demais roteadores. É necessário tomar precauções para que mensagens antigas, que ainda estão circulando na rede, não preencham o banco de dados com informações incorretas. Portanto, cada mensagem contém um contador. Deste modo, é possível ignorar mensagens antigas. Quando um roteador recebe uma nova mensagem, ele procura pelos registros, continos na mensagem, em seu banco de dados. Se algum dos registros ainda não está presente, então adiciona o registro no banco de dados e retransmite a mensagem para os demais roteadores. Caso o contador no registro do banco de dados for menor do que o contador da mensagem, então atualiza banco de dados com o valor do registro na mensagem e retransmite a mensagem para os demais roteadores. Caso o contador no registro do banco de dados for maior, então transmite o valor deste registro em uma nova mensagem.
+
+%O enlace pode ser considerado como uma interface do roteador. O estado do enlace é a descrição desta interface. Nos protocolos de estado de enlace os roteadores mantêm um banco de dados com informações da rede. Cada roteador contruibui com uma parte do banco de dados ao distribuir para a rede o estado de seus enlaces. Após todos os roteadores anunciarem os estados de seus enlaces, eles irão dispor do mesmo conjunto de mensagens, que juntas descrevem o mapa da rede. O custo de um caminho na rede é obtido através da soma do custo dos enlaces que compoem o caminho. A partir do mapa da rede, cada roteador executa um cálculo, geralmente o algoritmo Dijkstra, com o objetivo de descobrir o caminho de menor custo para cada endereço destino. \cite{Reference1}
+
+%Os algoritmos de estado de enlace possuem as seguintes propriedades. \cite{Reference2}
+%\begin{itemize}
+%  \item Convergência rápida e sem \textit{loops}
+%  \item Uma vez que os protocolos de estado de enlace têm mais dados à sua disposição, eles podem calcular um caminho com características mais sofisticadas do que simplesmente o caminho de menor custo.
+%  \item Podem existir vários caminhos de mesmo custo para um destino, quando isso ocorre o tráfego é distribuído de maneira equilibrada entre os caminhos.
+%\end{itemize}
+
+Na Internet, o protocolo OSPF, tema do trabalho descrito nesta monografia, é do tipo estado de enlace e executa o algoritmo de Dijkstra \cite{Reference10}.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+\section{OSPF: O Protocolo}
+
+O \textit{Open Shortest Path First} (OSPF) é um protocolo de roteamento interno usado para distribuir informações de roteamento dentro de um sistema autônomo. Além disso, o OSPF pertence à categoria de protocolos de roteamento chamados protocolos de estado de enlace. A seguir são apresentadas algumas vantagens e funcionalidades do protocolo OSPF. Em seguida é descrito o algoritmo de Dijkstra, utilizado pelo OSPF para calcular os caminhos entre os roteadores de um sistema autônomo. A seção termina com a descrição dos subprotocolos que fazem parte do OSPF.
+
+\subsection{Vantagens do OSPF}
+
+De acordo com Moy \cite{Reference1}, após a falha de um enlace, os melhores caminhos para determinados destinos mudam. Leva algum tempo para qualquer protocolo de roteamento para encontrar os novos melhores caminhos. Enquanto isso, os caminhos utilizados, às vezes são de qualidade inferior ou até mesmo inutilizáveis. O processo de encontrar o novo caminho é chamado de convergência. Uma das principais vantagens do protocolo OSPF é fazer a convergência de maneira rápida e sem \textit{loops}. Além disso, o OSPF tem como objetivo diminuir a quantidade da largura de banda utilizada pelas mensagens de controle do protocolo. Outras vantagens do protocolo OSPF são descritas com mais detalhes a seguir.
+
+O protocolo RIP usa a contagem de saltos como métrica de roteamento, e o custo de um caminho pode variar entre 1 e 15. Isso criou dois problemas para os administradores de rede. Primeiro, ele limita os diâmetros das suas redes para 15 saltos. Segundo, os administradores não poderiam considerar fatores como a largura de banda ou atraso dos pacotes. No protocolo OSPF a limitação no diâmetro da rede foi removida. Além disso, é possível utilizar diversas métricas no cálculo do caminho mínimo. Para o protocolo OSPF calcular o caminho mínimo ele precisa conhecer a topologia da rede \cite{Reference3}. Sendo assim, é possível utilizar métricas como caminho de maior vazão ou caminho com maior confiabilidade no cálculo do caminho mínimo.
+
+Sistemas autônomos que executam o protocolo RIP têm dificuldade de distinguir quais informações são confiáveis \cite{Reference1}, sendo que o protocolo RIP não faz distinção entre informações de roteamento interno ou externo. No protocolo OSPF as informações de roteamento externo são rotuladas e são substituídas por qualquer informação de roteamento interno. Segundo Huitema \cite{Reference3}, quando há apenas um roteador de saída para o mundo externo, os protocolos vetor distância e estado de enlace, se comportam de maneira semelhante. Basta anunciar um caminho padrão para esse roteador. Porém quando é preciso escolher entre vários roteadores ou entre vários prestadores de serviços, a solução de anunciar uma rota padrão não é muito eficiente. O protocolo OSPF consegue calcular caminhos para roteadores externos de maneia mais simples e utilizando métricas mais precisas.
+
+O protocolo OSPF oferece a possibilidade de calcular mais de um caminho de custo mínimo para um dado destino \cite{Reference1}. De acordo com Huitema \cite{Reference3}, uma maneira de aumentar a eficiência do protocolo OSPF seria dividir o tráfego entre os diversos caminhos de mesmo custo. Além disso, dividir o tráfego também oferece outras vantagens. Caso o único caminho sendo utilizado se torne indisponível, o tráfego será redirecionado através do caminho alternativo. Isso, possivelmente levará ao congestionamento do novo caminho. Porém, se o tráfego está espalhado por diversos caminhos, apenas uma parte do tráfego terá de ser redirecionada após a falha de um enlace. Dividir o tráfego entre vários caminhos pode ocasionar efeitos prejudiciais, especialmente no caso de conexões TCP. Pacotes encaminhados por caminhos diferentes podem chegar ao destino fora de ordem. Muitas implementações TCP irão desencadear retransmissões desnecessárias. Uma solução para este problema consiste em encaminhar os pacotes relacionados à uma determinada conexão TCP sempre por um único caminho.
+
+\subsection{Características do OSPF}
+
+O protocolo OSPF foi desenvolvido com suporte para: diferenciar \textit{hosts} e roteadores, redes com capacidade de \textit{broadcast}, redes sem capacidade de \textit{broadcast} e dividir redes muito grandes em áreas \cite{Reference3}. Essas funcionalidades são descritas com mais detalhes a seguir.
+
+%Um padrão muito frequente em redes modernas é que hosts estão conectados a uma rede local. Por exemplo, uma rede \textit{Ethernet} conectada à rede da organização por um roteador.
+Os \textit{hosts} em geral estão conectados à Internet através de um roteador. Se for aplicado o modelo do estado de enlace, as relações entre cada \textit{host} e o roteador devem ser inseridas na representção local da topologia, descrita em um grafo. O protocolo OSPF permite uma simplificação, pois todos os hosts da \textit{Ethernet} pertencem a uma única subrede. Sendo assim, é suficiente anunciar um enlace entre o roteador e a rede (neste caso chamada de subrede). O enlace para um roteador vizinho é identificado pelo endereço IP do vizinho. De maneira semelhante, o enlace para uma subrede é identificado pelo endereço da rede ou subrede.
+
+As redes com capacidade de \textit{broadcast} possuem duas características. A primeira é que qualquer roteador pode enviar um pacote para qualquer outro roteador. A segunda é que o pacote é recebido por todos os roteadores. Porém, estas características causam um problema. Dados $N$ roteadores na rede local, existe um total de $N(N-1)/2$ enlaces entre estes roteadores. Então, cada roteador pode anunciar $N-1$ enlaces para os outros roteadores, mais um enlace para os \textit{hosts} da rede. Levando em conta todos os roteadores o total é de $O(N^{2})$ adjacências. A Figura \ref{fig:broadcast} mostra uma rede \textit{broadcast} com cinco roteadores na qual cada roteador estabele adjacência com todos os roteadores.
+
+\vspace{5 mm}
+
+\begin{figure}[hb]
+  \centering
+  \includegraphics[scale=0.6]{rede_broadcast.jpg}
+  \caption{Exemplo de $O(N^{2})$ adjacências entre roteadores.}
+  \label{fig:broadcast}
+\end{figure}
+
+O protocolo OSPF reduz este número para somente $O(N)$ adjacências ao selecionar um dos roteadores como roteador \textit{designado}. Os demais roteadores estabelecem adjacências somente com o roteador designado. A Figura \ref{fig:adjacencias} mostra um rede com cinco roteadores na qual o roteador ``A'' é selecionado como roteador designado e deve manter adjacência com os outros roteadores. Além disso, um roteador reserva é selecionado juntamente com o roteador designado. Caso o roteador designado falhe, o roteador reserva é utilizado para substitui-lo. Portanto os roteadores também devem estabelecer adjacência com o roteador reserva. Neste caso, cada roteador estabelece no máximo três adjacências, uma com o roteador designado, uma com o roteador reserva e uma com os \textit{hosts} da rede; com excessão dos roteadores designado e reserva que devem estabelecer adjacências com todos os roteadores da rede.
+
+\vspace{5 mm}
+
+\begin{figure}[hb]
+  \centering
+  \includegraphics[scale=0.5]{adjacencias_broadcast.jpg}
+  %\caption{Exemplo de $O(N)$ adjacências entre o roteador designado A e os demais roteadores.}
+  \caption{Exemplo de $O(N)$ adjacências entre os roteadores, A é o roteador designado.}
+  \label{fig:adjacencias}
+\end{figure}
+
+O procedimento de utilizar um roteador designado reduz a quantidade de tráfego utilizado pelas mensagens de controle do protocolo \cite{Reference6}. Além disso, diminui o tamanho da representação da topologia que guarda os estados dos enlaces da rede.
+
+O protocolo OSPF aplica o mesmo gerenciamento para redes \textit{broadcast} e redes não \textit{broadcast}. Os roteadores selecionam um roteador designado e um roteador reserva. As informações de roteamento são trocadas apenas com estes dois roteadores. O uso de um roteador designado não altera o roteamento das demais informações. Caminhos virtuais são estabelecidos  entre qualquer par de roteadores. Os pacotes são transmitidos diretamente sobre estes caminhos virtuais. Mas estes caminhos são estabelecidos apenas sob demanda. Os únicos caminhos que serão usados permanentemente pelas atualizações de roteamento são os que ligam os roteadores com o roteador designado e o roteador reserva.
+
+O protocolo OSPF permite que diversas redes adjacentes sejam agrupadas. Cada grupo, em conjunto com os enlaces entre os roteadores pertencentes ao grupo, é chamado de \textit{área}. Cada área executa uma cópia separada do protocolo de roteamento. Isto significa que cada área tem sua própria representação local da topologia, descrita por um grafo. A topologia de uma área é invisível para as demais áreas. Este isolamento permite reduzir o tráfego das mensagens do protocolo de roteamento. Com a introdução de áreas, as representações da topologia nos roteadores deixam de ser idênticas. Cada roteador tem um grafo separado para cada área em que está conectado. Dois roteadores pertencentes à mesma área têm, para essa área, as representações da topologia idênticas. O roteamento em um sistema autônomo ocorre em dois níveis, dependendo da origem e o destino de um pacote pertencerem a diferentes áreas ou à mesma área. No roteamento dentro de uma área, o pacote é encaminhado utilizando apenas informações obtidas dentro da área. Isso impede que os roteadores de uma determinada área influenciem de maneira nociva o roteamento das demais áreas \cite{Reference3}.
+
+\subsection{Algoritmo de Dijkstra}
+
+Como foi visto anteriormente, o protocolo OSPF utiliza um grafo para representar a topologia da rede. A partir deste grafo é possível calcular o caminho mínimo de uma origem para cada destino. Para encontrar estes caminhos o OSPF usa o algoritmo de Dijkstra \cite{Reference16} também chamado de algoritmo do caminho mínimo, descrito a seguir. 
+
+O algoritmo de Dijkstra resolve o problema de encontrar os caminhos mínimos, a partir uma única origem, em um grafo direcionado $G = (V, E)$, com a função peso $w : E \rightarrow R$ que mapeia as arestas para valores de pesos. O peso do caminho $p = v_0, v_1, ..., v_k$ é dado pela soma dos pesos das arestas que constituem o caminho $p$:
+
+\vspace{5 mm}
+$
+w(p) = \displaystyle \sum_{i=1}^{k} w(v_{i-1}, v_i)
+$
+\vspace{5 mm}
+
+O peso do caminho mínimo de $u$ para $v$ é definido por
+
+\vspace{5 mm}
+$
+\delta(u,v) = \left\{\begin{array}{ll}
+min\{w(p) : u \stackrel{p}{\leadsto} v\} & se\ existe\ um\ caminho\ de\ u\ para\ v,\\
+\infty & caso\ contr\acute{a}rio.
+\end{array}\right.
+$
+\vspace{5 mm}
+
+Um caminho mínimo do vértice $u$ ao vértice $v$ é então definido como qualquer caminho $p$ com peso $w(p) = \delta(u,v)$.
+
+Os pesos das arestas são muitas vezes utilizados para representar tempo, custo, perda, ou qualquer outra quantidade que se acumula linearmente ao longo de um caminho e que se pretende minimizar. Entretanto as arestas não devem possuir valores negativos.
+
+O algoritmo de Dijkstra utiliza uma técnica chamada relaxamento. Para cada vértice $v \in V$, existe um atributo $d[v]$, que é um limite superior sobre o peso de um caminho mínimo da origem $s$ para $v$. O atributo $d[v]$ é considerado uma estimativa do caminho mínimo. O atributo $\pi[v]$ é considerado o vértice antecessor ao vértice $v$. A Figura \ref{fig:inicializa} mostra a inicialização da estimativa do caimnho mais curto e seus antecessores.
+
+\begin{figure}[hb]
+\begin{algorithm}{INICIALIZA}[G, s]{}
+\qfor $v\acute{e}rtice\ v \in V[G]$ \\
+\qdo $d[v] \qlet \infty$ \\
+$\pi[v] \qlet NIL$ \qrof\\
+$d[s] \qlet 0$
+\end{algorithm}
+  \caption{Pseudo-código do algoritmo responsável por inicializar os atributos $d$ e $\pi$.}
+  \label{fig:inicializa}
+\end{figure}
+
+
+%\begin{figure}[hb]
+%\begin{lstlisting}[mathescape]
+%INICIALIZA(G, s)
+%1:   para cada vértice v $\in$ V[G]
+%2:      faça d[v] $\leftarrow$ $\infty$
+%3:	    $\pi$[v] $\leftarrow$ NIL
+%4:   d[s] $\leftarrow$ 0
+%\end{lstlisting}
+%  \caption{Pseudo-código do algoritmo responsável por inicializar os atributos $d$ e $\pi$.}
+%  \label{fig:inicializa}
+%\end{figure}
+
+Após a inicialização, $\pi$[v] = NIL para todo $v \in V$, $d[s] = 0$ e $d[v] = \infty$ para todo $v \in V - \{s\}$. A Figura \ref{fig:relaxamento} mostra que o processo de relaxamento de uma aresta $(u, v)$ consiste em testar se é possível melhorar o caminho mínimo para $v$ encontrado até agora, passando por $u$ e, nesse caso, atualizar $d[v]$ e $\pi[v]$. Um passo do relaxamento pode diminuir o valor da estimativa do caminho mínimo $d[v]$ e atualizar o atributo do seu antecessor $\pi[v]$. No algoritmo de Dijkstra cada aresta é relaxada exatamente uma vez. O código a seguir executa um passo do relaxamento à aresta $(u, v)$.
+
+\begin{figure}[hb]
+\begin{algorithm}{RELAXAMENTO}[u, v, w]{}
+\qif $d[v] > d[u] + w(u, v)$ \\
+\qthen $d[v] \qlet d[u] + w(u, v)$ \\
+$\pi[v] \qlet u$ \qfi\\
+\end{algorithm}
+  \caption{Pseudo-código do algoritmo responsável pelo relaxamento da aresta $(u, v)$.}
+  \label{fig:relaxamento}
+\end{figure}
+
+%\begin{figure}[hb]
+%\begin{lstlisting}[mathescape]
+%RELAXAMENTO(u, v, w)
+%1:   se d[v] > d[u] + w(u, v)
+%2:      então d[v] $\leftarrow$ d[u] + w(u, v)
+%3:            $\pi$[v] $\leftarrow$ u
+%\end{lstlisting}
+%  \caption{Pseudo-código do algoritmo responsável pelo relaxamento da aresta $(u, v)$.}
+%  \label{fig:relaxamento}
+%\end{figure}
+ 
+A Figura \ref{fig:execucao} mostra que algoritmo de Dijkstra mantém um conjunto de vértices $S$, no qual o peso de alguns dos caminhos mínimos $s$ já foram determinados. O algoritmo seleciona repetidamente o vértice $u \in V - S$ com a menor estimativa do caminho mínimo, acrescenta $u$ a $S$, e aplica o relaxamento em todas as arestas que tem origem em $u$. É utilizada uma fila de vértices $Q$ com prioridade baseada em seus valores da estimativa do caminho mínimo $d$.
+
+\begin{figure}[hb]
+\begin{algorithm}{DIJKSTRA}[G, w, s]{}
+$INICIALIZA(G, s)$ \\
+$S \qlet \emptyset$ \\
+$Q \qlet V[G]$ \\
+\qwhile $Q \neq \emptyset$ \\
+\qdo $u \qlet EXTRAI-MINIMO(Q)$ \\
+$S \qlet S \cup {u}$ \\
+\qfor $v\acute{e}rtice\ v \in Adj[u]$ \\
+\qexec $RELAXAMENTO(u, v, w)$ \qrof\qend\\
+\end{algorithm}
+  \caption{Pseudo-código do algoritmo de Dijkstra.}
+  \label{fig:dijkstra}
+\end{figure}
+
+%\begin{figure}[hb]
+%\begin{lstlisting}[mathescape]
+%DIJKSTRA(G, w, s)
+%1:   INICIALIZA(G, s)
+%2:   S $\leftarrow$ $\emptyset$
+%3:   Q $\leftarrow$ V[G]
+%4:   enquanto Q $\neq$ $\emptyset$
+%5:      faça u $\leftarrow$ EXTRAI-MINIMO(Q)
+%6:           S $\leftarrow$ S $\cup$ {u}
+%7:           para cada vértice v $\in$ Adj[u]
+%8:              execute RELAXAMENTO(u, v, w)
+%\end{lstlisting}
+%  \caption{Pseudo-código do algoritmo de Dijkstra.}
+%  \label{fig:dijkstra}
+%\end{figure}
+
+A primeira linha do algoritmo executa a inicialização dos valores de $d$ e $\pi$ e a segunda linha inicializa o conjunto $S$ como vazio. A terceira linha inicializa a fila de prioridade $Q$ para conter todos os vértices em $V$, uma vez que $S = \emptyset$. O algoritmo mantém a invariante que $Q = V - S$ no início de cada iteração do laço das linhas 4 até 8. Em cada iteração deste laço, um vértice $u$ é extraído de $Q = V - S$ e adicionado ao conjunto $S$, mantendo assim o invariante. Na primeira iteração, $u = s$. Portanto, o vértice $u$ tem a menor estimativa do caminho mínimo de qualquer vértice em $V - S$. Em seguida, nas linhas 7 e 8 acontece o relaxamento de cada aresta $(u, v)$ com origem em $u$. No relaxamento, a estimativa $d[v]$ e do antecessor $\pi[v]$ são atualizados se o caminho mínimo para $v$ pode ser melhorado, passando por $u$. É possível observar que os vértices nunca são inseridos em $Q$ após a terceira linha e que cada vértice é extraído de $Q$ e adicionado em $S$ exatamente uma vez, de modo que o laço das linhas 4 a 8 itera exatamente $|V|$ vezes.
+
+%A Figura \ref{fig:execucao} mostra uma execução do algoritmo de Dijkstra, na qual a origem $s$ é o vértice mais à esquerda. As estimativas de caminho mínimo são mostradas dentro dos vértices e as arestas sombreadas indicam os valores do antecessor. Vértices pretos estão no conjunto $S$, e vértices brancos estão na da fila $Q = V - S$. (a) Situação, pouco antes da primeira iteração do laço das linhas 4 a 8. O vértice sombreado tem o valor $d$ mínimo e é escolhido como vértice $u$ na linha 5. (b) - (f) mostram as situações depois de cada iteração sucessiva do laço. O vértice sombreado em cada parte é escolhido como vértice $u$ na linha 5 da próxima iteração. Os valores de $d$ e $\pi$ mostrados na parte (f) são os valores finais.
+
+A Figura \ref{fig:execucao} mostra uma execução do algoritmo de Dijkstra, na qual a origem é o vértice $s$, mais à esquerda. Os valores das estimativas de caminho mínimo são mostrados dentro dos vértices. Os vértices pretos estão no conjunto $S$, e os vértices brancos estão na fila de prioridade $Q = V - S$. O vértice sombreado de cada estado será selecionado na fila de prioridade $Q$, pois tem o menor valor da estimativa do caminho mínimo. O estado incial (a) mostra o grafo após a inicialização. No estado (b), o vértice $s$ é selecionado e removido da fila $Q$. Em seguida, é aplicado o relaxamento nas arestas com origem em $s$ e as estimativas de caminho mínimo dos vértices $t$ e $y$ recebem novos valores. No estado (c), o vértice $y$ é selecionado na fila $Q$. Em seguida, é aplicado o relaxamento. Este processo se repete até que a fila $Q$ fique vazia. O estado (f) mostra os valores finais das estimativas de caminho mínimo e as arestas sombreadas indicam os vértices antecessores.
+
+\begin{figure}[hb]
+  \centering
+  \includegraphics[scale=1]{fig24_6.jpg}
+  \caption{Um exemplo de execução do algoritmo de Dijkstra \cite{Reference16}.}
+  \label{fig:execucao}
+\end{figure}
+
+%Dijkstra's algorithm [75] appeared in 1959, but it contained no mention of a priority queue.
+
+%Dijkstra propos um algoritmo que ele chamou de \textit{Shortest Path First (SPF)}. O algoritmo \textit{SPF} calcula o caminho mais curto entre um roteador de origem e os outros roteadores na rede. Ele separa os roteadores em dois conjuntos: o conjunto de roteadores avaliados, E, para os quais são conhecidos os caminhos mais curtos, e o conjunto de roteadores restantes, R. O algoritmo também mantém uma lista ordenada de caminhos, O. O algoritmo funciona da seguinte maneira. Primeiro, é preciso inicializar o conjunto E com apenas o roteador de origem S e o conjunto R contendo todos os outros roteadores. Além disso, inicializar a lista de caminhos O para conter os enlaces que possuem origem no roteador S. Cada um desses caminhos tem um custo igual a métrica do enlace correspondente. Para finalizar a etapa inicial do algoritmo, é necessário ordenar a lista O por métricas crescentes. Na segunda etapa, se a lista O está vazia, ou se o primeiro caminho em O tem uma custo de infinito, então marcar todos os roteadores restantes em R como inacessíveis. Caso isso aconteça o algoritmo encerra. Caso contrário remover o caminho mais curto P da lista O. Sendo V o último roteador em P, se V já está no conjunto E, então voltar para a segunda etapa. Caso contrário, mover o roteador V do conjunto R para o conjunto E. Em seguida, construir um conjunto de novos caminhos candidatos pela concatenação do caminho P e cada um dos enlaces com origem em V. O custo desses caminhos é a soma de P e da métrica do enlace anexado a P. Além disso, inserir os novos caminhos na lista ordenada O e voltar para a segunda etapa.
+
+\subsection{Os Protocolos Internos ao OSPF}
+
+O protocolo OSPF é composto de três subprotocolos: \textit{Hello}, \textit{Exchange} e \textit{Flooding} \cite{Reference3}, são descritos a seguir. A descrição é baseada em \cite{Reference1,Reference3}.
+
+\subsubsection{O Protocolo Hello}
+
+%O protocolo \textit{Hello} é responsável por estabelecer e manter relações de vizinhança. Ele também garante que a comunicação entre vizinhos seja bidirecional. Os pacotes \textit{Hello} são transmitidos periodicamente em todas as interfaces do roteador. Em redes \textit{broadcast}, o protocolo \textit{Hello} também tem a função de eleger um roteador designado para a rede. O protocolo \textit{Hello} funciona de forma diferente em redes \textit{broadcast} e redes ponto-a-ponto. Em redes \textit{broadcast}, cada roteador envia pacotes \textit{Hello} periodicamente aos demais roteadores. Isto permite que vizinhos sejam descobertos de maneira dinâmica. Os pacotes \textit{Hello} contêm a lista de roteadores que enviaram pacotes \textit{Hello} recentemente. Em redes ponto-a-ponto redes, um roteador envia pacotes \textit{Hello} para todos os vizinhos com os quais podem se comunicar diretamente. Estes vizinhos podem ser descobertos dinamicamente através de um protocolo, tal como \textit{ARP} Reverso \cite{Reference11}.
+
+O protocolo \textit{Hello} é utilizado para dois propósitos. Verificar o estado dos enlaces e eleger um roteador designado e um roteador reserva. Para isso, pacotes denominados \textit{hello} são enviados pelos roteadores a cada \textit{hello-interval} segundos. Os pacotes incluem o endereço do roteador designado, ou 0 se ainda não houver roteador designado, e o endereço do roteador reserva ou 0. Além disso, também incluem uma lista de todos os vizinhos dos quais um pacote \textit{hello} foi recebido nos últimos \textit{dead-interval} segundos. Ambos os intervalos \textit{hello-interval} e \textit{dead-interval} são parâmetros dos enlaces que são configurados pelo administrador da rede. A ligação entre dois roteadores é dita \textit{operacional} se os pacotes podem fluir em ambas as direções. A conectividade bidirecional é identificada pela lista de roteadores conhecidos por um roteador vizinho. Se o identificador do roteador local não estiver listado nos pacotes \textit{hello} enviados pelos roteadores vizinhos, isso significa que eles ainda não receberam os pacotes \textit{hello} enviados pelo roteador local. O enlace é então declarado de \textit{sentido único} e não pode ser usado para o roteamento. Se o roteador local está listado nos pacotes \textit{hello} dos roteadores vizinhos, então o enlace é \textit{bidirecional}. 
+
+Depois de estabelecer uma conexão bidirecional, os roteadores começam a determinar suas adjacências. Primeiro é preciso selecionar o roteador designado e o roteador reserva. O processo de eleição usa o campo de \textit{prioridade} presente nos pacotes \textit{hello}. Cada roteador é configurado com uma prioridade, que varia entre 0 e 255. Como resultado da eleição é selecionado o roteador com a maior prioridade. Se o roteador de maior prioridade fica inativo, outro será selecionado; esta seleção permanecerá mesmo depois do roteador de maior prioridade se tornar ativo novamente. Roteadores com prioridade zero, nunca são selecionados como roteador designado.
+
+Imediatamente após os enlaces se tornarem ativos, o roteador permanece em um estado de \textit{espera} durante um intervalo igual ao \textit{dead-interval}. Durante este intervalo, o roteador irá transmitir pacotes de \textit{hello}, mas não vai se candidatar a roteador designado ou reserva. Ele irá receber pacotes \textit{hello} e inicializar os identificadores dos roteadores designado e reserva da seguinte forma. Para cada vizinho, o roteador guarda a prioridade do vizinho e o estado do enlace. Além disso, ele guarda se o vizinho se candidata como roteador designado ou reserva. Se um ou vários vizinhos se candidatam como roteador reserva, aquele com maior prioridade é selecionado. Em caso de empate, o roteador com o maior identificador é selecionado. Se nenhum vizinho se candidata a roteador reserva, o vizinho com a maior prioridade é selecionado ou, em caso de empate, aquele com o maior ID. Se um ou vários vizinhos se candidatam a roteador designado, aquele com a maior prioridade é selecionado como roteador designado. Em caso de empate, o roteador com o maior identificador é selecionado. Se nenhum vizinho se candidata a roteador designado, o reserva é \textit{promovido}. Um roteador não pode se candidatar a ambos roteador designado e reserva. Assim, se for preciso promover o roteador reserva para roteador designado, também será necessário eleger um novo roteador reserva.
+
+\subsubsection{O Protocolo Exchange}
+
+Quando dois roteadores estabelecem conectividade bidirecional, eles devem sincronizar sua representação local da topologia da rede. Em redes \textit{broadcast}, isso ocorre entre os roteadores e o roteador designado ou o roteador reserva. A sincronização inicial é realizada através do protocolo \textit{Exchange}. O protocolo \textit{Flooding}, em seguida, é responsável por manter as representações da topologia da rede sincronizadas. O protocolo \textit{Exchange} é assimétrico. A primeira etapa do protocolo tem a função de selecionar um mestre e um escravo. Depois de concordar sobre esses papéis, os dois roteadores trocam a descrição de seus grafos, que representam a topologia da rede. Cada um irá listar os enlaces que serão requisitados em seguida. 
+
+No pacote utilizado pelo protocolo \textit{Exchange} existem três \textit{bits} utilizados para controle: I (Inicializa), M (Mais) e MS (Mestre-Escravo). O roteador que pretende iniciar o procedimento de sincronização envia um pacote vazio, com os \textit{bits} I, M e MS definidos como 1 e o contador definido para um valor arbitrário, não visto anteriormente pelo outro roteador. O outro roteador concorda em fazer a função de \textit{escravo} durante a sincronização enviando um pacote igual ao que foi recebido, porém com o \textit{bit} MS definido como 0. Uma vez que os papéis foram distribuídos, o mestre irá enviar a descrição dos enlaces presentes na representação local da topologia em uma sequência de pacotes, nos quais o \textit{bit} I será definido como 0, o \textit{bit} MS definido como 1 e o \textit{bit} M definido como 1, exceto para o último pacote. Os pacotes têm sequência numerada e devem ser enviados um de cada vez. Depois de cada pacote ser enviado, o escravo irá enviar uma confirmação de que recebeu o pacote. Os pacotes de confirmação contêm a descrição dos enlaces presentes na representação local da topologia do roteador escravo. Se a confirmação não for recebida dentro do intervalo de retransmissão, o mestre retransmite o seu pacote. Quando o escravo recebe um pacote com o valor do contador igual ao valor do pacote anterior, deve retransmitir o último pacote de confirmação. Quando o mestre transmite sua última descrição dos enlaces, ele vai definir o \textit{bit} M como 0. Se o escravo ainda tem descrições de enlaces para transmitir, ele irá enviar uma confirmação com o \textit{bit} M definido como 1. O mestre continuará enviando pacotes de descrição vazios com o \textit{bit} M definido como 0. Como consequência, continuará aceitando confirmações, até que eventualmente receba uma confirmação com o \textit{bit} M definido como 0. Nesse ponto a primeira etapa da sincronização está completa.
+
+Durante a sincronização, o mestre e o escravo processam as descrições dos estados de enlace que se encontram nos pacotes e nas confirmações. Primeiro verificam se não há um enlace com a mesma descrição na representção local da topologia. Além disso verificam, através do valor de um contador, se esse enlace não está desatualizado. Se alguma das condições for satisfeita, os roteadores devem colocar a descrição do enlace em uma lista de \textit{enlaces pendentes}. Na segunda etapa da sincronização, os roteadores irão solicitar informações dos enlaces pendentes. Após receber uma solicitação, cada roteador deve enviar um ou mais pacotes contendo um conjunto de atualizações de estado de enlace. A transmisão destes pacotes utiliza exatamente os mesmos procedimentos do protocolo \textit{Flooding} descrito a seguir.
+
+% indicado o uso do horario do dia como valor arbitrário.
+%De fato, vários eventos podem perturbar essa troca, por exemplo, a perda de pacotes ou uma \textit{colisão} se ambos os roteadores tentar inicializar o processo simultaneamente. A proteção contra perdas de pacotes é através de tempos de espera: na ausência de confirmação, o pacote inicial é repetido a cada segundo \textit{retransmitir-interval}. a resolução de colisão é através de um algoritmo simples de desempate: se um roteador está à espera de um reconhecimento e recebe um pedido que vai comparar o endereço de envio para o seu próprio. Se o endereço de envio é maior do que a sua própria, ele irá aceitar a rola escravo e confirmar o pacote, caso contrário, ele irá simplesmente ignorar o pacote de entrada, como o seu próprio pacote será reconhecido mais tarde pelo roteador remoto.
+
+\subsubsection{O Protocolo Flooding}
+
+%Quando um enlace muda de estado, o roteador responsável por esse enlace vai transmitir o novo estado do enlace. O protocolo \textit{Flooding} é usado para transmitir as atualizações do roteamento, mas também é usado para sincronizar a idade dos registros nos bancos de dados.
+
+Quando um enlace muda de estado, o roteador responsável por esse enlace vai transmitir uma mensagem com a nova versão do estado do enlace. Para cada enlace, existe um contador que é comparado com o valor na representação local da topologia. Se o valor do contador indicar que o enlace presente na mensagem recebida é novo, então a mensagem recebida deve ser retransmitida em todas as interfaces. Em qualquer caso, o roteador que enviou a mensagem deve aguardar uma confirmação de recebimento. Para tornar o protocolo \textit{Flooding} confiável, o roteador deve retransmitir suas atualizações em intervalos regulares até que receba a confirmação. Cada pacote de confirmação pode ser responsável por informar o recebimento de uma ou mais mensagens, com informações de estado de enlace. Portanto é normal atrasar a sua transmissão, a fim de agrupar a confirmação, de recebimento do estado de vários enlaces, em um único pacote. Este atraso deve ser curto, a fim de evitar retransmições desnecessárias. 
+

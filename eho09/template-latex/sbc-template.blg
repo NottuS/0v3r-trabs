@@ -1,0 +1,84 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: sbc-template.aux
+The style file: IEEEtran.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: sbc-template.bib
+I was expecting a `,' or a `}'---line 285 of file sbc-template.bib
+ : 
+ : year = {2010},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 395 of file sbc-template.bib
+ : 
+ : year = {2009},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+-- IEEEtran.bst version 1.12 (2007/01/11) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty booktitle in construcaoMapas
+Warning--empty booktitle in cnn
+Warning--empty booktitle in omc
+Warning--empty booktitle in aoa
+Warning--empty booktitle in tdoa
+Warning--empty booktitle in wifiRadar
+Warning--empty booktitle in dlite
+Warning--empty year in dlite
+Warning--empty booktitle in voronoi
+Warning--empty booktitle in androidRobot
+Warning--empty year in androidRobot
+Warning--empty booktitle in aestrela
+Warning--empty year in aestrela
+Warning--empty booktitle in slam
+Warning--empty booktitle in wsnsLinear
+Warning--empty booktitle in rss1
+Warning--empty booktitle in planejamentoCaminhos
+Warning--empty year in planejamentoCaminhos
+Warning--empty booktitle in planejamentoTrajetorias
+Warning--empty booktitle in tecnicasNavegacao
+Warning--empty year in tecnicasNavegacao
+Warning--empty booktitle in googleCar
+
+Done.
+You've used 27 entries,
+            4024 wiz_defined-function locations,
+            940 strings with 11765 characters,
+and the built_in function-call counts, 10981 in all, are:
+= -- 701
+> -- 229
+< -- 0
++ -- 109
+- -- 53
+* -- 480
+:= -- 1858
+add.period$ -- 68
+call.type$ -- 27
+change.case$ -- 29
+chr.to.int$ -- 0
+cite$ -- 49
+duplicate$ -- 959
+empty$ -- 1266
+format.name$ -- 66
+if$ -- 2390
+int.to.chr$ -- 0
+int.to.str$ -- 27
+missing$ -- 186
+newline$ -- 136
+num.names$ -- 25
+pop$ -- 657
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 842
+stack$ -- 0
+substring$ -- 27
+swap$ -- 439
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 27
+warning$ -- 22
+while$ -- 24
+width$ -- 29
+write$ -- 248
+(There were 2 error messages)

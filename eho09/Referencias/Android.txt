@@ -1,0 +1,2 @@
+-Android OS does not guarantee RTOS (Real-Time Operating System)
+

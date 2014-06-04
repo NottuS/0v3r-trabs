@@ -1,0 +1,53 @@
+\chapter{Implementação}	 
+\label{implementacao}
+\begin{comment}
+  Os experimentos serão realizados no departamento de informática da Universidade Federal do Paraná, 
+  devido a grande quantidade de Access Points disponíveis e a disponibilidade da planta do departamento. 
+  A implementação do sistema de navegação será dividida em duas etapas:
+  \subsection{Etapa 1}
+  
+  Uma aplicação escrita em C será utilizada para criação do mapa topológico do departamento. Essa aplicação recebe como entrada:
+  \begin{itemize}
+    \item Uma imagem contendo o mapa.
+    \item Tamanho da célula.
+  \end{itemize}
+ 
+  A imagem será dividida em células. Em todas as células, serão aplicadas a função de transformação de Hough \cite{openCV}, da biblioteca OpenCV para detecção de linhas. 
+  Esta aplicação devolve uma matriz, onde célula possui uma valor que indica o grau de incerteza de haver um obstáculo: 0 (sem obstáculo) ou 4(com obstaculo). 
+  Essa matriz será embarcada na aplicação Android da etapa 2.
+  
+  O tamanho ideal da célula, será definido via experimentos. Em \cite{cnn} o tamanho da célula tem o tamanho do robô. O artigo \cite{dlite} sugere que o tamanho da célula deve 
+  comportar todo o obstáculo, lembrando que a quantidade de células pode influênciar no tempo de processamento do planejamento da trajetória do robô \cite{voronoi}.
+  
+    Uma segunda aplicação Android, será utilizada para coletar amostras, como descrito no método empírico do artigo\cite{wifiRadar}. As tabelas resultantes dessa aplicaçao, também serão 
+  embarcada na aplicação Android da etapa 2. As linha da tabela conterão as coordenadas, RSS e nome do AP da amostra daquele local. Vale ressaltar, que número de amostras tem grande impácto 
+  na precisão do calculo da localização \cite{wifiRadar}.
+  
+  \subsection{Etapa 2}
+	A aplicação Android dessa etapa, possui 2 componentes principais: uma \textit{Acitivity} \cite{activity} que fará a interação com o usuário, 
+	e um Service \cite{service} que fará o processo de navegação do robô. O robô e o tablet, se comunicarão via \textit{bluetooth},
+	ou seja, para o funcionamento do sistema, o tablet deve estar pareado com o robô.
+
+	A \textit{Acitivity} irá obter a posição do clique em relação à imagem do mapa, e obter as coordenadas da posição de destino
+	 do robô e repassar para o Service. O usuário deve clicar no botão conectar para que a aplicação possa iniciar uma conexão \textit{bluetooth} com o robô.
+	Haverá uma imagem com o mapa do ambiente, o usuário deve apontar o local no qual o robô deve atingir. E então clicar no botão iniciar.
+	
+	Um Service será iniciado, e executará os seguintes passos:
+	\begin{itemize}
+	  \item O mapa topológico será carregado na memória.
+	  \item A posição do robô será calculada, medindo o RSS\cite{wifiRss} dos APs e aplicando o método descrito em \cite{wifiRadar}.
+	  \item Em seguida será aplicado o algoritmo A*\cite{aestrela} na matriz gerada na etapa 1. A função h (heurística) levará em consideração o valor da 
+	célula(celulas com valor inferior a 3 serão descartados do caminho) e a sua distância euclidiana, em relação a célula destino. 
+	  \item Com o trajeto definido, um comando(vetor de bytes indicando distância e direção) será enviado ao robô.
+	  \item O Service aguarda o recebimento dos dados do robô.
+	  \item Se nenhum obstáculo é encontrado um novo comando é enviado, e processo se repete, até que o robô atinja seu objetivo.
+	  \item Se o robô encontrar um novo obstáculo, a célula onde este foi encontrado é incrementado em 1. 
+	  Então o processo de descoberta de trajeto é iniciado novamente.
+	  \item Se por acaso o robô verificar está célula de novo e não houver obstáculo, o valor da célula é decrementado em 1.
+	  \item Se o robô ficar preso, então é adotado um procedimento descrito em \cite{dlite},
+	  muros virtuais são criado, para que o robô evite este caminho em uma segunda passagem.
+	\end{itemize}
+	
+	 Aplicação Arduino faz a interface com os motores, o sonar e o adaptator \textit{bluetooth}.
+	 Basicamente, ela executa o comando recebido, e então envia os dados coletados pelo sonar e aguarda um novo comando.
+\end{comment}

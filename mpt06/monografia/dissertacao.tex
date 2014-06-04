@@ -1,0 +1,122 @@
+\documentclass[12pt,a4paper]{ufpr}
+
+% \usepackage[portuges,brazil]{babel}
+% \usepackage[portuguese,brazil]{babel}
+
+\usepackage[brazil]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{amssymb,amsmath}
+\usepackage{epsfig}
+\usepackage{multirow}
+
+\usepackage{lmodern} % load a font with all the characters
+
+%\usepackage[portugues,ruled,lined,titlenotnumbered,figure]{algorithm2e}
+%\usepackage{algorithmic}
+\usepackage[named]{algo}
+
+
+%\usepackage{isolatin1}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{ps-macros}
+% \usepackage{psfig}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{mybckg}{rgb}{0.95,0.95,0.95}
+
+\setcounter{secnumdepth}{2}    % n - numero de niveis de subsubsection numeradas
+\setcounter{tocdepth}{1}       % coloca ate o nivel n no sumario
+
+\title{Simulação do Protocolo de Roteamento OSPF com NS-3}
+\author{Mozart Pistori Tomazetti}
+\advisortitle{Orientador} % ou Orientador
+\advisorname{Prof. Dr. Elias P. Duarte Jr.}
+\advisorplace{Departamento de Informática, UFPR}  % departamento, instituicao
+\city{Curitiba}
+\year{2013}
+
+\banca        % nao insira o nome do orientador, ja eh feito automaticamente
+{Prof. Dr. Nome exmplo}{Instituto exemplo, UE}
+{Prof. Dr. Nome exmplo}{Departamento de Informática, UFPR}
+{}{} % se nao houver deixe em branco {}{}
+{}{}    % se houver um quarto membro na banca, inserir nome e instituicao
+
+\defesa{21 de dezembro de 2013} % dia em que foi realizada a defesa da dissertacao
+
+
+\begin{document}
+
+%\makecapaproposta             % cria capa para proposta%
+\makecapadissertacao           % cria capa para dissertacao de mestrado %
+%\makerosto                     % cria folha de rosto para versao final da UFPR %
+%\maketermo                     % cria folha com o termo de aprovacao da dissertacao%
+
+%\singlespacing           % espacamento 1 - capa UFPR%
+%\onehalfspacing          % espacamento 1/2 %
+\doublespacing            % espacamento 2 - UFPR %
+
+\pagestyle{headings}
+\pagenumbering{roman}
+
+%\chapter*{Agradecimentos}
+%\input{agradecimentos.tex}          % possiu somente o texto
+
+\tableofcontents
+
+%\listoffigures         % se houver mais do que 3 figuras
+%\addcontentsline{toc}{chapter}{\MakeUppercase{Lista de Figuras}}
+%\newpage
+
+%\listoftables        % se houver mais do que 3 tabelas
+%\addcontentsline{toc}{chapter}{\MakeUppercase{Lista de Tabelas}}
+%\newpage
+
+\chapter*{Resumo}
+\addcontentsline{toc}{chapter}{\MakeUppercase{Resumo}}
+\input{resumo.tex}           % somente o texto
+\newpage
+
+%\chapter*{Abstract}
+%\addcontentsline{toc}{chapter}{\MakeUppercase{Abstract}}
+%\input{abstract.tex}        % somente o texto
+%\newpage
+
+
+\pagenumbering{arabic}
+
+\input{capitulo1.tex}
+\input{capitulo2.tex}
+\input{capitulo3.tex}
+\input{capitulo4.tex}
+%\input{anexo1.tex}     % se houver anexo
+
+\input{conclusao.tex}
+
+\bibliographystyle{brazil}
+\bibliography{bibliografia}
+% utilize macros (3 primeiras letras do mes em ingles, minusculas) no seu
+% .bib para atribuir o nome do mes em portugues nas referencia,
+% se o style for brazil, outros estilos tambem aceitam estas macros
+% Ex:
+%
+% @InProceedings{teste,
+%   author =       {Luciano}
+%   year =         {2013}
+%   month =        {}#sep;
+% }
+%
+\addcontentsline{toc}{chapter}{\MakeUppercase{Refer{\^e}ncias Bibliogr{\'a}ficas}}
+
+%\singlespacing
+%\makecapadissertacao
+
+\end{document}

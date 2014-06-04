@@ -1,0 +1,15 @@
+\frametitle {Exemplo}\begin {itemize}
+ \item Transferência sem nenhuma falha na rede %
+\end{itemize}
+\begin{lstlisting}
+Intervalo       Total           Taxa de Transferência
+0.0-10.0 seg    5.88 MBytes     4.84 Mbits/seg
+\end{lstlisting}
+
+\begin{itemize}
+ \item Transferência com a falha na rede %
+\end{itemize}
+\begin{lstlisting}
+Intervalo       Total           Taxa de Transferência
+0.0-10.0 seg    5.62 MBytes     4.70 Mbits/seg
+\end{lstlisting}
