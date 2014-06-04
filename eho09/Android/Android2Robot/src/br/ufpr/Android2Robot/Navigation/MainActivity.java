@@ -101,10 +101,10 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(wifiReceiver == null)
+		/*if(wifiReceiver == null)
 			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
 		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
-		Log.i("Main Act A2R", "OK2");
+		Log.i("Main Act A2R", "OK2");*/
 		/*if (receiver == null)
             receiver = wi.initializeWiFiListener(mHandler);
 		registerReceiver(receiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
     		}
 		});
 		
-		saveTbButton.setOnClickListener(new View.OnClickListener() {
+		/*saveTbButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			Thread t = new Thread(new Runnable() {
 					@Override
@@ -273,7 +273,7 @@ public class MainActivity extends Activity {
 				});
 				t.start();
     		}
-		});
+		});*/
 	}
 	
 	@Override
@@ -285,6 +285,8 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		if(wifiReceiver == null && wi != null)
+			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
 		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
 		Log.d("A2R MainActivity", "onResume()");
 	}
@@ -300,7 +302,8 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d("A2R MainActivity", "onPause()");
-		unregisterReceiver(wifiReceiver);
+		if(wifiReceiver != null)
+			unregisterReceiver(wifiReceiver);
 	}
 	
 	
