@@ -42,7 +42,6 @@ public class WifiInterface {
 		this.wifiInfo = wifiInfo;
 	}
 	
-	
 	public BroadcastReceiver initializeWiFiListener(final Handler mHandler){
 		BroadcastReceiver wifiReceiver = new BroadcastReceiver(){
 			@Override

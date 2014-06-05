@@ -1,6 +1,7 @@
 package br.ufpr.Android2Robot.Navigation;
 
 import java.io.IOException;
+
 import br.ufpr.Android2Robot.R;
 import br.ufpr.Android2Robot.Map.Map;
 import br.ufpr.Android2Robot.Map.Map.Local;
@@ -27,8 +28,8 @@ public class MainActivity extends Activity {
 	Button navButton;
 	Button controlButton;
 	Button discButton;
-	Button test;
-	Button finishTest;
+	Button scanButton;
+	Button getPosButton;
 	Button createTables;
 	Button loadTables;
 	Button saveTbButton;
@@ -46,8 +47,8 @@ public class MainActivity extends Activity {
 				switch (msg.what) {
 				case 0:
 					tv.setText("Done");
-					test.setClickable(true);
-					finishTest.setClickable(true);
+					scanButton.setClickable(true);
+					getPosButton.setClickable(true);
 					break;
 				case 1:
 					try {
@@ -81,14 +82,15 @@ public class MainActivity extends Activity {
 	}
 	
 	public void init(){
-		mapButton = (Button) findViewById(R.id.MapButton);
+		/*mapButton = (Button) findViewById(R.id.MapButton);
 		navButton = (Button) findViewById(R.id.NavigationButton);
 		controlButton = (Button) findViewById(R.id.ControlButton);
 		discButton = (Button) findViewById(R.id.DiscButton);
-		test = (Button) findViewById(R.id.test);
-		finishTest = (Button) findViewById(R.id.finishTest);
 		loadTables = (Button) findViewById(R.id.LT);
-		createTables = (Button) findViewById(R.id.CT);
+		createTables = (Button) findViewById(R.id.CT);*/
+		scanButton = (Button) findViewById(R.id.scan);
+		getPosButton = (Button) findViewById(R.id.getPosition);
+
 		saveTbButton = (Button) findViewById(R.id.saveTable);
 		wi = new WifiInterface(getApplicationContext());
 		tv = (TextView) findViewById(R.id.text);
@@ -101,10 +103,12 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(wifiReceiver == null)
+		if(wifiReceiver == null && wi.getWifiManager().isWifiEnabled()){
 			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
-		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
-		Log.i("Main Act A2R", "OK2");
+			registerReceiver(wifiReceiver, 
+					new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
+		}
+		Log.i("Main Act A2R", "OK2 " + wi.getWifiManager().isWifiEnabled());
 		/*if (receiver == null)
             receiver = wi.initializeWiFiListener(mHandler);
 		registerReceiver(receiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
@@ -113,7 +117,7 @@ public class MainActivity extends Activity {
         WifiTest wt = new WifiTest();
 		wt.start();*/
 		//tv.setText( tv.getText() + result.SSID + " : " + result.level + "\n"  );
-		mapButton.setOnClickListener(new View.OnClickListener() {
+		/*mapButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			
     		}
@@ -141,7 +145,7 @@ public class MainActivity extends Activity {
 				} catch (Exception e) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 					builder.setMessage("No X or Y typed");
-				}*/
+				}
 
     		}
 		});
@@ -163,7 +167,7 @@ public class MainActivity extends Activity {
 				} catch (Exception e) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 					builder.setMessage("No X or Y typed");
-				}*/
+				}
     		}
 		});
 		
@@ -172,9 +176,9 @@ public class MainActivity extends Activity {
     			Intent i = new Intent(getApplicationContext(), ControlActivity.class);
     			startActivity(i);
     		}
-		});
+		});*/
 		
-		/*saveTbButton.setOnClickListener(new View.OnClickListener() {
+		saveTbButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			Thread t = new Thread(new Runnable() {
 					@Override
@@ -190,12 +194,12 @@ public class MainActivity extends Activity {
     		}
 		});
 		
-		test.setOnClickListener(new View.OnClickListener() {
+		scanButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
-    			test.setClickable(false);
+    			scanButton.setClickable(false);
     			tv.setText("checking position");
     			Log.i("Main Act A2R", "OK3");
-    			finishTest.setClickable(false);
+    			getPosButton.setClickable(false);
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -216,7 +220,7 @@ public class MainActivity extends Activity {
     		}
 		});
 		
-		finishTest.setOnClickListener(new View.OnClickListener() {
+		getPosButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			tv.setText("checking position");
     			Log.i("Main Act A2R", "OK3");
@@ -239,7 +243,7 @@ public class MainActivity extends Activity {
     		}
 		});
 		
-		createTables.setOnClickListener(new View.OnClickListener() {
+		/*createTables.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			tv.setText("creating Tables");
     			Thread t = new Thread(new Runnable() {
@@ -285,9 +289,9 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		/*if(wifiReceiver == null && wi != null)
+		if(wifiReceiver == null && wi != null && wi.getWifiManager().isWifiEnabled())
 			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
-		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));*/
+		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
 		Log.d("A2R MainActivity", "onResume()");
 	}
 	@Override
@@ -304,9 +308,5 @@ public class MainActivity extends Activity {
 		if(wifiReceiver != null)
 			unregisterReceiver(wifiReceiver);
 		Log.d("A2R MainActivity", "onPause()");
-
 	}
-	
-	
-	
 }

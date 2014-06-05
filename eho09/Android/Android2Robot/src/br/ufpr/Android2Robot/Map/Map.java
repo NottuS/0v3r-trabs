@@ -160,7 +160,13 @@ public class Map {
 		     i++;
 		} 
 		initAPs();
-		initTable();
+		try {
+			initTable();
+		} catch (Exception e) {
+			// TODO: handle exception
+			Log.v("MAP ", "No tables");
+		}
+
 		wifiHandler();
 		buffreader.close();
 	}

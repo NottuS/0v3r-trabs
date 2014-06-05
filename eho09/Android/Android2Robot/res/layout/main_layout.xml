@@ -1,12 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/TableLayout1"
+    android:id="@+id/ScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity" >
+	<TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:stretchColumns="1"
+        >
+		    <!--<Button
+        android:id="@+id/LT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LT" />
+		    
+		<Button
+        android:id="@+id/CT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />-->
 
+    <Button
+        android:id="@+id/getPosition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get Position" />
+
+
+
+    <Button
+        android:id="@+id/saveTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Table" />
+
+    <Button
+        android:id="@+id/scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scan" />
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/X"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="X" />
+        <Button 
+            android:id="@+id/addX"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="+" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/Y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="Y" >
+
+            <requestFocus />
+        </EditText>
+		<Button 
+            android:id="@+id/addY"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="+" />
+    </TableRow>
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nothing" />
+
+    </TableLayout>
+    <!--
     <Button
         android:id="@+id/ControlButton"
         android:layout_width="wrap_content"
@@ -30,89 +115,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Map" />
+    -->
 
-    <Button
-        android:id="@+id/saveTable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Table" />
 
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:id="@+id/RelativeLayout1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="Nothing" />
-
-            <Button
-                android:id="@+id/test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/text"
-                android:text="Test" />
-
-            <EditText
-                android:id="@+id/X"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/finishTest"
-                android:ems="10"
-                android:inputType="number"
-                android:text="X" />
-
-            <EditText
-                android:id="@+id/Y"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/X"
-                android:ems="10"
-                android:inputType="number"
-                android:text="Y" >
-
-                <requestFocus />
-            </EditText>
-
-            <Button
-                android:id="@+id/LT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/finishTest"
-                android:layout_alignParentRight="true"
-                android:text="LT" />
-
-            <Button
-                android:id="@+id/finishTest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/test"
-                android:layout_alignBottom="@+id/test"
-                android:layout_toRightOf="@+id/test"
-                android:text="Finish Test" />
-
-            <Button
-                android:id="@+id/CT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/X"
-                android:layout_toRightOf="@+id/finishTest"
-                android:text="CT" />
-
-        </RelativeLayout>
-    </ScrollView>
-
-</TableLayout>
+</ScrollView>
