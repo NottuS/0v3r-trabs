@@ -33,9 +33,13 @@ public class MainActivity extends Activity {
 	Button createTables;
 	Button loadTables;
 	Button saveTbButton;
+	Button addXButton;
+	Button addYButton;
+	Button subXButton;
+	Button subYButton;
 	TextView tv;
-	EditText X;
-	EditText Y;
+	EditText XeditText;
+	EditText YeditText;
 	WifiInterface wi;
 	BroadcastReceiver wifiReceiver;
 	Map map;
@@ -90,12 +94,17 @@ public class MainActivity extends Activity {
 		createTables = (Button) findViewById(R.id.CT);*/
 		scanButton = (Button) findViewById(R.id.scan);
 		getPosButton = (Button) findViewById(R.id.getPosition);
-
+		addXButton = (Button) findViewById(R.id.addX);
+		addYButton = (Button) findViewById(R.id.addY);
+		subXButton = (Button) findViewById(R.id.subX);
+		subYButton = (Button) findViewById(R.id.subY);
 		saveTbButton = (Button) findViewById(R.id.saveTable);
+		XeditText = (EditText) findViewById(R.id.X);
+		YeditText = (EditText) findViewById(R.id.Y);
+		
 		wi = new WifiInterface(getApplicationContext());
 		tv = (TextView) findViewById(R.id.text);
-		X = (EditText) findViewById(R.id.X);
-		Y = (EditText) findViewById(R.id.Y);
+
 		Log.i("Main Act A2R", "OK");
 		try {
 			map = new Map("map.txt", getApplicationContext(), null, wi);
@@ -194,6 +203,53 @@ public class MainActivity extends Activity {
     		}
 		});
 		
+		addXButton.setOnClickListener(new View.OnClickListener() {
+    		public void onClick (View v) {
+    			try {
+					int x = Integer.parseInt(XeditText.getText().toString());
+					XeditText.setText(((x + 1) % map.getWidth()) + "");
+				} catch (Exception e) {
+					// TODO: handle exception
+					XeditText.setText(0 + "");
+				}
+    		}
+		});
+		
+		addYButton.setOnClickListener(new View.OnClickListener() {
+    		public void onClick (View v) {
+    			try {
+					int y = Integer.parseInt(YeditText.getText().toString());
+					YeditText.setText(((y + 1) % map.getLength()) + "");
+				} catch (Exception e) {
+					// TODO: handle exception
+					YeditText.setText(0 + "");
+				}
+    		}
+		});
+		
+		subXButton.setOnClickListener(new View.OnClickListener() {
+    		public void onClick (View v) {
+    			try {
+					int x = Integer.parseInt(XeditText.getText().toString());
+					XeditText.setText((x - 1 >= 0 ? x - 1 : map.getWidth() - 1) + "");
+				} catch (Exception e) {
+					// TODO: handle exception
+					XeditText.setText((map.getWidth() - 1) + "");
+				}
+    		}
+		});
+		
+		subYButton.setOnClickListener(new View.OnClickListener() {
+    		public void onClick (View v) {
+    			try {
+					int y = Integer.parseInt(YeditText.getText().toString());
+					YeditText.setText((y - 1 >= 0 ? y - 1 : map.getLength() - 1) + "");
+				} catch (Exception e) {
+					// TODO: handle exception
+					YeditText.setText((map.getLength() - 1) + "");
+				}
+    		}
+		});
 		scanButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			scanButton.setClickable(false);
@@ -205,8 +261,8 @@ public class MainActivity extends Activity {
 					public void run() {
 						try {
 							int x, y;
-							x = Integer.parseInt(X.getText().toString());
-							y = Integer.parseInt(Y.getText().toString());
+							x = Integer.parseInt(XeditText.getText().toString());
+							y = Integer.parseInt(YeditText.getText().toString());
 							map.updatePos(y, x);
 							map.checkCell();
 						} catch (Exception e) {
