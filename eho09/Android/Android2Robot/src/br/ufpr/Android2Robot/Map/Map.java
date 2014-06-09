@@ -73,7 +73,8 @@ public class Map {
 			return null;
 		}
 		
-		public static CellTable getCellTable(String name, ArrayList<CellTable> apTable){
+		public static CellTable getCellTable(String name, 
+				ArrayList<CellTable> apTable){
 			for(CellTable ct: apTable){
 				if(ct.ap.name.equals(name))
 					return ct;
@@ -174,7 +175,7 @@ public class Map {
 			initTable();
 		} catch (Exception e) {
 			// TODO: handle exception
-			Log.v("MAP ", "No tables");
+			Log.v("MAP ", "No tables " + e.getMessage());
 		}
 
 		wifiHandler();
@@ -184,17 +185,19 @@ public class Map {
 	@SuppressLint("NewApi")
 	private void initTable() throws IOException {
 		// TODO Auto-generated method stub
-		
+		Log.i("A2R Map init Table APs", "DAMMMMMMMMM");
 		File file = new File(Environment.
 				getExternalStoragePublicDirectory(Environment
 						.DIRECTORY_DOWNLOADS), "wifiTable.txt");
-		if(file.exists()) {
+		if(!file.exists()) {
 			return;
 		}
+		
+		Log.i("A2R Map init Table APs", "È do BRASILLLLLLL");
 		BufferedReader buffreader = new BufferedReader(new FileReader(file));
 		String line;
 		while ((line = buffreader.readLine()) != null){
-			String data[] = line.split(" ");
+			String data[] = line.split(";");
 			Cell current = map[Integer.parseInt(data[0])][Integer.parseInt(data[1])];
 
 			if(!current.checked) {
@@ -206,7 +209,7 @@ public class Map {
 			}
 			
 			AP ap = getAP(data[2]);
-			Log.i("MAP APs", data[2] + " " + data[3]);
+			Log.i("A2R Map init Table APs", data[2] + " " + data[3]);
 			if(ap != null) {
 				addApTable(ap, current, Integer.parseInt(data[3]));
 			} else {
@@ -221,15 +224,18 @@ public class Map {
 		File file = new File(Environment.
 				getExternalStoragePublicDirectory(Environment
 						.DIRECTORY_DOWNLOADS), "wifiTable.txt");
-        FileOutputStream f = new FileOutputStream(file);
+        FileOutputStream f = new FileOutputStream(file, false);
+        f.getChannel().truncate(0);
+        f.getChannel().force(true);
+        f.getChannel().lock();
         PrintWriter pw = new PrintWriter(f);
 		Log.i("A2R Map", "Almost there");
 		for(Cell c : checkedCells){
 			for(CellTable ct: c.apTable ){
 				Log.i("A2R Map",c.pos.y + " " + 
 						c.pos.x + " " + ct.ap.name + " " + ct.meanRSS);
-				pw.write(c.pos.y + " " + 
-						c.pos.x + " " + ct.ap.name + " " + ct.meanRSS + "\n");
+				pw.write(c.pos.y + ";" + 
+						c.pos.x + ";" + ct.ap.name + ";" + ct.meanRSS + "\n");
 			}
 			pw.flush();
 		}	
@@ -329,10 +335,10 @@ public class Map {
 				}
 			}
 			
-			for(int j = 0; j < apTable.size() - 2; j++) {
+			for(int j = 0; j < apTable.size() - (apTable.size() > 2 ? 2 : 0); j++) {
 				for(Cell cell: checkedCells){
 					int partial = 0;
-					for(int k = j; k < 2 + j; k++){
+					for(int k = j; k < (apTable.size() > 2 ? 2 : 0) + j; k++){
 						CellTable ct = cell.getCellTable(apTable.get(k).ap.name);
 						if (ct != null)
 							partial += Math.pow(ct.meanRSS - 

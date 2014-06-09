@@ -214,19 +214,23 @@ public class MainActivity extends Activity {
 					Integer.parseInt(XeditText.getText().toString());
 					Integer.parseInt(YeditText.getText().toString());
 				} catch (Exception e) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					AlertDialog.Builder builder = new AlertDialog
+							.Builder(MainActivity.this);
 					builder.setMessage("No X or Y typed");
 					//builder.create();
 					builder.show();
 					return;
 				}
-    			final int  x = Integer.parseInt(XeditText.getText().toString());
-				final int  y = Integer.parseInt(YeditText.getText().toString());
+    			final int  x = Integer.parseInt(XeditText
+    					.getText().toString());
+				final int  y = Integer.parseInt(YeditText
+						.getText().toString());
     			scanButton.setClickable(false);
     			getPosButton.setClickable(false);
     			saveTbButton.setClickable(false);
-    			statusTextView.setText("Status: Get APs for:" + XeditText.getText().toString() 
-    						+ " " + YeditText.getText().toString());
+    			statusTextView.setText("Status: Get APs for:" 
+    					+ XeditText.getText().toString() + " " 
+    					+ YeditText.getText().toString());
     			Log.i("Main Act A2R", "OK3");
 				Thread t = new Thread(new Runnable() {
 					@Override
@@ -263,7 +267,7 @@ public class MainActivity extends Activity {
 							handle.obtainMessage(1).sendToTarget();
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Log.e("Main Act A2R", "get Pos error: " + e.getMessage());
 						} finally {
 							handle.obtainMessage(0).sendToTarget();
 						}
@@ -283,7 +287,8 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if(wifiReceiver == null && wi != null && wi.getWifiManager().isWifiEnabled())
+		if(wifiReceiver == null && wi != null && 
+				wi.getWifiManager().isWifiEnabled())
 			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
 		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager()
 				.SCAN_RESULTS_AVAILABLE_ACTION));
