@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class Map {
 		
 		public CellTable getCellTable(String name){
 			for(CellTable ap: apTable){
-				if(ap.ap.name.equalsIgnoreCase(name))
+				if(ap.ap.name.equals(name))
 					return ap;
 			}
 			return null;
@@ -74,7 +75,7 @@ public class Map {
 		
 		public static CellTable getCellTable(String name, ArrayList<CellTable> apTable){
 			for(CellTable ct: apTable){
-				if(ct.ap.name.equalsIgnoreCase(name))
+				if(ct.ap.name.equals(name))
 					return ct;
 			}
 			return null;
@@ -104,7 +105,15 @@ public class Map {
 	ArrayList<AP> apList;
 	public ArrayList<Cell> checkedCells;
 	ArrayList<Byte> path;
-	List<ScanResult> results;
+	private List<ScanResult> results;
+	public List<ScanResult> getResults() {
+		return results;
+	}
+
+	public void setResults(List<ScanResult> results) {
+		this.results = results;
+	}
+
 	private WifiInterface wi;
 	public Handler mHandler;
 	Context context;
@@ -116,7 +125,8 @@ public class Map {
 	
 	
 	/**=======METODOS=======*/
-	public Map(String mapFile, Context context, Local startPos, WifiInterface wi) throws IOException{
+	public Map(String mapFile, Context context, 
+			Local startPos, WifiInterface wi) throws IOException{
 		this.context = context;
 		this.wi = wi;
 		
@@ -130,8 +140,8 @@ public class Map {
 		this.map = null;
 		if(startPos != null)
 			currentPos = startPos;
-		else
-			currentPos = new Local(0, 0);
+		/*else
+			currentPos = new Local(0, 0);*/
 		AssetManager am = context.getAssets();
 		InputStreamReader inputreader = new InputStreamReader(am.open(mapFile));
 
@@ -175,7 +185,9 @@ public class Map {
 	private void initTable() throws IOException {
 		// TODO Auto-generated method stub
 		
-		File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "wifiTable.txt");
+		File file = new File(Environment.
+				getExternalStoragePublicDirectory(Environment
+						.DIRECTORY_DOWNLOADS), "wifiTable.txt");
 		if(file.exists()) {
 			return;
 		}
@@ -184,7 +196,15 @@ public class Map {
 		while ((line = buffreader.readLine()) != null){
 			String data[] = line.split(" ");
 			Cell current = map[Integer.parseInt(data[0])][Integer.parseInt(data[1])];
-			current.apTable = new ArrayList<Map.CellTable>();
+
+			if(!current.checked) {
+				current.apTable = new ArrayList<Map.CellTable>();
+				current.checked = true;
+				current.pos = new Local(Integer.parseInt(data[0]), 
+						Integer.parseInt(data[1]));
+				checkedCells.add(current);
+			}
+			
 			AP ap = getAP(data[2]);
 			Log.i("MAP APs", data[2] + " " + data[3]);
 			if(ap != null) {
@@ -194,21 +214,27 @@ public class Map {
 				apList.add(ap);
 				addApTable(ap, current, Integer.parseInt(data[3]));
 			}
-			
-			current.checked = true;
-			current.pos = new Local(Integer.parseInt(data[0]),Integer.parseInt(data[1]));
 		}
 	}
 
 	public void saveTable() throws IOException{
-		String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/wifiTable.txt";
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filePath, context.MODE_WORLD_WRITEABLE)/*.getChannel().truncate(0*)*/);
-		
+		File file = new File(Environment.
+				getExternalStoragePublicDirectory(Environment
+						.DIRECTORY_DOWNLOADS), "wifiTable.txt");
+        FileOutputStream f = new FileOutputStream(file);
+        PrintWriter pw = new PrintWriter(f);
+		Log.i("A2R Map", "Almost there");
 		for(Cell c : checkedCells){
 			for(CellTable ct: c.apTable ){
-				outputStreamWriter.write(c.pos.y + " " + c.pos.x + " " + ct.ap.name + " " + ct.meanRSS);
+				Log.i("A2R Map",c.pos.y + " " + 
+						c.pos.x + " " + ct.ap.name + " " + ct.meanRSS);
+				pw.write(c.pos.y + " " + 
+						c.pos.x + " " + ct.ap.name + " " + ct.meanRSS + "\n");
 			}
-		}		
+			pw.flush();
+		}	
+        pw.close();
+        f.close();
 	}
 	
 	public Boolean updateCell(Local local, int meanRSS, int stdDeviantion){
@@ -219,7 +245,8 @@ public class Map {
 	private void initAPs() throws IOException {
 		// TODO Auto-generated method stub
 		AssetManager am = context.getAssets();
-		InputStreamReader inputreader = new InputStreamReader(am.open("APs.txt"));
+		InputStreamReader inputreader = 
+				new InputStreamReader(am.open("APs.txt"));
 		BufferedReader buffreader = new BufferedReader(inputreader);
 		String line;
 		
@@ -247,7 +274,8 @@ public class Map {
 					}
 					break;
 				case 1:
-					Toast.makeText(context, (String)msg.obj, Toast.LENGTH_LONG).show();
+					Toast.makeText(context, (String)msg.obj, 
+							Toast.LENGTH_LONG).show();
 					break;
 				default:
 					break;
@@ -261,6 +289,10 @@ public class Map {
 	}
 	
 	public void updatePos(int y, int x){
+		if (currentPos == null) {
+			currentPos = new Local(y, x);
+			return;
+		}
 		currentPos.x = x;
 		currentPos.y = y;
 	}
@@ -303,7 +335,8 @@ public class Map {
 					for(int k = j; k < 2 + j; k++){
 						CellTable ct = cell.getCellTable(apTable.get(k).ap.name);
 						if (ct != null)
-							partial += Math.pow(ct.meanRSS - apTable.get(k).meanRSS, 2);
+							partial += Math.pow(ct.meanRSS - 
+									apTable.get(k).meanRSS, 2);
 						else
 							partial += Math.pow(apTable.get(k).meanRSS, 2);
 					}
@@ -344,7 +377,8 @@ public class Map {
 			
 			if(current != null){
 				int x = (int) (meanX / leastSquare.getN());
-				int y = (int)leastSquare.getIntercept() + (int)leastSquare.getSlope() * x;
+				int y = (int)leastSquare.getIntercept() + 
+						(int)leastSquare.getSlope() * x;
 				currentPos = new Local(x, y);
 			}
 		}
@@ -388,9 +422,7 @@ public class Map {
 		checkedCells.add(current);
 		for(Cell c : checkedCells)
 			Log.i("A2R checked cell", c.pos.x + " " + c.pos.y);
-		
 	}
-	
 	
 	private void addApTable(AP ap, Cell current, int level) {
 		// TODO Auto-generated method stub
@@ -401,11 +433,21 @@ public class Map {
 			//ct.meanTS = sr.timestamp;
 			current.apTable.add(ct);
 		} else {
+			if(current.checked){
+				ct.meanRSS = 0;
+				current.checked = false;
+			}
 			ct.meanRSS += level;
 			//ct.meanTS += sr.timestamp;
 		}
 	}
 
+	public Cell getCurrentCell(){
+		if(currentPos != null)
+			return map[currentPos.y][currentPos.x];
+		return null;
+		
+	}
 	public void calculatePath(ArrayList<Byte> path){
 		indexPath = 0;
 		if (path == null) {
@@ -442,8 +484,10 @@ public class Map {
 	
 	@SuppressLint({ "WorldReadableFiles", "NewApi" })
 	public void createTables() throws IOException{
-		File tableDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Table");
-		File checked = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "checked.txt");
+		File tableDir = new File(Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Table");
+		File checked = new File(Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "checked.txt");
 		
 		if(!tableDir.exists())
 			tableDir.mkdir();
@@ -460,9 +504,11 @@ public class Map {
 		for(Cell checkedCell : checkedCells){
 			for(CellTable ap : checkedCell.apTable){
 				File file = new File(tableDir,ap.ap.name + ".txt");
-				FileOutputStream fOut = new FileOutputStream(file, true)/*context.openFileOutput(file, context.MODE_WORLD_WRITEABLE)*/;
+				FileOutputStream fOut = new FileOutputStream(file, true);
 				OutputStreamWriter osw = new OutputStreamWriter(fOut); 
-				osw.write(Integer.toString(ap.meanRSS) + " " + Integer.toString(checkedCell.pos.y) + " " + Integer.toString(checkedCell.pos.x) + "\n");
+				osw.write(Integer.toString(ap.meanRSS) + " " 
+						+ Integer.toString(checkedCell.pos.y) + " " 
+						+ Integer.toString(checkedCell.pos.x) + "\n");
 				osw.close();
 			}
 		}
@@ -470,7 +516,9 @@ public class Map {
 	
 	@SuppressLint("NewApi")
 	public boolean loadTables() throws IOException{
-		File tableDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Table");
+		File tableDir = new File(Environment
+				.getExternalStoragePublicDirectory(
+						Environment.DIRECTORY_DOWNLOADS), "Table");
 		
 		if(!tableDir.exists())
 			return false;

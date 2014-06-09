@@ -1,9 +1,11 @@
 package br.ufpr.Android2Robot.Navigation;
 
 import java.io.IOException;
+import java.util.Currency;
 
 import br.ufpr.Android2Robot.R;
 import br.ufpr.Android2Robot.Map.Map;
+import br.ufpr.Android2Robot.Map.Map.CellTable;
 import br.ufpr.Android2Robot.Map.Map.Local;
 import br.ufpr.Android2Robot.bluetooth.ControlActivity;
 import br.ufpr.Android2Robot.labyrinth.LabyrinthActivity;
@@ -14,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -37,9 +40,11 @@ public class MainActivity extends Activity {
 	Button addYButton;
 	Button subXButton;
 	Button subYButton;
-	TextView tv;
+	TextView statusTextView;
+	TextView logTextView;
 	EditText XeditText;
 	EditText YeditText;
+	
 	WifiInterface wi;
 	BroadcastReceiver wifiReceiver;
 	Map map;
@@ -50,14 +55,24 @@ public class MainActivity extends Activity {
 				super.handleMessage(msg);
 				switch (msg.what) {
 				case 0:
-					tv.setText("Done");
+					statusTextView.setText("Status: Done");
 					scanButton.setClickable(true);
 					getPosButton.setClickable(true);
+					saveTbButton.setClickable(true);
+					String log = "Current Cell info:\n"; 
+					if(map.getCurrentCell() != null){
+						log +="X:" + map.getCurrentCell().pos.x + " Y:" 
+									+ map.getCurrentCell().pos.y + "\n";
+						for(CellTable ct: map.getCurrentCell().apTable){
+							log += ct.ap.name + " " + ct.meanRSS + "\n"; 
+						}
+						logTextView.setText(logTextView.getText().toString() + "\n" +log);
+					}
 					break;
 				case 1:
 					try {
-						tv.setText(map.getPos().y + " " + map.getPos().x);
-						
+						statusTextView.setText("Status: Atual Pos:" 
+								+ map.getPos().y + " " + map.getPos().x);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -101,10 +116,10 @@ public class MainActivity extends Activity {
 		saveTbButton = (Button) findViewById(R.id.saveTable);
 		XeditText = (EditText) findViewById(R.id.X);
 		YeditText = (EditText) findViewById(R.id.Y);
+		statusTextView = (TextView) findViewById(R.id.status);
+		logTextView = (TextView) findViewById(R.id.log);
 		
 		wi = new WifiInterface(getApplicationContext());
-		tv = (TextView) findViewById(R.id.text);
-
 		Log.i("Main Act A2R", "OK");
 		try {
 			map = new Map("map.txt", getApplicationContext(), null, wi);
@@ -112,90 +127,33 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(wifiReceiver == null && wi.getWifiManager().isWifiEnabled()){
+		if(!wi.getWifiManager().isWifiEnabled())
+			wi.getWifiManager().setWifiEnabled(true);
+		if(wifiReceiver == null){
 			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
 			registerReceiver(wifiReceiver, 
 					new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
 		}
 		Log.i("Main Act A2R", "OK2 " + wi.getWifiManager().isWifiEnabled());
-		/*if (receiver == null)
-            receiver = wi.initializeWiFiListener(mHandler);
-		registerReceiver(receiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
-		//wi.getWifiManager().startScan();
-        
-        WifiTest wt = new WifiTest();
-		wt.start();*/
-		//tv.setText( tv.getText() + result.SSID + " : " + result.level + "\n"  );
-		/*mapButton.setOnClickListener(new View.OnClickListener() {
-    		public void onClick (View v) {
-    			
-    		}
-		});
-		
-		discButton.setOnClickListener(new View.OnClickListener() {
-    		public void onClick (View v) {
-    			/*Intent i = new Intent(getApplicationContext(), NavigationService.class);
-    			i.putExtra("discovey", true);
-    
-    			try {
-    				int x, y, destX, destY;
-					x = Integer.parseInt(X.getText().toString());
-					y = Integer.parseInt(Y.getText().toString());
-					destX = 12;
-					destY = 40;
-	    			i.putExtra("x", x);
-	    			i.putExtra("y", y);
-	    			i.putExtra("DestX", destX);
-	    			i.putExtra("DestY", destY);
-	    			Bundle value = new Bundle();
-	    			
-	    			i.putExtra("Handle", value);
-	    			startService(i);
-				} catch (Exception e) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-					builder.setMessage("No X or Y typed");
-				}
-
-    		}
-		});
-		
-		navButton.setOnClickListener(new View.OnClickListener() {
-    		public void onClick (View v) {
-    			Intent i = new Intent(getApplicationContext(), LabyrinthActivity.class);
-    			startActivity(i);
-    			/*Intent i = new Intent(getApplicationContext(), NavigationService.class);
-    			i.putExtra("discovery", false);
-    			
-    			try {
-    				int x, y;
-					x = Integer.parseInt(X.getText().toString());
-					y = Integer.parseInt(Y.getText().toString());
-	    			i.putExtra("x", x);
-	    			i.putExtra("y", y);
-	    			startService(i);
-				} catch (Exception e) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-					builder.setMessage("No X or Y typed");
-				}
-    		}
-		});
-		
-		controlButton.setOnClickListener(new View.OnClickListener() {
-    		public void onClick (View v) {
-    			Intent i = new Intent(getApplicationContext(), ControlActivity.class);
-    			startActivity(i);
-    		}
-		});*/
 		
 		saveTbButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
+    			scanButton.setClickable(false);
+    			getPosButton.setClickable(false);
+    			saveTbButton.setClickable(false);
     			Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
 						try {
+							Log.i("Main Act A2R", "Map ok");
 							map.saveTable();
+							Log.i("Main Act A2R", "Map ok1");
 						} catch (Exception e) {
-
+							Log.i("Main Act A2R", "Map Not ok " + e.getMessage());
+						} finally {
+							scanButton.setClickable(true);
+							getPosButton.setClickable(true);
+							saveTbButton.setClickable(true);
 						}
 					}
 				});
@@ -252,24 +210,36 @@ public class MainActivity extends Activity {
 		});
 		scanButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
+    			try {
+					Integer.parseInt(XeditText.getText().toString());
+					Integer.parseInt(YeditText.getText().toString());
+				} catch (Exception e) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					builder.setMessage("No X or Y typed");
+					//builder.create();
+					builder.show();
+					return;
+				}
+    			final int  x = Integer.parseInt(XeditText.getText().toString());
+				final int  y = Integer.parseInt(YeditText.getText().toString());
     			scanButton.setClickable(false);
-    			tv.setText("checking position");
-    			Log.i("Main Act A2R", "OK3");
     			getPosButton.setClickable(false);
+    			saveTbButton.setClickable(false);
+    			statusTextView.setText("Status: Get APs for:" + XeditText.getText().toString() 
+    						+ " " + YeditText.getText().toString());
+    			Log.i("Main Act A2R", "OK3");
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
 						try {
-							int x, y;
-							x = Integer.parseInt(XeditText.getText().toString());
-							y = Integer.parseInt(YeditText.getText().toString());
+							Log.i("A2R",x + " " + y);
 							map.updatePos(y, x);
 							map.checkCell();
 						} catch (Exception e) {
-							AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-							builder.setMessage("No X or Y typed");
+
+						} finally {
+							handle.obtainMessage(0).sendToTarget();
 						}
-						handle.obtainMessage(0).sendToTarget();
 					}
 				});
 				t.start();
@@ -278,9 +248,11 @@ public class MainActivity extends Activity {
 		
 		getPosButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
-    			tv.setText("checking position");
+    			statusTextView.setText("Status: checking position");
     			Log.i("Main Act A2R", "OK3");
-
+    			scanButton.setClickable(false);
+    			getPosButton.setClickable(false);
+    			saveTbButton.setClickable(false);
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -292,48 +264,14 @@ public class MainActivity extends Activity {
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+						} finally {
+							handle.obtainMessage(0).sendToTarget();
 						}
 					}
 				});
 				t.start();
     		}
 		});
-		
-		/*createTables.setOnClickListener(new View.OnClickListener() {
-    		public void onClick (View v) {
-    			tv.setText("creating Tables");
-    			Thread t = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							map.createTables();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				});
-				t.start();
-    		}
-		});
-		
-		loadTables.setOnClickListener(new View.OnClickListener() {
-    		public void onClick (View v) {
-    			tv.setText("loading Tables");
-    			Thread t = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							map.loadTables();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				});
-				t.start();
-    		}
-		});*/
 	}
 	
 	@Override
@@ -347,7 +285,8 @@ public class MainActivity extends Activity {
 		super.onResume();
 		if(wifiReceiver == null && wi != null && wi.getWifiManager().isWifiEnabled())
 			wifiReceiver = wi.initializeWiFiListener(map.mHandler);
-		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
+		registerReceiver(wifiReceiver, new IntentFilter(wi.getWifiManager()
+				.SCAN_RESULTS_AVAILABLE_ACTION));
 		Log.d("A2R MainActivity", "onResume()");
 	}
 	@Override
@@ -365,4 +304,73 @@ public class MainActivity extends Activity {
 			unregisterReceiver(wifiReceiver);
 		Log.d("A2R MainActivity", "onPause()");
 	}
+	
+	/*if (receiver == null)
+    receiver = wi.initializeWiFiListener(mHandler);
+registerReceiver(receiver, new IntentFilter(wi.getWifiManager().SCAN_RESULTS_AVAILABLE_ACTION));
+//wi.getWifiManager().startScan();
+
+WifiTest wt = new WifiTest();
+wt.start();*/
+//tv.setText( tv.getText() + result.SSID + " : " + result.level + "\n"  );
+/*mapButton.setOnClickListener(new View.OnClickListener() {
+	public void onClick (View v) {
+		
+	}
+});
+
+discButton.setOnClickListener(new View.OnClickListener() {
+	public void onClick (View v) {
+		/*Intent i = new Intent(getApplicationContext(), NavigationService.class);
+		i.putExtra("discovey", true);
+
+		try {
+			int x, y, destX, destY;
+			x = Integer.parseInt(X.getText().toString());
+			y = Integer.parseInt(Y.getText().toString());
+			destX = 12;
+			destY = 40;
+			i.putExtra("x", x);
+			i.putExtra("y", y);
+			i.putExtra("DestX", destX);
+			i.putExtra("DestY", destY);
+			Bundle value = new Bundle();
+			
+			i.putExtra("Handle", value);
+			startService(i);
+		} catch (Exception e) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+			builder.setMessage("No X or Y typed");
+		}
+
+	}
+});
+
+navButton.setOnClickListener(new View.OnClickListener() {
+	public void onClick (View v) {
+		Intent i = new Intent(getApplicationContext(), LabyrinthActivity.class);
+		startActivity(i);
+		/*Intent i = new Intent(getApplicationContext(), NavigationService.class);
+		i.putExtra("discovery", false);
+		
+		try {
+			int x, y;
+			x = Integer.parseInt(X.getText().toString());
+			y = Integer.parseInt(Y.getText().toString());
+			i.putExtra("x", x);
+			i.putExtra("y", y);
+			startService(i);
+		} catch (Exception e) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+			builder.setMessage("No X or Y typed");
+		}
+	}
+});
+
+controlButton.setOnClickListener(new View.OnClickListener() {
+	public void onClick (View v) {
+		Intent i = new Intent(getApplicationContext(), ControlActivity.class);
+		startActivity(i);
+	}
+});*/
 }
