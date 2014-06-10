@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 				super.handleMessage(msg);
 				switch (msg.what) {
 				case 0:
-					statusTextView.setText("Status: Done");
+					//statusTextView.setText("Status: Done");
 					scanButton.setClickable(true);
 					getPosButton.setClickable(true);
 					saveTbButton.setClickable(true);
@@ -71,8 +71,12 @@ public class MainActivity extends Activity {
 					break;
 				case 1:
 					try {
-						statusTextView.setText("Status: Atual Pos:" 
+						AlertDialog.Builder builder = new AlertDialog
+								.Builder(MainActivity.this);
+						builder.setMessage("Atual Pos:" 
 								+ map.getPos().y + " " + map.getPos().x);
+						//builder.create();
+						builder.show();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -265,7 +269,7 @@ public class MainActivity extends Activity {
 							Log.i("Main Act A2R", "OK6");
 							map.getPos();
 							handle.obtainMessage(1).sendToTarget();
-						} catch (InterruptedException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							Log.e("Main Act A2R", "get Pos error: " + e.getMessage());
 						} finally {

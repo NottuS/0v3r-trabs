@@ -363,7 +363,7 @@ public class Map {
 				leastSquare.addData(pos.pos.x, pos.pos.y);
 			}
 			
-			RegressionResults r = leastSquare.regress();
+			//RegressionResults r = leastSquare.regress();
 			/*for(Cell cell: checkedCells){
 				int partial = 0;
 				for(CellTable ct: cell.apTable){
@@ -417,15 +417,19 @@ public class Map {
 			}
 			
 		}
-		current.checked = true;
-		current.pos = new Local(currentPos.y, currentPos.x);
+		
 		for(CellTable ct: current.apTable){
 			ct.meanRSS /= SAMPLE;
 			//ct.meanTS /= SAMPLE;
 			Log.i("Map Cell Mean", ct.meanRSS + " " + ct.ap.name);
 		}
 		
-		checkedCells.add(current);
+		if(current.pos == null) {
+			checkedCells.add(current);
+			current.pos = new Local(currentPos.y, currentPos.x);
+		}
+		
+		current.checked = true;
 		for(Cell c : checkedCells)
 			Log.i("A2R checked cell", c.pos.x + " " + c.pos.y);
 	}
