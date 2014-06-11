@@ -1,5 +1,34 @@
 \chapter{Implementação}	 
 \label{implementacao}
+\section{Proposta}
+
+  Este trabalho tem como proposta desenvolver o trabalho de graduação realizado por 
+  Alexandre Umezaki e Walter Mazuroski em 2010, no qual implementaram o método empírico proposto
+  por Bahl e Padmanabhan no artigo \cite{wifiRadar}.
+  
+  O sistema implementado por Alexandre Umezaki e Walter Mazuroski é ser dividido em duas etapas. 
+  Na primeira etapa há a coleta de \textit{``fingerprints''} dos APs, onde são armazenadas em
+  uma tabela, cada registro da tabela,  possui as coordenadas das amostras, 
+  a força do sinal wifi e o nome do AP. 
+  
+  A segunda etapa, na qual é realizado o processo de localização 
+  em si, o sistema recebia a força do sinal wifi de três APs, e calculava a distância euclidiana dos 
+  três APs observados em relação as amostras feitas na primeira etapa. A coordenada 
+  que com a menor distância euclidiana é dada como a provável localização do nodo. 
+  Esse sistema foi feito utilizando a linguagem C
+  e a biblioteca(citar) para coletar as amostras de força do sinal.
+  
+  O sistema desenvolvido nesse trabalho se diferencia do sistema previamente apresentado em
+  especialmente dois aspectos. Primeiro a plataforma adotada: Android. Como mostrado anteriormente,
+  o Android possui muitos recursos que podem ser empregados na robótica e a obtenção de informações 
+  sobre os APs são facilmente obtidos pelo \textit{framework} de aplicativos dessa plataforma como
+  pode ser visto em(citar).
+  
+  
+  
+\section{Detalhes da implementação}
+\section{Análise e Resultados Obtidos}
+
 \begin{comment}
   Os experimentos serão realizados no departamento de informática da Universidade Federal do Paraná, 
   devido a grande quantidade de Access Points disponíveis e a disponibilidade da planta do departamento. 
