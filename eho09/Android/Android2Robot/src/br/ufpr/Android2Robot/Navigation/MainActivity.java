@@ -12,6 +12,7 @@ import br.ufpr.Android2Robot.labyrinth.LabyrinthActivity;
 import br.ufpr.Android2Robot.wifi.WifiInterface;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -44,7 +45,7 @@ public class MainActivity extends Activity {
 	TextView logTextView;
 	EditText XeditText;
 	EditText YeditText;
-	
+	ProgressDialog dialog;
 	WifiInterface wi;
 	BroadcastReceiver wifiReceiver;
 	Map map;
@@ -56,9 +57,9 @@ public class MainActivity extends Activity {
 				switch (msg.what) {
 				case 0:
 					//statusTextView.setText("Status: Done");
-					scanButton.setClickable(true);
+					/*scanButton.setClickable(true);
 					getPosButton.setClickable(true);
-					saveTbButton.setClickable(true);
+					saveTbButton.setClickable(true);*/
 					String log = "Current Cell info:\n"; 
 					if(map.getCurrentCell() != null){
 						log +="X:" + map.getCurrentCell().pos.x + " Y:" 
@@ -66,15 +67,15 @@ public class MainActivity extends Activity {
 						for(CellTable ct: map.getCurrentCell().apTable){
 							log += ct.ap.name + " " + ct.meanRSS + "\n"; 
 						}
-						logTextView.setText(logTextView.getText().toString() + "\n" +log);
+						logTextView.setText(/*logTextView.getText().toString() +*/ "\n" +log);
 					}
 					break;
 				case 1:
 					try {
 						AlertDialog.Builder builder = new AlertDialog
 								.Builder(MainActivity.this);
-						builder.setMessage("Atual Pos:" 
-								+ map.getPos().y + " " + map.getPos().x);
+						builder.setMessage("Current Position:" 
+								 + "(" + map.getPos().x + "," +map.getPos().y + ")");
 						//builder.create();
 						builder.show();
 					} catch (InterruptedException e) {
@@ -82,6 +83,20 @@ public class MainActivity extends Activity {
 						e.printStackTrace();
 					}
 					break;
+				case 2:
+					AlertDialog.Builder builder = new AlertDialog
+							.Builder(MainActivity.this);
+					builder.setMessage((String) msg.obj);
+					break;
+				case 3:
+					dialog = ProgressDialog.show(MainActivity.this,
+							"",(String) msg.obj, true);
+					break;
+				case 4:
+					dialog.setMessage((String) msg.obj);
+					break;
+				case 5:
+					dialog.dismiss();
 				default:
 					break;
 				}
@@ -142,22 +157,31 @@ public class MainActivity extends Activity {
 		
 		saveTbButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
-    			scanButton.setClickable(false);
-    			getPosButton.setClickable(false);
-    			saveTbButton.setClickable(false);
+    			handle.obtainMessage(3, "Saving table. Please wait...").sendToTarget();
     			Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
+						String message = "";
 						try {
 							Log.i("Main Act A2R", "Map ok");
 							map.saveTable();
 							Log.i("Main Act A2R", "Map ok1");
+							message = "Table Saved.";
+							//handle.obtainMessage(2, "Table Saved.").sendToTarget();
 						} catch (Exception e) {
+							message = "Error trying to save the table!";
+							
 							Log.i("Main Act A2R", "Map Not ok " + e.getMessage());
 						} finally {
-							scanButton.setClickable(true);
-							getPosButton.setClickable(true);
-							saveTbButton.setClickable(true);
+							Log.i("Main Act A2R", "Map ok1 finally " + message);
+							handle.obtainMessage(5).sendToTarget();
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							handle.obtainMessage(2, message).sendToTarget();
 						}
 					}
 				});
@@ -214,13 +238,14 @@ public class MainActivity extends Activity {
 		});
 		scanButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
+    			wi.getWifiManager().setWifiEnabled(true);
     			try {
 					Integer.parseInt(XeditText.getText().toString());
 					Integer.parseInt(YeditText.getText().toString());
 				} catch (Exception e) {
 					AlertDialog.Builder builder = new AlertDialog
 							.Builder(MainActivity.this);
-					builder.setMessage("No X or Y typed");
+					builder.setMessage("Invalid X or Y typed.");
 					//builder.create();
 					builder.show();
 					return;
@@ -229,24 +254,26 @@ public class MainActivity extends Activity {
     					.getText().toString());
 				final int  y = Integer.parseInt(YeditText
 						.getText().toString());
-    			scanButton.setClickable(false);
-    			getPosButton.setClickable(false);
-    			saveTbButton.setClickable(false);
-    			statusTextView.setText("Status: Get APs for:" 
+				handle.obtainMessage(3, "Getting samples. Please wait...").sendToTarget();
+    			/*statusTextView.setText("Status: Get APs for:" 
     					+ XeditText.getText().toString() + " " 
-    					+ YeditText.getText().toString());
+    					+ YeditText.getText().toString());*/
     			Log.i("Main Act A2R", "OK3");
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
+						String message = "";
 						try {
 							Log.i("A2R",x + " " + y);
 							map.updatePos(y, x);
-							map.checkCell();
+							map.checkCell(handle);
 						} catch (Exception e) {
-
+							message = "Error trying to get the samples!";
+							handle.obtainMessage(2, message)
+								.sendToTarget();
 						} finally {
 							handle.obtainMessage(0).sendToTarget();
+							handle.obtainMessage(5).sendToTarget();
 						}
 					}
 				});
@@ -256,14 +283,14 @@ public class MainActivity extends Activity {
 		
 		getPosButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
-    			statusTextView.setText("Status: checking position");
+    			//statusTextView.setText("Status: checking position");
     			Log.i("Main Act A2R", "OK3");
-    			scanButton.setClickable(false);
-    			getPosButton.setClickable(false);
-    			saveTbButton.setClickable(false);
+    			wi.getWifiManager().setWifiEnabled(true);
+    			handle.obtainMessage(3, "Getting your current position. Please wait...").sendToTarget();
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
+						String message = "";
 						try {
 							map.setPos();
 							Log.i("Main Act A2R", "OK6");
@@ -271,9 +298,12 @@ public class MainActivity extends Activity {
 							handle.obtainMessage(1).sendToTarget();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
+							message = "Error trying to get the current position!";
 							Log.e("Main Act A2R", "get Pos error: " + e.getMessage());
 						} finally {
 							handle.obtainMessage(0).sendToTarget();
+							handle.obtainMessage(5).sendToTarget();
+							handle.obtainMessage(2, message).sendToTarget();
 						}
 					}
 				});

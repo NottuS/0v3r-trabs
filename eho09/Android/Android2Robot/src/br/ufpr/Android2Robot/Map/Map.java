@@ -92,7 +92,7 @@ public class Map {
 	}
 	
 	/**=======CONSTANTES=======*/
-	public static final int SAMPLE = 4;
+	public static final int SAMPLE = 8;
 	public static final int TAMCELL = 1;
 	public static final byte STOP = 'S';
 	public static final byte FOWARD = 'F';
@@ -393,7 +393,7 @@ public class Map {
 	}
 	
 	@SuppressLint("NewApi")
-	public void checkCell() throws InterruptedException{
+	public void checkCell(Handler h) throws InterruptedException{
 		int i;
 		Cell current = map[currentPos.y][currentPos.x];
 		current.apTable = new ArrayList<Map.CellTable>();
@@ -403,8 +403,11 @@ public class Map {
 			synchronized (mHandler) {
 				mHandler.wait();
 			}
+			String message = "Getting samples. Please wait...\nSample " 
+					+ (i + 1) + " de " + SAMPLE + ":";
 			for(ScanResult sr: results){
 				ap = getAP(sr.SSID);
+				message += "\n" + sr.SSID + " " + sr.level;
 				Log.i("MAP APs", sr.SSID + " " + sr.level);
 				if(ap != null){
 					addApTable(ap, current, sr.level);
@@ -413,9 +416,8 @@ public class Map {
 					apList.add(ap);
 					addApTable(ap, current, sr.level);
 				}
-				
 			}
-			
+			h.obtainMessage(4, message).sendToTarget();
 		}
 		
 		for(CellTable ct: current.apTable){
