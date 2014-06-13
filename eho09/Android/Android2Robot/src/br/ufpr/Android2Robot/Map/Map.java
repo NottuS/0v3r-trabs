@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 @SuppressLint({ "HandlerLeak", "NewApi" })
 public class Map {
+	public final int INF = 0x7FFFFFFF;
 	public class AP {
 		public String name;
 		public Local pos;
@@ -185,7 +186,6 @@ public class Map {
 	@SuppressLint("NewApi")
 	private void initTable() throws IOException {
 		// TODO Auto-generated method stub
-		Log.i("A2R Map init Table APs", "DAMMMMMMMMM");
 		File file = new File(Environment.
 				getExternalStoragePublicDirectory(Environment
 						.DIRECTORY_DOWNLOADS), "wifiTable.txt");
@@ -193,7 +193,6 @@ public class Map {
 			return;
 		}
 		
-		Log.i("A2R Map init Table APs", "È do BRASILLLLLLL");
 		BufferedReader buffreader = new BufferedReader(new FileReader(file));
 		String line;
 		while ((line = buffreader.readLine()) != null){
@@ -307,8 +306,8 @@ public class Map {
 	public Local getPos() throws InterruptedException{
 		int i;
 		if (currentPos == null){
-			int euclideanDist = 0x7FFFFFFF;
-			int smallerDist =  0x7FFFFFFF;
+			int euclideanDist = INF;
+			int smallerDist =  INF;
 			Cell current = null;
 			ArrayList<CellTable> apTable = new ArrayList<Map.CellTable>();
 			ArrayList<Cell> positions = new ArrayList<Cell>();
@@ -353,7 +352,7 @@ public class Map {
 					}
 				}
 				positions.add(current);
-				smallerDist = 0;
+				smallerDist = INF;
 			}
 			
 			SimpleRegression leastSquare = new SimpleRegression();
@@ -380,12 +379,12 @@ public class Map {
 					current = cell;
 				}
 			}*/
-			
+			Log.i("A2R Map", meanX + " " + leastSquare.getN());
 			if(current != null){
 				int x = (int) (meanX / leastSquare.getN());
 				int y = (int)leastSquare.getIntercept() + 
 						(int)leastSquare.getSlope() * x;
-				currentPos = new Local(x, y);
+				currentPos = new Local(y, x);
 			}
 		}
 		

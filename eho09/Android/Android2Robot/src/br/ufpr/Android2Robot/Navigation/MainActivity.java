@@ -2,7 +2,6 @@ package br.ufpr.Android2Robot.Navigation;
 
 import java.io.IOException;
 import java.util.Currency;
-
 import br.ufpr.Android2Robot.R;
 import br.ufpr.Android2Robot.Map.Map;
 import br.ufpr.Android2Robot.Map.Map.CellTable;
@@ -10,6 +9,7 @@ import br.ufpr.Android2Robot.Map.Map.Local;
 import br.ufpr.Android2Robot.bluetooth.ControlActivity;
 import br.ufpr.Android2Robot.labyrinth.LabyrinthActivity;
 import br.ufpr.Android2Robot.wifi.WifiInterface;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	Button mapButton;
@@ -56,37 +57,25 @@ public class MainActivity extends Activity {
 				super.handleMessage(msg);
 				switch (msg.what) {
 				case 0:
-					//statusTextView.setText("Status: Done");
-					/*scanButton.setClickable(true);
-					getPosButton.setClickable(true);
-					saveTbButton.setClickable(true);*/
 					String log = "Current Cell info:\n"; 
 					if(map.getCurrentCell() != null){
 						log +="X:" + map.getCurrentCell().pos.x + " Y:" 
 									+ map.getCurrentCell().pos.y + "\n";
+						Log.i("FUUUUUUUUUUUUUU", "TOOOOOOOOOOONN");
 						for(CellTable ct: map.getCurrentCell().apTable){
 							log += ct.ap.name + " " + ct.meanRSS + "\n"; 
 						}
+						Log.i("FUUUUUUUUUUUUUU", "T111111111111NN");
 						logTextView.setText(/*logTextView.getText().toString() +*/ "\n" +log);
 					}
 					break;
 				case 1:
-					try {
-						AlertDialog.Builder builder = new AlertDialog
-								.Builder(MainActivity.this);
-						builder.setMessage("Current Position:" 
-								 + "(" + map.getPos().x + "," +map.getPos().y + ")");
-						//builder.create();
-						builder.show();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					break;
 				case 2:
 					AlertDialog.Builder builder = new AlertDialog
 							.Builder(MainActivity.this);
 					builder.setMessage((String) msg.obj);
+					builder.show();
 					break;
 				case 3:
 					dialog = ProgressDialog.show(MainActivity.this,
@@ -97,6 +86,10 @@ public class MainActivity extends Activity {
 					break;
 				case 5:
 					dialog.dismiss();
+					break;
+				case 6:
+					Toast.makeText(MainActivity.this, (String) msg.obj, Toast.LENGTH_LONG).show();
+					break;
 				default:
 					break;
 				}
@@ -119,6 +112,7 @@ public class MainActivity extends Activity {
 		Log.d("A2R MainActivity", "onCreate()");
 	}
 	
+	@SuppressLint("ShowToast")
 	public void init(){
 		/*mapButton = (Button) findViewById(R.id.MapButton);
 		navButton = (Button) findViewById(R.id.NavigationButton);
@@ -175,13 +169,7 @@ public class MainActivity extends Activity {
 						} finally {
 							Log.i("Main Act A2R", "Map ok1 finally " + message);
 							handle.obtainMessage(5).sendToTarget();
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							handle.obtainMessage(2, message).sendToTarget();
+							handle.obtainMessage(6, message).sendToTarget();
 						}
 					}
 				});
@@ -246,7 +234,6 @@ public class MainActivity extends Activity {
 					AlertDialog.Builder builder = new AlertDialog
 							.Builder(MainActivity.this);
 					builder.setMessage("Invalid X or Y typed.");
-					//builder.create();
 					builder.show();
 					return;
 				}
@@ -255,9 +242,6 @@ public class MainActivity extends Activity {
 				final int  y = Integer.parseInt(YeditText
 						.getText().toString());
 				handle.obtainMessage(3, "Getting samples. Please wait...").sendToTarget();
-    			/*statusTextView.setText("Status: Get APs for:" 
-    					+ XeditText.getText().toString() + " " 
-    					+ YeditText.getText().toString());*/
     			Log.i("Main Act A2R", "OK3");
 				Thread t = new Thread(new Runnable() {
 					@Override
@@ -283,7 +267,6 @@ public class MainActivity extends Activity {
 		
 		getPosButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
-    			//statusTextView.setText("Status: checking position");
     			Log.i("Main Act A2R", "OK3");
     			wi.getWifiManager().setWifiEnabled(true);
     			handle.obtainMessage(3, "Getting your current position. Please wait...").sendToTarget();
@@ -295,13 +278,16 @@ public class MainActivity extends Activity {
 							map.setPos();
 							Log.i("Main Act A2R", "OK6");
 							map.getPos();
-							handle.obtainMessage(1).sendToTarget();
+							message = "Current Position:" 
+							 + "(" + map.getPos().x + "," +map.getPos().y + ")";
+							
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							message = "Error trying to get the current position!";
 							Log.e("Main Act A2R", "get Pos error: " + e.getMessage());
 						} finally {
 							handle.obtainMessage(0).sendToTarget();
+							Log.i("Main Act A2R", message);
 							handle.obtainMessage(5).sendToTarget();
 							handle.obtainMessage(2, message).sendToTarget();
 						}
