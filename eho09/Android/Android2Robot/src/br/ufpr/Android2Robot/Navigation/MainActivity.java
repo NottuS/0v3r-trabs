@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
 	Button addYButton;
 	Button subXButton;
 	Button subYButton;
+	Button testButton;
 	TextView statusTextView;
 	TextView logTextView;
 	EditText XeditText;
@@ -112,7 +113,7 @@ public class MainActivity extends Activity {
 		Log.d("A2R MainActivity", "onCreate()");
 	}
 	
-	@SuppressLint("ShowToast")
+	@SuppressLint({ "ShowToast", "NewApi" })
 	public void init(){
 		/*mapButton = (Button) findViewById(R.id.MapButton);
 		navButton = (Button) findViewById(R.id.NavigationButton);
@@ -120,6 +121,7 @@ public class MainActivity extends Activity {
 		discButton = (Button) findViewById(R.id.DiscButton);
 		loadTables = (Button) findViewById(R.id.LT);
 		createTables = (Button) findViewById(R.id.CT);*/
+		testButton = (Button) findViewById(R.id.test); 
 		scanButton = (Button) findViewById(R.id.scan);
 		getPosButton = (Button) findViewById(R.id.getPosition);
 		addXButton = (Button) findViewById(R.id.addX);
@@ -286,7 +288,7 @@ public class MainActivity extends Activity {
 							message = "Error trying to get the current position!";
 							Log.e("Main Act A2R", "get Pos error: " + e.getMessage());
 						} finally {
-							handle.obtainMessage(0).sendToTarget();
+							//handle.obtainMessage(0).sendToTarget();
 							Log.i("Main Act A2R", message);
 							handle.obtainMessage(5).sendToTarget();
 							handle.obtainMessage(2, message).sendToTarget();
@@ -294,6 +296,14 @@ public class MainActivity extends Activity {
 					}
 				});
 				t.start();
+    		}
+		});
+		
+		testButton.setOnClickListener(new View.OnClickListener() {
+    		public void onClick (View v) {
+    			map.setTest(true);
+    			getPosButton.callOnClick();
+    			//map.setTest(false);
     		}
 		});
 	}
