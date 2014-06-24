@@ -402,8 +402,10 @@ public class Map {
 			
 			SimpleRegression leastSquare = new SimpleRegression();
 			int meanX = 0;
+			int meanY = 0;
 			for(Cell pos: positions){
 				meanX += pos.pos.x;
+				meanY += pos.pos.y;
 				leastSquare.addData(pos.pos.x, pos.pos.y);
 			}
 			
@@ -424,20 +426,22 @@ public class Map {
 					current = cell;
 				}
 			}*/
-			RegressionResults r = leastSquare.regress();
-			Log.i("A2R Map", meanX + " " + leastSquare.getN());
-			if(current != null){
-				int x = (int) (meanX / leastSquare.getN());
-				int y =  (int) leastSquare.predict(x)/*(int)leastSquare.getIntercept() + 
-						(int)leastSquare.getSlope() * x*/;
+			int x = (int) (meanX / leastSquare.getN());
+			int y = (int) (meanY / leastSquare.getN());
+			try {
+				Log.i("A2R Map", meanX + " " + meanY + " " + leastSquare.getN());
+				if(current != null){
+					if ((int) leastSquare.getIntercept() != 0 && (int)leastSquare.getSlope() != 0) {
+						y =  (int) leastSquare.predict(x)/*(int)leastSquare.getIntercept() + 
+								(int)leastSquare.getSlope() * x*/;
+					}
+				}
+			} catch (Exception e) {
+				Log.e("A2R Map mmq error", e.getMessage());
+				// TODO: handle exception
+			} finally {
 				currentPos = new Local(y, x);
 			}
-			
-			double[][] data = { { 4, 5 }, {4, 5 }, {4, 5 }, {4, 8 }, {5, 11 }};
-			SimpleRegression regression = new SimpleRegression();
-			//the argument, false, tells the class not to include a constant
-			regression.addData(data);
-			Log.i("FUCK", (int)regression.predict(4)+"");
 		}
 		setTest(false);
 		return currentPos;
