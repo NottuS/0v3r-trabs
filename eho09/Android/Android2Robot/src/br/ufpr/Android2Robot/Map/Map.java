@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 @SuppressLint({ "HandlerLeak", "NewApi" })
 public class Map {
+	public final int INF = 0x7FFFFFFF;
+	private boolean test; 
 	public class AP {
 		public String name;
 		public Local pos;
@@ -134,6 +136,7 @@ public class Map {
 		checkedCells = new ArrayList<Cell>();
 		apList = new ArrayList<Map.AP>();
 		indexPath = 0;
+		test = false;
 		int i = 0;
 		int j = 0;
 		int k = 0;
@@ -182,10 +185,17 @@ public class Map {
 		buffreader.close();
 	}
 	
+	public boolean isTest() {
+		return test;
+	}
+
+	public void setTest(boolean test) {
+		this.test = test;
+	}
+
 	@SuppressLint("NewApi")
 	private void initTable() throws IOException {
 		// TODO Auto-generated method stub
-		Log.i("A2R Map init Table APs", "DAMMMMMMMMM");
 		File file = new File(Environment.
 				getExternalStoragePublicDirectory(Environment
 						.DIRECTORY_DOWNLOADS), "wifiTable.txt");
@@ -193,7 +203,6 @@ public class Map {
 			return;
 		}
 		
-		Log.i("A2R Map init Table APs", "È do BRASILLLLLLL");
 		BufferedReader buffreader = new BufferedReader(new FileReader(file));
 		String line;
 		while ((line = buffreader.readLine()) != null){
@@ -303,38 +312,72 @@ public class Map {
 		currentPos.y = y;
 	}
 	
+	public ArrayList<CellTable> test(){
+		String[] scan = {
+			"5;4;Dinf3;-57", 
+			"5;4;NR2_top;-71",
+			"5;4;c3sl;-345",
+			"5;4;PET_EST;-80",
+			"5;4;Emmati;-85",
+			"5;4;rei dos copos;-82",
+			"5;4;LEG;-86",
+			"5;4;NR2;-80",
+			"5;4;;-68",
+			"5;4;NR2Lenovo;-79",
+			"5;4;NR2 5 GHz;-94",
+			"5;4;galileu;-34" 
+		};
+		
+		ArrayList<CellTable> apTable = new ArrayList<Map.CellTable>();
+		for (String sc : scan) {
+			String apInfo[] = sc.split(";");
+			AP ap = getAP(apInfo[2]);
+			if(ap != null) {
+				CellTable ct = new CellTable(ap);
+				ct.meanRSS = Integer.parseInt(apInfo[3]);
+				apTable.add(ct);
+			}
+		}
+		
+		return apTable;
+	}
+	
 	@SuppressLint("NewApi")
 	public Local getPos() throws InterruptedException{
 		int i;
 		if (currentPos == null){
-			int euclideanDist = 0x7FFFFFFF;
-			int smallerDist =  0x7FFFFFFF;
+			int euclideanDist = INF;
+			int smallerDist =  INF;
 			Cell current = null;
-			ArrayList<CellTable> apTable = new ArrayList<Map.CellTable>();
+			ArrayList<CellTable> apTable;
 			ArrayList<Cell> positions = new ArrayList<Cell>();
-			for(i = 0; i < SAMPLE; i++){
-				wi.getWifiManager().startScan();
-				synchronized (mHandler) {
-					mHandler.wait();
-				}
-				for(ScanResult sr: results){
-					AP ap = getAP(sr.SSID);
-					if(ap != null) {
-						CellTable ct = Cell.getCellTable(ap.name, apTable);
-						if(ct == null){
-							ct = new CellTable(ap);
-							ct.meanRSS = sr.level;
-							//ct.meanTS = sr.timestamp;
-							apTable.add(ct);
-						} else {
-							ct.meanRSS += sr.level;
-							//ct.meanTS += sr.timestamp;
-						}
+			if(!isTest()) {
+				apTable = new ArrayList<Map.CellTable>();
+				for(i = 0; i < SAMPLE; i++){
+					wi.getWifiManager().startScan();
+					synchronized (mHandler) {
+						mHandler.wait();
 					}
-					Log.i("MAP APs", sr.SSID + " " + sr.level);
+					for(ScanResult sr: results){
+						AP ap = getAP(sr.SSID);
+						if(ap != null) {
+							CellTable ct = Cell.getCellTable(ap.name, apTable);
+							if(ct == null){
+								ct = new CellTable(ap);
+								ct.meanRSS = sr.level;
+								//ct.meanTS = sr.timestamp;
+								apTable.add(ct);
+							} else {
+								ct.meanRSS += sr.level;
+								//ct.meanTS += sr.timestamp;
+							}
+						}
+						Log.i("MAP APs", sr.SSID + " " + sr.level);
+					}
 				}
+			} else {
+				apTable = test();
 			}
-			
 			for(int j = 0; j < apTable.size() - (apTable.size() > 2 ? 2 : 0); j++) {
 				for(Cell cell: checkedCells){
 					int partial = 0;
@@ -352,8 +395,9 @@ public class Map {
 						current = cell;
 					}
 				}
+				Log.i("A2R Map", current.pos.x + " " + current.pos.y );
 				positions.add(current);
-				smallerDist = 0;
+				smallerDist = INF;
 			}
 			
 			SimpleRegression leastSquare = new SimpleRegression();
@@ -380,15 +424,22 @@ public class Map {
 					current = cell;
 				}
 			}*/
-			
+			RegressionResults r = leastSquare.regress();
+			Log.i("A2R Map", meanX + " " + leastSquare.getN());
 			if(current != null){
 				int x = (int) (meanX / leastSquare.getN());
-				int y = (int)leastSquare.getIntercept() + 
-						(int)leastSquare.getSlope() * x;
-				currentPos = new Local(x, y);
+				int y =  (int) leastSquare.predict(x)/*(int)leastSquare.getIntercept() + 
+						(int)leastSquare.getSlope() * x*/;
+				currentPos = new Local(y, x);
 			}
+			
+			double[][] data = { { 4, 5 }, {4, 5 }, {4, 5 }, {4, 8 }, {5, 11 }};
+			SimpleRegression regression = new SimpleRegression();
+			//the argument, false, tells the class not to include a constant
+			regression.addData(data);
+			Log.i("FUCK", (int)regression.predict(4)+"");
 		}
-		
+		setTest(false);
 		return currentPos;
 	}
 	
