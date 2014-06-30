@@ -52,10 +52,11 @@
   Esta classe centraliza todas as operações envolvendo wifi como verificar e habilitar a conectividade
   com o wifi do aparelho e obter as informações dos APs(força do sinal, nome do AP, endereço, etc) 
   que estão no alcance do aparelho. Para obter essas informações, o objeto dessa classe
-  instancia um BroadcastReceiver(citar)   que escuta o modulo wifi do aparelho e repassa 
+  instancia um BroadcastReceiver(citar) que escuta o modulo wifi do aparelho e repassa 
   as informações obtidas através do Handler para o componente que requisitou elas.
   
   \subsection{Map}
+  Esta classe é o núcleo da aplicação, ela armazena o mapa de fingerprints de RSS, 
   - O mapa métrico é divido em um grid onde cada célula tem 2 metros.
   - Isso é legal pois permite que em uma possível evolução desse APP, a célula do mapa possa guardar
   outra informações de outros sensores como sonar, imagens, laser, etc.
@@ -63,10 +64,28 @@
   - O posição é obtida através do algoritmo que será explica a seguir.
   - Vetor de células que possuem informações.
   
-  \subsubsection{Algoritmo de Localização}
+  \subsection{Algoritmo de Localização}
+  O algoritmo de localização aqui implementado é dividido em duas etapas: aprendizagem e localização. Na etapa de aprendizagem, 
+  onde o aplicativo guarda o \textit{fingerprint} dos APs da coordenada informada,
+  e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP, média é utilizada 
+  devido a grande oscilação do RSS de um AP:
+  
+  As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
+  grande quantidade de APs disponíveis(até 13 APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
+  
+  A etapa de onde é realizada a localização em si, é dividido em três fases. Primeiramente obtêm-se o \textit{fingerprint}
+  o aparelho com Android, da mesma forma feita na etapa de aprendizagem. 
+  
+  Na segunda fase, para cada 3 APs do \textit{fingerprint}, utiliza-se a distância Euclidiana, para fazer a comparação com os 
+  dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
+e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local. 
+Assim obtêm-se um conjunto de pontos que são utilizada na próxima fase.
+
+  
+  \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 
-    média de cada força  de sinal wifi de cada AP.
+    média de cada força de sinal wifi de cada AP.
 	- Pois O RSS varia muito(exibir exemplo).
   -Calculo da posição(3 fases):
     - Permite obter a posição do aparelho mesmo sem um fingerprint da posição do aparelho.
@@ -78,6 +97,7 @@
     - Com o esse conjunto de pontos, calcula-se o mmq com a biblioteca do apache(citar).
       -Onde obtem se o melhor ponto que resume os pontos obtidos.
     -Colocar imagem.
+    \end{comment}
 \section{Análise e Resultados Obtidos}
 
 \begin{comment}
