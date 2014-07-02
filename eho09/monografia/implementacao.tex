@@ -1,29 +1,5 @@
 \chapter{Implementação}	 
 \label{implementacao}
-\section{Proposta}
-
-  Este trabalho tem como proposta desenvolver o trabalho de graduação realizado por 
-  Alexandre Umezaki e Walter Mazuroski em 2010, no qual implementaram o método empírico proposto
-  por Bahl e Padmanabhan no artigo \cite{wifiRadar}.
-  
-  O sistema implementado por Alexandre Umezaki e Walter Mazuroski é ser dividido em duas etapas. 
-  Na primeira etapa há a coleta de \textit{``fingerprints''} dos APs, onde são armazenadas em
-  uma tabela, cada registro da tabela,  possui as coordenadas das amostras, 
-  a força do sinal wifi e o nome do AP. 
-  
-  A segunda etapa, na qual é realizado o processo de localização 
-  em si, o sistema recebia a força do sinal wifi de três APs, e calculava a distância euclidiana dos 
-  três APs observados em relação as amostras feitas na primeira etapa. A coordenada 
-  que com a menor distância euclidiana é dada como a provável localização do nodo. 
-  Esse sistema foi feito utilizando a linguagem C
-  e a biblioteca(citar) para coletar as amostras de força do sinal.
-  
-  O sistema desenvolvido nesse trabalho se diferencia do sistema previamente apresentado em
-  especialmente dois aspectos. Primeiro a plataforma adotada: Android. Como mostrado anteriormente,
-  o Android possui muitos recursos que podem ser empregados na robótica e a obtenção de informações 
-  sobre os APs são facilmente obtidos pelo \textit{framework} de aplicativos dessa plataforma como
-  pode ser visto em(citar).
-  
   
 \section{Detalhes da implementação}
 
@@ -45,7 +21,7 @@
    \item Get Position: Obtém a provável posição do aparelho. 
   \end{itemize}
 
-  A MainActivity cria novas \textit{threads} para executar as operações acima.
+  A MainActivity cria novas \textit{threads} para executar cada uma das operações requerida pelo o usuário.
   
   \subsection{WifiInterface}
   
@@ -56,32 +32,32 @@
   as informações obtidas através do Handler para o componente que requisitou elas.
   
   \subsection{Map}
-  Esta classe é o núcleo da aplicação, ela armazena o mapa de fingerprints de RSS, 
-  - O mapa métrico é divido em um grid onde cada célula tem 2 metros.
-  - Isso é legal pois permite que em uma possível evolução desse APP, a célula do mapa possa guardar
-  outra informações de outros sensores como sonar, imagens, laser, etc.
-  - Essa classe carrega e armazena a tabela de \textit{fingerprints}.
-  - O posição é obtida através do algoritmo que será explica a seguir.
-  - Vetor de células que possuem informações.
+  Esta classe é o núcleo da aplicação, ela carrega e armazena o mapa de \textit{fingerprints} de RSS que estão 
+  guardadas em arquivo. 
+  O \textit{fingerprints} é composto 
+  pela coordenada informada pelo usuário e as informações obtidas pela classe WifiInterface. 
+  Com o mapa de \textit{fingerprints} essa classe executa o algoritmo descrito a seguir para disponibilizar 
+  a atual posição do aparelho.
+   
+  \subsection{Algoritmo de Localização baseado em \textit{fingerprinting}}
   
-  \subsection{Algoritmo de Localização}
   O algoritmo de localização aqui implementado é dividido em duas etapas: aprendizagem e localização. Na etapa de aprendizagem, 
   onde o aplicativo guarda o \textit{fingerprint} dos APs da coordenada informada,
   e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP, média é utilizada 
   devido a grande oscilação do RSS de um AP:
   
   As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
-  grande quantidade de APs disponíveis(até 13 APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
+  grande quantidade de APs disponíveis(até treze APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
   
   A etapa de onde é realizada a localização em si, é dividido em três fases. Primeiramente obtêm-se o \textit{fingerprint}
   o aparelho com Android, da mesma forma feita na etapa de aprendizagem. 
   
-  Na segunda fase, para cada 3 APs do \textit{fingerprint}, utiliza-se a distância Euclidiana, para fazer a comparação com os 
+  Na segunda fase, para cada três APs do \textit{fingerprint}, utiliza-se a distância Euclidiana, para fazer a comparação com os 
   dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
 e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local. 
 Assim obtêm-se um conjunto de pontos que são utilizada na próxima fase.
 
-  
+ 
   \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 

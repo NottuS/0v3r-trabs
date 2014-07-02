@@ -86,13 +86,13 @@ valores reais que as medidas originais pois a média ponderada apresenta uma mel
   
 O filtro de Kalman combina uma predição da posição atual do robô a com uma nova medida usando uma média ponderada. 
 A ideia dos pesos é que valores com menor incerteza estimada sejam mais "confiáveis". 
-Os pesos são calculados através da covariância, uma medida da incerteza estimada da predição do estado do sistema. 
+Os pesos são calculados através da covariância, uma medida da incerteza estimada da predição do estado do sistema \cite{slam4}. 
 
 O resultado da média ponderada é uma nova estimativa do estado, que se localiza entre o estado predito e o estado medido, 
 apresentando uma melhor incerteza estimada que qualquer um dos dois unicamente. 
 Este processo é repetido a cada fase, com a nova estimativa e sua covariância gerando a predição usada na próxima iteração. 
 Isto significa que o filtro de Kalman funciona recursivamente e requer apenas a 
-última estimativa - não o histórico completo - do estado de um sistema para calcular o próximo estado.
+última estimativa - não o histórico completo - do estado de um sistema para calcular o próximo estado\cite{localization2}.
 
  
  \begin{comment}

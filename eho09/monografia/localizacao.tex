@@ -120,8 +120,13 @@ http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.134.5991&rep=rep1&type=
 \section{RSS(\textit{Received Signal Strength})}	
 	A localização baseada em RSS apresenta-se como uma das únicas a não necessitar de \textit{hardware} extra, e ser uma técnica
 de fácil aplicação. 
-
-  O funcionamento da RSS é baseado na medição do sinal no receptor e o valor
+	
+	Há três métodos de localização que utilizam a medição de RSS em WSNs: estação base mais forte, modelo de propagação e \textit{fingerprinting}.
+	O primeiro método é o mais simples, a localização de um nodo da rede pode ser estimado como a posição do \textit{Access Points}(AP) mais próximo, no 
+	qual o nodo se comunicou. Este método pode não atingir grande precisão devido a complexidade de WSNs em ambientes \textit{indoor} e 
+	a limitação da cobertura do AP.
+	
+	No método de modelo de propagação, a medição do sinal no receptor e o valor
 obtido indica a distância até o transmissor \cite{rss1}. Sem nenhuma interferência, a distância de dois nodos $i$ e $j$ pode ser 
 relacionada com a força do sinal medido, através do modelo log-normal apresentado em \cite{rss2}:
 \begin{comment}
@@ -159,11 +164,23 @@ A figura abaixo mostra como a estimativa da real posição de um nodo é afetado
 	\caption{Influência de um obstáculos na localização de um nodo\cite{rss1}. }
 	\label{fig:rsserror}
 	\end{figure}
-
+	
+	Recentemente, localização em WSNs baseado em RSS \textit{fingerprinting} tem se tornado uma das técnicas mais exploradas 
+	em ambientes \textit{indoor}\cite{fingerPrint}\cite{wifiRadar}\cite{fingerPrint2}. Comparada com as outras duas técnicas, \textit{fingerprinting} é facilmente empregada 
+	e é tolerante ao ruido do sinal, e isso permite uma maior precisão. Este método normalmente é composto por duas fases: 
+	aprendizado e localização. Na primeira fase o objetivo é construir uma tabela para cada coordenada de amostras de RSS 
+	de alguns APs. Na fase de localização, o nodo informa uma amostra do RSS que é comparada com cada entrada do tabela, o registro
+	que mais se aproxima da amostra informada é adotada como atual posição do nodo.
+	
    Em \cite{wifiRadar} - \textit{"Radar: an in-building RF-based user location and tracking system"}, Bahl e Padmanabhan propõem o método empírico,
    para localização baseada em RSS \textit{indoor}. O método consiste em realizar uma série de medições da força de sinal das estações bases, 
    e a partir dessas medições, a localização pode ser determinada fazendo uma triangulação dos dados coletados. 
 
-  No artigo \cite{wifiRadar}, para obter a posição de um nodo, são medidas as forças do sinal wifi de 3 \textit{Access Points} (rss1, rss2, rss3), 
+  No artigo \cite{wifiRadar}, para obter a posição de um nodo, são medidas as forças do sinal wifi de três \textit{Access Points} (rss1, rss2, rss3), 
 utiliza-se a distância Euclidiana, para fazer a comparação com os dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
 e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local. 
+	
+	A precisão da técnica de \textit{fingerprinting} reside nas amostras de RSS, qualquer mudança no ambiente como 
+	reposição de APs, retirada ou inclusão de objetos podem interferir no desempenho desta técnica.
+
+
