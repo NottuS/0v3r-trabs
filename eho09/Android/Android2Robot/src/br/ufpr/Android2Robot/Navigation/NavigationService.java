@@ -72,7 +72,7 @@ public class NavigationService extends IntentService {
 			e.printStackTrace();
 		}	
 		try {
-			map.getPos();
+			map.getPos(null);
 			map.calculatePath(null);
 			if(bi.isConnected() == BluetoothInterface.CONNECTED){
 				try {
@@ -102,16 +102,16 @@ public class NavigationService extends IntentService {
 		robot.wait();
 		switch (direction) {
 		case Map.FOWARD:
-			map.updatePos(map.getPos().y+1, map.getPos().x);
+			map.updatePos(map.getPos(null).y+1, map.getPos(null).x);
 			break;
 		case Map.BACK:
-			map.updatePos(map.getPos().y-1,map.getPos().x);
+			map.updatePos(map.getPos(null).y-1,map.getPos(null).x);
 			break;
 		case Map.LEFT:
-			map.updatePos(map.getPos().y, map.getPos().x-1);
+			map.updatePos(map.getPos(null).y, map.getPos(null).x-1);
 			break;
 		case Map.RIGHT:
-			map.updatePos(map.getPos().y, map.getPos().x+1);
+			map.updatePos(map.getPos(null).y, map.getPos(null).x+1);
 			break;
 		default:
 			break;
@@ -121,7 +121,7 @@ public class NavigationService extends IntentService {
 
 	private boolean reachLocation() throws InterruptedException {
 		// TODO Auto-generated method stub
-		if (map.getPos().x == dest.x && map.getPos().y == dest.y)
+		if (map.getPos(null).x == dest.x && map.getPos(null).y == dest.y)
 			return true;
 		return false;
 	}

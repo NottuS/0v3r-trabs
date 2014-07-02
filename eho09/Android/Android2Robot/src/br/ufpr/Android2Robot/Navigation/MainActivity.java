@@ -279,9 +279,9 @@ public class MainActivity extends Activity {
 						try {
 							map.setPos();
 							Log.i("Main Act A2R", "OK6");
-							map.getPos();
+							map.getPos(handle);
 							message = "Current Position:" 
-							 + "(" + map.getPos().x + "," +map.getPos().y + ")";
+							 + "(" + map.getPos(handle).x + "," +map.getPos(handle).y + ")";
 							
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -302,7 +302,7 @@ public class MainActivity extends Activity {
 		testButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick (View v) {
     			map.setTest(true);
-    			getPosButton.callOnClick();
+    			getPosButton.performClick();
     			//map.setTest(false);
     		}
 		});

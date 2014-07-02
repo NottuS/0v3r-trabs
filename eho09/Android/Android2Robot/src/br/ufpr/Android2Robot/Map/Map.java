@@ -343,7 +343,7 @@ public class Map {
 	}
 	
 	@SuppressLint("NewApi")
-	public Local getPos() throws InterruptedException{
+	public Local getPos(Handler h) throws InterruptedException{
 		int i;
 		if (currentPos == null){
 			int euclideanDist = INF;
