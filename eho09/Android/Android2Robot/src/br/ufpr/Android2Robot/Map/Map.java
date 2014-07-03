@@ -440,6 +440,7 @@ public class Map {
 				Log.e("A2R Map mmq error", e.getMessage());
 				// TODO: handle exception
 			} finally {
+				y = (int) (meanY / leastSquare.getN());
 				currentPos = new Local(y, x);
 			}
 		}
