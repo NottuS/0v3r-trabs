@@ -167,7 +167,7 @@ A figura abaixo mostra como a estimativa da real posição de um nodo é afetado
 	
 	Recentemente, localização em WSNs baseado em RSS \textit{fingerprinting} tem se tornado uma das técnicas mais exploradas 
 	em ambientes \textit{indoor}\cite{fingerPrint}\cite{wifiRadar}\cite{fingerPrint2}. Comparada com as outras duas técnicas, \textit{fingerprinting} é facilmente empregada 
-	e é tolerante ao ruido do sinal, e isso permite uma maior precisão. Este método normalmente é composto por duas fases: 
+	e é tolerante ao ruido do sinal, e isso permite uma maior precisão em relação aos outros. Este método normalmente é composto por duas fases: 
 	aprendizado e localização. Na primeira fase o objetivo é construir uma tabela para cada coordenada de amostras de RSS 
 	de alguns APs. Na fase de localização, o nodo informa uma amostra do RSS que é comparada com cada entrada do tabela, o registro
 	que mais se aproxima da amostra informada é adotada como atual posição do nodo.
@@ -176,11 +176,12 @@ A figura abaixo mostra como a estimativa da real posição de um nodo é afetado
    para localização baseada em RSS \textit{indoor}. O método consiste em realizar uma série de medições da força de sinal das estações bases, 
    e a partir dessas medições, a localização pode ser determinada fazendo uma triangulação dos dados coletados. 
 
-  No artigo \cite{wifiRadar}, para obter a posição de um nodo, são medidas as forças do sinal wifi de três \textit{Access Points} (rss1, rss2, rss3), 
+  No artigo \cite{wifiRadar}, para obter a posição de um nodo, são medidas as forças do sinal wifi de três \textit{access points} (rss1, rss2, rss3), 
 utiliza-se a distância Euclidiana, para fazer a comparação com os dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
 e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local. 
 	
 	A precisão da técnica de \textit{fingerprinting} reside nas amostras de RSS, qualquer mudança no ambiente como 
-	reposição de APs, retirada ou inclusão de objetos podem interferir no desempenho desta técnica.
+	reposição de APs, retirada ou inclusão de objetos eo trafego de pessoas no local podem interferir no desempenho desta técnica. 
+	Esse é o principal problema dessa técnica.
 
 

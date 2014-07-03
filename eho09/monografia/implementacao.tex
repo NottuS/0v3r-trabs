@@ -6,11 +6,11 @@
   O aplicativo implementado nesse trabalho é composto essencialmente por três  classes: MainActivity, 
   Map e WifiInterface. 
   
-  A comunicação entre as três classes é feito através da classe Handler(citar) que permite o envio de 
+  A comunicação entre as três classes é feito através da classe Handler\cite{handler} que permite o envio de 
   mensagens entre \textit{threads} e componentes. As principais operações disponíveis no aplicativo não 
   são executadas na \textit{thread} principal, pois, essas operações podem levar muito tempo para serem 
-  concluída, assim evitando o problema já discutido anteriormente no capitulo sobre Android,
-  de travar a execução da \textit{thread} principal.
+  concluída, assim evitando o problema de travar a execução da \textit{thread} principal, 
+  que já foi discutido anteriormente no capitulo sobre Android.
   
   \subsection{MainActivity}
   A classe MainActivity é responsável por receber as entradas do usuário e exibir os resultados calculados.
@@ -28,7 +28,7 @@
   Esta classe centraliza todas as operações envolvendo wifi como verificar e habilitar a conectividade
   com o wifi do aparelho e obter as informações dos APs(força do sinal, nome do AP, endereço, etc) 
   que estão no alcance do aparelho. Para obter essas informações, o objeto dessa classe
-  instancia um BroadcastReceiver(citar) que escuta o modulo wifi do aparelho e repassa 
+  instancia um BroadcastReceiver que escuta o modulo wifi do aparelho e repassa 
   as informações obtidas através do Handler para o componente que requisitou elas.
   
   \subsection{Map}
@@ -39,25 +39,35 @@
   Com o mapa de \textit{fingerprints} essa classe executa o algoritmo descrito a seguir para disponibilizar 
   a atual posição do aparelho.
    
-  \subsection{Algoritmo de Localização baseado em \textit{fingerprinting}}
+  \subsection{Algoritmo de Localização baseado em RSS \textit{fingerprinting}}
   
   O algoritmo de localização aqui implementado é dividido em duas etapas: aprendizagem e localização. Na etapa de aprendizagem, 
   onde o aplicativo guarda o \textit{fingerprint} dos APs da coordenada informada,
   e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP, média é utilizada 
   devido a grande oscilação do RSS de um AP:
   
-  As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
-  grande quantidade de APs disponíveis(até treze APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
-  
-  A etapa de onde é realizada a localização em si, é dividido em três fases. Primeiramente obtêm-se o \textit{fingerprint}
+  A segunda etapa, o processo de localização é dividido em três fases. Primeiramente obtêm-se o \textit{fingerprint}
   o aparelho com Android, da mesma forma feita na etapa de aprendizagem. 
   
   Na segunda fase, para cada três APs do \textit{fingerprint}, utiliza-se a distância Euclidiana, para fazer a comparação com os 
   dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
 e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local. 
-Assim obtêm-se um conjunto de pontos que são utilizada na próxima fase.
 
- 
+  Assim obtêm-se um conjunto de pontos que são utilizada na próxima fase. 
+  A estimativa da posição corrente do aparelho é obtida através do calculo do centroide $C(x_c,y_c)$ desses $n$ pontos: 
+
+  \begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.23]{images/centroid.png}
+  \caption{Calculo de um centroide de um conjunto de pontos.}
+  \label{fig:centroidFormula}
+  \end{figure}
+  
+  $C(x_c,y_c)$ minimiza a soma dos quadrados da distância euclidiana entre ele e os outros pontos do conjunto\cite{centroid}.
+  
+  \section{Análise e Resultados Obtidos}
+  As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
+  grande quantidade de APs disponíveis(até treze APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
   \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 
@@ -74,8 +84,9 @@ Assim obtêm-se um conjunto de pontos que são utilizada na próxima fase.
       -Onde obtem se o melhor ponto que resume os pontos obtidos.
     -Colocar imagem.
     \end{comment}
-\section{Análise e Resultados Obtidos}
+    
 
+  
 \begin{comment}
   Os experimentos serão realizados no departamento de informática da Universidade Federal do Paraná, 
   devido a grande quantidade de Access Points disponíveis e a disponibilidade da planta do departamento. 

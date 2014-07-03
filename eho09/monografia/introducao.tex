@@ -66,16 +66,16 @@ inferir o lugar ou possíveis lugares onde está.
   por Bahl e Padmanabhan no artigo \cite{wifiRadar}.
   
   O sistema implementado por Alexandre Umezaki e Walter Mazuroski é dividido em duas etapas. 
-  Na primeira etapa há a coleta de \textit{``fingerprints''} dos APs, onde são armazenadas em
-  uma tabela, cada registro da tabela,  possui as coordenadas das amostras, 
-  a força do sinal wifi e o nome do AP. 
+  Na primeira etapa há a coleta de \textit{``fingerprints''} de RSS dos \textit{access points}, onde são armazenadas em
+  uma tabela.%, cada registro da tabela,  possui as coordenadas das amostras, 
+  %a força do sinal wifi e o nome do AP. 
   
   A segunda etapa, na qual é realizado o processo de localização 
   em si, o sistema recebia a força do sinal wifi de três APs, e calculava a distância euclidiana dos 
   três APs observados em relação as amostras feitas na primeira etapa. A coordenada 
   que com a menor distância euclidiana é dada como a provável localização do nodo. 
   Esse sistema foi feito utilizando a linguagem C
-  e a A APIs (\textit{Application Programming Interface}) Wireless Tools e o Wireless Extension\cite{apic}
+  e as APIs (\textit{Application Programming Interface}) Wireless Tools e o Wireless Extension\cite{apic}
  para coletar as amostras de força do sinal.
   
   O sistema desenvolvido nesse trabalho se diferencia do sistema previamente apresentado em
@@ -83,6 +83,11 @@ inferir o lugar ou possíveis lugares onde está.
   o Android possui muitos recursos que podem ser empregados na robótica e a obtenção de informações 
   sobre os APs são facilmente obtidos pelo \textit{framework} de aplicativos dessa plataforma como
   pode ser visto em\cite{getRss}.
+  
+  A segunda diferença está na obtenção do posição do nodo. O sistema aqui implementado utiliza 
+  combinações de três \textit{access points} do \textit{fingerprint}, usando o mesmo 
+  processo de localização do primeiro sistema para a obtenção de um ponto, no final desse processo, haverá 
+  um conjunto de pontos, a posição é estimada através do calculo do centroide desse conjunto de pontos.
    
 \begin{comment}
   Implementar um sistema de localização \textit{indoor} baseado em RSS para robôs móveis, 
