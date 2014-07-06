@@ -1,9 +1,9 @@
 \chapter{Implementação}	 
 \label{implementacao}
   
-\section{Detalhes da implementação}
-
-  O aplicativo implementado nesse trabalho é composto essencialmente por três  classes: MainActivity, 
+  O aplicativo proposto nesse trabalho foi feito utilizando o Android SDK(\textit{Software Development Kit}) que pode ser 
+  facilmente obtido em\cite{sdk}, 
+  ele foi totalmente escrito em Java e XML. O aplicativo é composto essencialmente por três  classes: MainActivity, 
   Map e WifiInterface. 
   
   A comunicação entre as três classes é feito através da classe Handler\cite{handler} que permite o envio de 
@@ -12,62 +12,80 @@
   concluída, assim evitando o problema de travar a execução da \textit{thread} principal, 
   que já foi discutido anteriormente no capitulo sobre Android.
   
-  \subsection{MainActivity}
+  \section{MainActivity}
   A classe MainActivity é responsável por receber as entradas do usuário e exibir os resultados calculados.
   Ela também é responsável por instanciar as duas outras classes. Há três funções disponíveis: 
   \begin{itemize}
-   \item Scan: Obtém o \textit{fingerprint} da força do sinal wifi dos APs na coordenada informada.
-   \item Save Table: Salva a tabela de \textit{fingerprints} em um arquivo.
-   \item Get Position: Obtém a provável posição do aparelho. 
+   \item \textit{Scan}: Obtém o \textit{fingerprint} da força do sinal wifi dos APs na coordenada informada.
+   \item \textit{Save Table}: Salva a tabela de \textit{fingerprints} em um arquivo.
+   \item \textit{Get Position}: Obtém a provável posição do aparelho. 
   \end{itemize}
 
   A MainActivity cria novas \textit{threads} para executar cada uma das operações requerida pelo o usuário.
   
-  \subsection{WifiInterface}
+  \section{WifiInterface}
   
-  Esta classe centraliza todas as operações envolvendo wifi como verificar e habilitar a conectividade
-  com o wifi do aparelho e obter as informações dos APs(força do sinal, nome do AP, endereço, etc) 
+  Esta classe centraliza todas as operações envolvendo wifi, como verificar e habilitar a conectividade
+  com o wifi do aparelho e obter as informações dos APs(força do sinal, nome do AP, endereço MAC, etc) 
   que estão no alcance do aparelho. Para obter essas informações, o objeto dessa classe
   instancia um BroadcastReceiver que escuta o modulo wifi do aparelho e repassa 
-  as informações obtidas através do Handler para o componente que requisitou elas.
+  as informações obtidas através do \textit{Handler} para o componente que requisitou elas.
   
-  \subsection{Map}
-  Esta classe é o núcleo da aplicação, ela carrega e armazena o mapa de \textit{fingerprints} de RSS que estão 
+  \section{Map}
+  Esta classe é o núcleo da aplicação, ela carrega memória e armazena o mapa de \textit{fingerprints} de RSS que estão 
   guardadas em arquivo. 
   O \textit{fingerprints} é composto 
   pela coordenada informada pelo usuário e as informações obtidas pela classe WifiInterface. 
   Com o mapa de \textit{fingerprints} essa classe executa o algoritmo descrito a seguir para disponibilizar 
-  a atual posição do aparelho.
+  a posição corrente do aparelho.
    
-  \subsection{Algoritmo de Localização baseado em RSS \textit{fingerprinting}}
+  \section{Algoritmo de Localização baseado em RSS \textit{fingerprinting}}
   
-  O algoritmo de localização aqui implementado é dividido em duas etapas: aprendizagem e localização. Na etapa de aprendizagem, 
-  onde o aplicativo guarda o \textit{fingerprint} dos APs da coordenada informada,
-  e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP, média é utilizada 
-  devido a grande oscilação do RSS de um AP:
+  O algoritmo de localização aqui implementado é dividido em duas etapas: aprendizagem e determinação. Na etapa de aprendizagem, 
+  o aplicativo guarda o \textit{fingerprint} dos APs da coordenada informada,
+  e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP. A média é utilizada 
+  devido a oscilação da força do sinal medido pelo aparelho. O quantidade de \textit{fingerprints} coletados tem um grande 
+  impacto na precisão da localização como pode ser observado em \cite{wifiRadar}.  
   
-  A segunda etapa, o processo de localização é dividido em três fases. Primeiramente obtêm-se o \textit{fingerprint}
-  o aparelho com Android, da mesma forma feita na etapa de aprendizagem. 
-  
-  Na segunda fase, para cada três APs do \textit{fingerprint}, utiliza-se a distância Euclidiana, para fazer a comparação com os 
+  Na segunda etapa, o processo de localização do aparelho é dividido em três fases. 
+  Primeiramente, obtêm-se o \textit{fingerprint} da localidade
+  do aparelho com Android, da mesma forma feita na etapa de aprendizagem. 
+    
+  Na segunda fase, calcula-se a distância Euclidiana, para fazer a comparação com os 
   dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
-e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local. 
-
-  Assim obtêm-se um conjunto de pontos que são utilizada na próxima fase. 
-  A estimativa da posição corrente do aparelho é obtida através do calculo do centroide $C(x_c,y_c)$ desses $n$ pontos: 
-
-  \begin{figure}[ht]
+e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local, 
+ esse processo é repetido para cada conjunto de três APs do \textit{fingerprint}. 
+ Assim obtêm-se um conjunto de $n$ pontos que são utilizada na próxima fase. 
+  
+  A estimativa da posição corrente do aparelho é obtida através do calculo do centroide $C(x_c,y_c)$ desses $n$ pontos:
+  \begin{figure}[hbt]
   \centering
   \includegraphics[scale=0.23]{images/centroid.png}
   \caption{Calculo de um centroide de um conjunto de pontos.}
   \label{fig:centroidFormula}
   \end{figure}
   
-  $C(x_c,y_c)$ minimiza a soma dos quadrados da distância euclidiana entre ele e os outros pontos do conjunto\cite{centroid}.
+  $C(x_c,y_c)$ minimiza a soma dos quadrados da distância euclidiana entre ele e os outros $n$ pontos do conjunto\cite{centroid}.
   
-  \section{Análise e Resultados Obtidos}
+      Este algoritmo parte do principio da correlação espacial das localidades adjacentes\cite{fingerPrint2}, 
+  que basicamente significa que em uma determinada região do mapa, o RSS dos APs
+  mesmo com alterações do ambiente, se mantém com valores similares. Para estimar a posição do aparelho, 
+  obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar, e a posição final do aparelho 
+  e obtida através do centroide desse conjunto de pontos, assim adicionando uma maior robustez 
+  a técnica de RSS \textit{fingerprinting}.
+  
+  \section{Testes e Resultados Obtidos}
+  
   As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
   grande quantidade de APs disponíveis(até treze APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
+  Os testes foram executados em um \textit{smartphone} LG Nexus 4, com Android KitKat 4.4.4.
+  
+   \begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.9]{images/mapadinf_andar1_492x327.png}
+  \caption{Mapa do primeiro andar do Departamento de Informática da UFPR.}
+  \label{fig:mapaDinf}
+  \end{figure}
   \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 

@@ -74,14 +74,14 @@ inferir o lugar ou possíveis lugares onde está.
   em si, o sistema recebia a força do sinal wifi de três APs, e calculava a distância euclidiana dos 
   três APs observados em relação as amostras feitas na primeira etapa. A coordenada 
   que com a menor distância euclidiana é dada como a provável localização do nodo. 
-  Esse sistema foi feito utilizando a linguagem C
+  Esse sistema foi feito para Linux, utilizando a linguagem C
   e as APIs (\textit{Application Programming Interface}) Wireless Tools e o Wireless Extension\cite{apic}
  para coletar as amostras de força do sinal.
   
   O sistema desenvolvido nesse trabalho se diferencia do sistema previamente apresentado em
   especialmente dois aspectos. Primeiro a plataforma adotada: Android. Como mostrado anteriormente,
   o Android possui muitos recursos que podem ser empregados na robótica e a obtenção de informações 
-  sobre os APs são facilmente obtidos pelo \textit{framework} de aplicativos dessa plataforma como
+  sobre os \textit{access points} são facilmente obtidos pelo \textit{framework} de aplicativos dessa plataforma como
   pode ser visto em\cite{getRss}.
   
   A segunda diferença está na obtenção do posição do nodo. O sistema aqui implementado utiliza 
