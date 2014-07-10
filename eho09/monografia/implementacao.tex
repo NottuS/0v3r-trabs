@@ -74,11 +74,14 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   e obtida através do centroide desse conjunto de pontos, assim adicionando uma maior robustez 
   a técnica de RSS \textit{fingerprinting}.
   
-  \section{Testes e Resultados Obtidos}
+  \section{Análise e Resultados Obtidos}
   
   As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
   grande quantidade de APs disponíveis(até treze APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
-  Os testes foram executados em um \textit{smartphone} LG Nexus 4, com Android KitKat 4.4.4.
+  Os testes foram executados em um \textit{smartphone} LG Nexus 4, com Android KitKat 4.4.4. 
+  -Foram obtidos 67 \textit{fingerprints} de diferentes coordenadas.
+  -Foram realizados 35 testes.
+  
   
    \begin{figure}[hbt]
   \centering
@@ -86,7 +89,60 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   \caption{Mapa do primeiro andar do Departamento de Informática da UFPR.}
   \label{fig:mapaDinf}
   \end{figure}
-  \begin{comment}
+     \clearpage
+     \subsection{Resultados Obtidos}
+     
+     \begin{table}[h]
+	  \resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
+         \begin{tabular}{| c | c | c | p{3cm} |}
+	    \hline
+	    Teste  & Estimativa(x,y) & Real(x,y) & Erro(metros) \\ \hline
+	    1 & (4,0) & (4,2) & 2 \\ \hline
+	    2 & (4,0) & (4,3) & 3 \\ \hline
+	    3 & (6,0) & (7,1) & 1.41 \\ \hline
+	    4 & (9,3) & (8,5) & 2.24 \\ \hline
+	    5 & (9,8) & (9,9) & 1 \\ \hline
+	    6 & (9,9) & (9,11) & 2 \\ \hline
+	    7 & (9,10) & (10,8) & 2.24 \\ \hline
+	    8 & (9,12) & (9,12) & 0 \\ \hline
+	    9 & (9,13) & (7,11) & 2.83 \\ \hline
+	    10 & (10,14) & (9,14) & 1 \\ \hline
+	    11 & (11,15) & (12,16) & 1.41 \\ \hline
+	    12 & (11,15) & (10,15) & 1 \\ \hline
+	    13 & (12,15) & (12,15) & 0 \\ \hline	    
+	    14 & (14,15) & (12,13) & 2.83 \\ \hline
+	    15 & (9,16) & (9,14) & 2 \\ \hline
+	    16 & (9,18) & (11,20) & 2.83 \\ \hline
+	    17 & (8,20) & (10,19) & 2.24 \\ \hline
+	    18 & (10,19) & (9,19) & 1 \\ \hline
+	    19 & (7,18) & (8,18) & 1 \\ \hline
+	    20 & (6,17) & (7,18) & 1.41 \\ \hline
+	    21 & (6,19) & (7,18) & 1.41 \\ \hline
+	    22 & (6,19) & (5,17) & 1 \\ \hline
+	    23& (4,19) & (5,16) & 2.24 \\ \hline
+	    24 & (4,21) & (4,21) & 0 \\ \hline
+	    25 & (4,15) & (5,16) & 1.41 \\ \hline
+	    26 & (4,11) & (9,12) & 5.1 \\ \hline
+	    27 & (4,9) & (5,12) & 3.2 \\ \hline
+	    28 & (4,6) & (5,8) & 2.24 \\ \hline
+	    29 & (4,3) & (7,8) & 5.83 \\ \hline
+	    30 & (4,2) & (5,3) & 1.41 \\ \hline
+	    31 & (5,0) & (7,1) & 2.24 \\ \hline
+	    32 & (9,1) & (6,5) & 5 \\ \hline
+	    33 & (9,7) & (7,9) & 2.83 \\ \hline
+	    34 & (9,7) & (7,9) & 2.83 \\ \hline 
+	    35 & (9,5) & (7,8) & 3.6 \\ \hline 
+	 \end{tabular}
+	 \caption[Table caption text]{Tabela com os  resultados obtidos. }
+	 \label{table:name}
+	 
+	\end{minipage} }
+     \end{table}
+     
+    -1m - 25,7 \%
+    -3 - 85,7 \%
+    -5 - 91,4 \%
+    \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 
     média de cada força de sinal wifi de cada AP.
@@ -102,8 +158,6 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
       -Onde obtem se o melhor ponto que resume os pontos obtidos.
     -Colocar imagem.
     \end{comment}
-    
-
   
 \begin{comment}
   Os experimentos serão realizados no departamento de informática da Universidade Federal do Paraná, 
