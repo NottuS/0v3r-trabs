@@ -69,20 +69,22 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   
       Este algoritmo parte do principio da correlação espacial das localidades adjacentes\cite{fingerPrint2}, 
   que basicamente significa que em uma determinada região do mapa, o RSS dos APs
-  mesmo com alterações do ambiente, se mantém com valores similares. Para estimar a posição do aparelho, 
+  mesmo com alterações do ambiente, se mantém com valores similares. Tirando proveito disso, para estimar a posição do aparelho, 
   obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar, e a posição final do aparelho 
   e obtida através do centroide desse conjunto de pontos, assim adicionando uma maior robustez 
   a técnica de RSS \textit{fingerprinting}.
   
   \section{Análise e Resultados Obtidos}
+ 
+  Os testes foram realizados no primeiro andar do departamento de informática(DINF) da Universidade Federal do Paraná devido a 
+  grande quantidade de APs disponíveis(até treze APs em uma coordenada), o que contribui para a precisão da aplicação.
+  O aparelho utilizado nos testes foi o \textit{smartphone} LG Nexus 4 com Android KitKat versão 4.4.4.
   
-  As amostras foram obtidos do primeiro andar do departamento de informática da Universidade Federal do Paraná devido a 
-  grande quantidade de APs disponíveis(até treze APs em uma coordenada), a imagem abaixo mostra os locais das amostras retiradas.
-  Os testes foram executados em um \textit{smartphone} LG Nexus 4, com Android KitKat 4.4.4. 
-  -Foram obtidos 67 \textit{fingerprints} de diferentes coordenadas.
-  -Foram realizados 35 testes.
-  
-  
+  \subsection{Testes realizados}
+  Na etapa de aprendizagem, para compor o mapa de \textit{fingerprints}, foram coletados \textit{fingerprints} de 67 locais distintos,
+  onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF. 
+  A imagem abaixo mostra os locais das amostras retiradas:
+   
    \begin{figure}[hbt]
   \centering
   \includegraphics[scale=0.9]{images/mapadinf_andar1_492x327.png}
@@ -90,24 +92,28 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   \label{fig:mapaDinf}
   \end{figure}
      \clearpage
-     \subsection{Resultados Obtidos}
+     
+     Para testar a eficácia da aplicação na etapa de determinação, 
+     foram realizados 35 testes. A tabela abaixo mostra os resultados obtidos:
      
      \begin{table}[h]
+	 \begin{center}
+	  
 	  \resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
-         \begin{tabular}{| c | c | c | p{3cm} |}
+         \centering\begin{tabular}{| c | c | c | p{3cm} |}
 	    \hline
-	    Teste  & Estimativa(x,y) & Real(x,y) & Erro(metros) \\ \hline
+	    Teste  & Estimativa($x$,$y$) & Real($x$,$y$) & Erro(metros) \\ \hline
 	    1 & (4,0) & (4,2) & 2 \\ \hline
-	    2 & (4,0) & (4,3) & 3 \\ \hline
-	    3 & (6,0) & (7,1) & 1.41 \\ \hline
+	    2 & (4,0) & (4,5) & 5 \\ \hline
+	    3 & (6,0) & (7,3) & 3.16 \\ \hline
 	    4 & (9,3) & (8,5) & 2.24 \\ \hline
 	    5 & (9,8) & (9,9) & 1 \\ \hline
 	    6 & (9,9) & (9,11) & 2 \\ \hline
-	    7 & (9,10) & (10,8) & 2.24 \\ \hline
+	    7 & (9,10) & (12,8) & 3.61 \\ \hline
 	    8 & (9,12) & (9,12) & 0 \\ \hline
 	    9 & (9,13) & (7,11) & 2.83 \\ \hline
-	    10 & (10,14) & (9,14) & 1 \\ \hline
-	    11 & (11,15) & (12,16) & 1.41 \\ \hline
+	    10 & (10,14) & (9,16) & 2.24 \\ \hline
+	    11 & (11,15) & (13,16) & 2.24 \\ \hline
 	    12 & (11,15) & (10,15) & 1 \\ \hline
 	    13 & (12,15) & (12,15) & 0 \\ \hline	    
 	    14 & (14,15) & (12,13) & 2.83 \\ \hline
@@ -123,7 +129,7 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
 	    24 & (4,21) & (4,21) & 0 \\ \hline
 	    25 & (4,15) & (5,16) & 1.41 \\ \hline
 	    26 & (4,11) & (9,12) & 5.1 \\ \hline
-	    27 & (4,9) & (5,12) & 3.2 \\ \hline
+	    27 & (4,9) & (5,12) & 3.16 \\ \hline
 	    28 & (4,6) & (5,8) & 2.24 \\ \hline
 	    29 & (4,3) & (7,8) & 5.83 \\ \hline
 	    30 & (4,2) & (5,3) & 1.41 \\ \hline
@@ -137,12 +143,23 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
 	 \label{table:name}
 	 
 	\end{minipage} }
+		 \end{center}
      \end{table}
      
-    -1m - 25,7 \%
-    -3 - 85,7 \%
-    -5 - 91,4 \%
-    \begin{comment}
+      Os resultados mostram que:
+     
+     \begin{itemize}
+      \item 22,8\% das estimativas possuem precisão de 1 metro ou menos.
+      \item 77,1\% das estimativas possuem precisão de 3 metros ou menos.
+      \item 91,4 \% das estimativas possuem precisão de 5 metros ou menos.
+     \end{itemize}
+     \clearpage
+     \subsection{Análise dos Resultados Obtidos}
+      
+      Analisando os resultados obtidos nos testes realizados no aplicativo implementado nesse
+      trabalho, pode-se concluir que ele possui uma precisão satisfatória considerando um raio de 2 
+      até 5 metros da posição real do aparelho.
+     \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 
     média de cada força de sinal wifi de cada AP.
