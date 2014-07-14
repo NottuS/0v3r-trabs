@@ -1,14 +1,15 @@
 \chapter{Implementação}	 
 \label{implementacao}
-  
-  O aplicativo proposto nesse trabalho foi feito utilizando o Android SDK(\textit{Software Development Kit}) que pode ser 
+  Este capitulo apresenta os detalhes de implementação do sistema proposto nesse trabalho, os testes realizados, os resultados obtidos 
+  e a análise dos mesmos.
+  O aplicativo que implementa o sistema proposto, foi desenvolvido utilizando o Android SDK(\textit{Software Development Kit}) que pode ser 
   facilmente obtido em\cite{sdk}, 
   ele foi totalmente escrito em Java e XML. O aplicativo é composto essencialmente por três  classes: MainActivity, 
   Map e WifiInterface. 
   
-  A comunicação entre as três classes é feito através da classe Handler\cite{handler} que permite o envio de 
+  A comunicação entre as três classes é feito através da classe Handler\cite{handler}(disponibilizada no \textit{framework}) que permite o envio de 
   mensagens entre \textit{threads} e componentes. As principais operações disponíveis no aplicativo não 
-  são executadas na \textit{thread} principal, pois, essas operações podem levar muito tempo para serem 
+  são executadas na \textit{thread} principal, pois essas operações podem levar muito tempo para serem 
   concluída, assim evitando o problema de travar a execução da \textit{thread} principal, 
   que já foi discutido anteriormente no capitulo sobre Android.
   
@@ -67,7 +68,7 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   
   $C(x_c,y_c)$ minimiza a soma dos quadrados da distância euclidiana entre ele e os outros $n$ pontos do conjunto\cite{centroid}.
   
-      Este algoritmo parte do principio da correlação espacial das localidades adjacentes\cite{fingerPrint2}, 
+      Este algoritmo utiliza o preceito da correlação espacial das localidades adjacentes\cite{fingerPrint2}, 
   que basicamente significa que em uma determinada região do mapa, o RSS dos APs
   mesmo com alterações do ambiente, se mantém com valores similares. Tirando proveito disso, para estimar a posição do aparelho, 
   obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar, e a posição final do aparelho 
@@ -79,7 +80,7 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   Os testes foram realizados no primeiro andar do departamento de informática(DINF) da Universidade Federal do Paraná devido a 
   grande quantidade de APs disponíveis(até treze APs em uma coordenada), o que contribui para a precisão da aplicação.
   O aparelho utilizado nos testes foi o \textit{smartphone} LG Nexus 4 com Android KitKat versão 4.4.4.
-  
+  \clearpage
   \subsection{Testes realizados}
   Na etapa de aprendizagem, para compor o mapa de \textit{fingerprints}, foram coletados \textit{fingerprints} de 67 locais distintos,
   onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF. 
@@ -103,43 +104,43 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
          \centering\begin{tabular}{| c | c | c | p{3cm} |}
 	    \hline
 	    Teste  & Estimativa($x$,$y$) & Real($x$,$y$) & Erro(metros) \\ \hline
-	    1 & (4,0) & (4,2) & 2 \\ \hline
-	    2 & (4,0) & (4,5) & 5 \\ \hline
-	    3 & (6,0) & (7,3) & 3.16 \\ \hline
-	    4 & (9,3) & (8,5) & 2.24 \\ \hline
-	    5 & (9,8) & (9,9) & 1 \\ \hline
-	    6 & (9,9) & (9,11) & 2 \\ \hline
-	    7 & (9,10) & (12,8) & 3.61 \\ \hline
-	    8 & (9,12) & (9,12) & 0 \\ \hline
-	    9 & (9,13) & (7,11) & 2.83 \\ \hline
-	    10 & (10,14) & (9,16) & 2.24 \\ \hline
-	    11 & (11,15) & (13,16) & 2.24 \\ \hline
-	    12 & (11,15) & (10,15) & 1 \\ \hline
-	    13 & (12,15) & (12,15) & 0 \\ \hline	    
-	    14 & (14,15) & (12,13) & 2.83 \\ \hline
-	    15 & (9,16) & (9,14) & 2 \\ \hline
-	    16 & (9,18) & (11,20) & 2.83 \\ \hline
-	    17 & (8,20) & (10,19) & 2.24 \\ \hline
-	    18 & (10,19) & (9,19) & 1 \\ \hline
-	    19 & (7,18) & (8,18) & 1 \\ \hline
-	    20 & (6,17) & (7,18) & 1.41 \\ \hline
-	    21 & (6,19) & (7,18) & 1.41 \\ \hline
-	    22 & (6,19) & (5,17) & 1 \\ \hline
-	    23& (4,19) & (5,16) & 2.24 \\ \hline
-	    24 & (4,21) & (4,21) & 0 \\ \hline
-	    25 & (4,15) & (5,16) & 1.41 \\ \hline
-	    26 & (4,11) & (9,12) & 5.1 \\ \hline
-	    27 & (4,9) & (5,12) & 3.16 \\ \hline
-	    28 & (4,6) & (5,8) & 2.24 \\ \hline
-	    29 & (4,3) & (7,8) & 5.83 \\ \hline
-	    30 & (4,2) & (5,3) & 1.41 \\ \hline
-	    31 & (5,0) & (7,1) & 2.24 \\ \hline
-	    32 & (9,1) & (6,5) & 5 \\ \hline
-	    33 & (9,7) & (7,9) & 2.83 \\ \hline
-	    34 & (9,7) & (7,9) & 2.83 \\ \hline 
-	    35 & (9,5) & (7,8) & 3.6 \\ \hline 
+	    1 & (4, 0) & (4, 2) & 2 \\ \hline
+	    2 & (4, 0) & (4, 5) & 5 \\ \hline
+	    3 & (6, 0) & (7, 3) & 3.16 \\ \hline
+	    4 & (9, 3) & (8, 5) & 2.24 \\ \hline
+	    5 & (9, 8) & (9, 9) & 1 \\ \hline
+	    6 & (9, 9) & (9, 11) & 2 \\ \hline
+	    7 & (9, 10) & (12, 8) & 3.61 \\ \hline
+	    8 & (9, 12) & (9, 12) & 0 \\ \hline
+	    9 & (9, 13) & (7, 11) & 2.83 \\ \hline
+	    10 & (10, 14) & (9, 16) & 2.24 \\ \hline
+	    11 & (11, 15) & (13, 16) & 2.24 \\ \hline
+	    12 & (11, 15) & (10, 15) & 1 \\ \hline
+	    13 & (12, 15) & (12, 15) & 0 \\ \hline	    
+	    14 & (14, 15) & (12, 13) & 2.83 \\ \hline
+	    15 & (9, 16) & (9 ,14) & 2 \\ \hline
+	    16 & (9, 18) & (11, 20) & 2.83 \\ \hline
+	    17 & (8, 20) & (10, 19) & 2.24 \\ \hline
+	    18 & (10, 19) & (9, 19) & 1 \\ \hline
+	    19 & (7, 18) & (8, 18) & 1 \\ \hline
+	    20 & (6, 17) & (7, 18) & 1.41 \\ \hline
+	    21 & (6, 19) & (7, 18) & 1.41 \\ \hline
+	    22 & (6, 19) & (5, 17) & 1 \\ \hline
+	    23& (4, 19) & (5, 16) & 2.24 \\ \hline
+	    24 & (4, 21) & (4, 21) & 0 \\ \hline
+	    25 & (4, 15) & (5, 16) & 1.41 \\ \hline
+	    26 & (4, 11) & (9, 12) & 5.1 \\ \hline
+	    27 & (4, 9) & (5, 12) & 3.16 \\ \hline
+	    28 & (4, 6) & (5, 8) & 2.24 \\ \hline
+	    29 & (4, 3) & (7 ,8) & 5.83 \\ \hline
+	    30 & (4, 2) & (5, 3) & 1.41 \\ \hline
+	    31 & (5, 0) & (7, 1) & 2.24 \\ \hline
+	    32 & (9, 1) & (6, 5) & 5 \\ \hline
+	    33 & (9, 7) & (7, 9) & 2.83 \\ \hline
+	    34 & (9, 7) & (7, 9) & 2.83 \\ \hline 
+	    35 & (9, 5) & (7, 8) & 3.6 \\ \hline 
 	 \end{tabular}
-	 \caption[Table caption text]{Tabela com os  resultados obtidos. }
+	 \caption[Table caption text]{Tabela com os resultados obtidos. }
 	 \label{table:name}
 	 
 	\end{minipage} }
@@ -156,9 +157,21 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
      \clearpage
      \subsection{Análise dos Resultados Obtidos}
       
-      Analisando os resultados obtidos nos testes realizados no aplicativo implementado nesse
-      trabalho, pode-se concluir que ele possui uma precisão satisfatória considerando um raio de 2 
-      até 5 metros da posição real do aparelho.
+      Analisando os resultados obtidos nos testes realizados, pode-se concluir que 
+      o aplicativo implementado nesse trabalho, possui uma precisão satisfatória 
+      considerando um raio de 2 até 5 metros da posição real do aparelho.
+      
+      Aparentemente, a oscilação do RSS e a correlação 
+      espacial das localidades adjacentes podem explicar a baixa precisão aguda 
+      obtida 22,8\%(até 1 metro), pois com esses resultados, pode-se concluir que em um 
+      raio de até 5 metros em relação a posição real do aparelho, os \textit{fingerprints} 
+      dessa região são muito semelhantes, o que dificulta uma precisão mais aguda da técnica.
+      
+      Essa técnica pode ser bastante proveitosa na localização de robôs móveis, pois há 
+      a possibilidade de utilizar outros sensores disponíveis nele, para obter uma precisão
+      mais aguda, incrementando o \textit{fingerprint} com os dados coletados por 
+      esses sensores e assim adicionando mais características para distinguir os \textit{fingerprints}.
+      
      \begin{comment}
   -Criação da tabela:
     -para a coordenada em questão são obtidas 8 amostras da força do sinal wifi, e é feita a 
