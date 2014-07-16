@@ -44,32 +44,32 @@
   
   O algoritmo de localização aqui implementado é dividido em duas etapas: aprendizagem e determinação. Na etapa de aprendizagem, 
   o aplicativo guarda o \textit{fingerprint} dos APs da coordenada informada,
-  e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP. A média é utilizada 
-  devido a oscilação da força do sinal medido pelo aparelho. O quantidade de \textit{fingerprints} coletados tem um grande 
+  e salva em uma tabela. O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP, a média é utilizada 
+  devido a oscilação da força do sinal medido pelo aparelho. Vale ressaltar que a quantidade de \textit{fingerprints} coletados tem um grande 
   impacto na precisão da localização como pode ser observado em \cite{wifiRadar}.  
   
-  Na segunda etapa, o processo de localização do aparelho é dividido em três fases. 
-  Primeiramente, obtêm-se o \textit{fingerprint} da localidade
-  do aparelho com Android, da mesma forma feita na etapa de aprendizagem. 
-    
-  Na segunda fase, calcula-se a distância Euclidiana, para fazer a comparação com os 
-  dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$, 
-e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele local, 
- esse processo é repetido para cada conjunto de três APs do \textit{fingerprint}. 
+  Na segunda etapa, o processo de localização do aparelho é dividido em três fases:
+  \begin{enumerate}
+   \item Obtêm-se o \textit{fingerprint} da localidade
+  do aparelho com Android, da mesma forma feita na etapa de aprendizagem.
+  \item Calcula-se a distância euclidiana, para fazer a comparação com os 
+  dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$.
+  A entrada com a menor distância euclidiana é escolhida como uma provável estimativa da
+  posição do aparelho, esse processo é repetido para cada conjunto de três APs do \textit{fingerprint} coletado na fase 1. 
  Assim obtêm-se um conjunto de $n$ pontos que são utilizada na próxima fase. 
-  
-  A estimativa da posição corrente do aparelho é obtida através do calculo do centroide $C(x_c,y_c)$ desses $n$ pontos:
+ \item A estimativa da posição corrente do aparelho é obtida através do calculo do centroide $C(x_c,y_c)$ desses $n$ pontos:
   \begin{figure}[hbt]
   \centering
   \includegraphics[scale=0.23]{images/centroid.png}
   \caption{Calculo de um centroide de um conjunto de pontos.}
   \label{fig:centroidFormula}
   \end{figure}
-  
+  \end{enumerate}
+   
   $C(x_c,y_c)$ minimiza a soma dos quadrados da distância euclidiana entre ele e os outros $n$ pontos do conjunto\cite{centroid}.
   
       Este algoritmo utiliza o preceito da correlação espacial das localidades adjacentes\cite{fingerPrint2}, 
-  que basicamente significa que em uma determinada região do mapa, o RSS dos APs
+  ou seja, em uma determinada região do mapa, o RSS dos APs
   mesmo com alterações do ambiente, se mantém com valores similares. Tirando proveito disso, para estimar a posição do aparelho, 
   obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar, e a posição final do aparelho 
   e obtida através do centroide desse conjunto de pontos, assim adicionando uma maior robustez 
@@ -77,8 +77,8 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
   
   \section{Análise e Resultados Obtidos}
  
-  Os testes foram realizados no primeiro andar do departamento de informática(DINF) da Universidade Federal do Paraná devido a 
-  grande quantidade de APs disponíveis(até treze APs em uma coordenada), o que contribui para a precisão da aplicação.
+  Os testes foram realizados no primeiro andar do departamento de informática(DINF) da Universidade Federal do Paraná, devido a 
+  grande quantidade de APs disponíveis(até treze APs em uma coordenada), o que contribui para a precisão da técnica.
   O aparelho utilizado nos testes foi o \textit{smartphone} LG Nexus 4 com Android KitKat versão 4.4.4.
   \clearpage
   \subsection{Testes realizados}
@@ -88,7 +88,7 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
    
    \begin{figure}[hbt]
   \centering
-  \includegraphics[scale=0.9]{images/mapadinf_andar1_492x327.png}
+  \includegraphics[scale=0.9]{images/TTmapadinf_andar1_492x327.png}
   \caption{Mapa do primeiro andar do Departamento de Informática da UFPR.}
   \label{fig:mapaDinf}
   \end{figure}
@@ -168,9 +168,9 @@ e assim encontrar o ponto que mais se aproxima dos parâmetros coletados naquele
       dessa região são muito semelhantes, o que dificulta uma precisão mais aguda da técnica.
       
       Essa técnica pode ser bastante proveitosa na localização de robôs móveis, pois há 
-      a possibilidade de utilizar outros sensores disponíveis nele, para obter uma precisão
-      mais aguda, incrementando o \textit{fingerprint} com os dados coletados por 
-      esses sensores e assim adicionando mais características para distinguir os \textit{fingerprints}.
+      a possibilidade de utilizar outros sensores neles disponíveis, para aumentar a precisão
+      da técnica, incrementando o \textit{fingerprint} com os dados coletados por 
+      esses sensores, e assim adicionando mais características para distinguir os \textit{fingerprints}.
       
      \begin{comment}
   -Criação da tabela:
