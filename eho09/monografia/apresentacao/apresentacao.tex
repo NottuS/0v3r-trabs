@@ -116,7 +116,7 @@
 
 \section{Robôs Móveis}
 
-\begin{frame}{Introdução}
+\begin{frame}{Robôs Móveis}
 \begin{itemize}
  \item São sistemas incorporados no mundo real que se movem autonomamente e interagem com ele para realizar suas tarefas.
  \item Aplicações: limpeza, corte de grama, detectar riscos, explorações de ambientes desconhecidos, 
@@ -130,7 +130,7 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
 \begin{frame}{Localização}
 
  \begin{itemize}
-  \item A obtenção da posição e orientação do robô no mapa: pose($x$, $y$, $\theta$).
+  \item A obtenção da posição e orientação do robô no mapa: \textbf{pose($x$, $y$, $\theta$)}.
   
   \item Identificação e subsequente triangulação por ângulos e por distância dos \textit{landmarks}.
   
@@ -147,8 +147,8 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
   \item Ao invés de calcular a posição exata, calcula-se a 
   probabilidade do robô estar numa certa posição.
   \item A localização probabilística nos da a distribuição de probabilidade de todas as possíveis 
- configurações do robô: \textit{belief}.
-  \item Principais abordagens: localização de Markov e filtro de Kalman.
+ configurações do robô: \textit{\textbf{belief}}.
+  \item Principais abordagens: \textbf{localização de Markov} e \textbf{filtro de Kalman}.
 \end{itemize}
 \end{frame}
 
@@ -157,8 +157,8 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
 \item Quando o robô se movimenta a incerteza de sua posição aumenta. 
 \item A cada deslocamento do robô faz a atualização da distribuição de probabilidade que pode ser dividida em 2 passos:
    \begin{itemize}
-  \item Atualização de ação: o robô se move e estima sua posição através estimação da odometria: incerteza aumenta.
-  \item Atualização de percepção: o robô faz uma observação usando seus sensores e corrige sua posição, 
+  \item \textbf{Atualização de ação}: o robô se move e estima sua posição através estimação da odometria: incerteza aumenta.
+  \item \textbf{Atualização de percepção}: o robô faz uma observação usando seus sensores e corrige sua posição, 
   combinando seu \textit{belief} com a probabilidade das observações feitas: incerteza diminui.
  \end{itemize}
  
@@ -166,6 +166,7 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
  \end{itemize}
 \end{frame}
  
+ \begin{comment}
 \begin{frame}{Localização de Markov}
 \begin{itemize}
  \item Encontra caminhos mínimos de maneira rápida e sem ciclos % pois utiliza o Dijkstra
@@ -183,21 +184,30 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
  \item Mantém mais de um caminho mínimo para um dado destino % caminhos devem possuir valores de métrica idênticos  % aumenta eficiencia pois possibilita a divisão do trafego 
 \end{itemize}
 \end{frame}
+\end{comment}
 
 \begin{frame}{Construção de Mapas}
+A tarefa de mapeamento corresponde à atribuição de valores aos elementos do mapa, relacionando cada um a uma certa 
+posição nele.
 \begin{itemize}
- \item Cada roteador mantém uma tabela de distâncias % cada linha mostra qual enlace deve ser usado para o caminho de menor custo
-\end{itemize}
-\begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.35]{vetor_de_distancia.jpg}
-\end{figure}
-\begin{itemize}
- \item A partir dos valores selecionados é criada a tabela de roteamento
- \item Periodicamente, cada roteador envia um cópia da sua tabela de roteamento aos roteadores adjacentes % quando ocorre mudanças na rede, stop() quando a ocorre mais troca de mensagem
+ \item \textbf{Mapas Métricos}
+    \begin{itemize}
+    \item Mapa detalhado do ambiente, dividido em uma rede de células.
+    \item Cada célula contem informações do ambiente como espaço ocupado por um objeto, 
+    espaço livre para navegação, etc.
+    \item Localização é mais precisa e menos sujeito a ambiguidades.
+    \end{itemize}
+
+ \item \textbf{Mapas Topológicos}
+      \begin{itemize}
+    \item  Marcos e relações são os elementos dos mapas topológicos, concentra-se apenas em pontos de interesse..
+    \item Essas relações podem ser de vários tipos, tais como o deslocamento
+relativo entre dois marcos, a existência de um caminho entre eles,
+quantidade de energia gasto em um caminho entre marcos, etc.
+    \end{itemize}
 \end{itemize}
 \end{frame}
-
+\begin{comment}
 \begin{frame}{Mapas Métricos}
 Periodicamente, cada roteador:
 \begin{itemize}
@@ -213,64 +223,51 @@ Periodicamente, cada roteador:
  \olditem envia as informações do estado dos enlaces aos roteadores adjacentes % quando ocorre mudanças na rede, stop() quando a ocorre mais troca de mensagem
 \end{itemize}
 \end{frame}
+\end{comment}
 
 \begin{frame}{SLAM}
 \begin{itemize}
- \item O \textit{Open Shortest Path First} (OSPF) é um protocolo de roteamento interno % 
- \item Pertence a classe \textbf{estado de enlace} % 
- \item Utiliza o algoritmo de Dijkstra para calcular o caminho mínimo de uma origem para cada destino da rede %
+  \item O robô inicia a navegação em uma localização desconhecida e em um ambiente desconhecido.
+  \item Constrói um mapa desse ambiente de maneira incremental.
+  \item Utiliza esse mapa simultaneamente para calcular a sua localização.
+  \item Principais abordagens:
+  \begin{itemize}
+  \item \textbf{Extended Kalman Filter SLAM}. 
+  \item \textbf{Filtro de partículas}.
+  \item \textbf{GraphSLAM}.
+  \end{itemize}
 \end{itemize}
 \end{frame}
 
 \section{Localização em Rede de Sensores sem Fio} % Descreva o NS-3
 
-\begin{frame}{Introdução}
+\begin{frame}{Rede de Sensores sem Fio}
 \begin{itemize}
- \item O \textit{Network Simulator 3} (NS-3) é um simulador de eventos discretos % 
- \item Voltado principalmente para simulação de redes de computadores %  
- \item É um software livre % 
- \item É construído como um sistema de bibliotecas escritas em C++ % 
+ \item Coleta informações em um campo monitorado.
+ \item Nodos da rede podem ser estáticos ou móveis.
+ \item O calculo da localização depende das informações localização dos nodos na rede.
+ \item Geralmente requerem que os nodos conhecidos, estejam dentro 
+	do raio de comunicação dos sensores em comum.
+  \item A posição de um certo nodo pode ser obtida 
+  a partir da posição ou direção dos nodos conhecidos por ele.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{TOA(\textit{Time of Arrival})}
-Os desafios de simular o OSPF já se iniciam na instalação
+
 \begin{itemize}
- \item Três guias de instalação diferentes %  Uma para o somente o NS-3, uma para NS-3 + DCE, uma para NS-3 + DCE + Quagga
-  \begin{enumerate}
-   \olditem Somente o NS-3 % 
-   \olditem O NS-3 e o DCE %
-   \olditem O NS-3 e o DCE com suporte para o Quagga % 
-  \end{enumerate}
-  \begin{itemize}
-   \olditem O DCE é um módulo do NS-3 que oferece suporte a aplicações reais % 
-   \olditem O Quagga fornece implementações de protocolos de roteamento %
-   \olditem O DCE e o Quagga são descritos com mais detalhes a seguir %
-  \end{itemize}
- \item São necessários diversos pacotes % 
- \item Cada guia de instalação lista pacotes diferentes % 
- \item Alguns dos pacotes não são listados em nenhuma das guias % 
+ \item Tempo medido em que um sinal chega a um
+receptor pela primeira vez depois de emitido.
+\item O valor medido é o tempo de transmissão somado ao
+atraso do tempo de propagação.
+\item Este atraso,$t_{i,j}$, entre a transmissão do sensor i e recepção do sensor j, é igual a distância entre o transmissor e o receptor, 
+$d_{i,j}$, dividido pela velocidade de propagação do sinal, $v_{p}$.
+
 \end{itemize}
 \end{frame}
 
 \begin{frame}{TDOA(\textit{Time Difference of Arrival of Two Different Signals})}
-Os desafios de simular o OSPF já se iniciam na instalação
-\begin{itemize}
- \item Três guias de instalação diferentes %  Uma para o somente o NS-3, uma para NS-3 + DCE, uma para NS-3 + DCE + Quagga
-  \begin{enumerate}
-   \olditem Somente o NS-3 % 
-   \olditem O NS-3 e o DCE %
-   \olditem O NS-3 e o DCE com suporte para o Quagga % 
-  \end{enumerate}
-  \begin{itemize}
-   \olditem O DCE é um módulo do NS-3 que oferece suporte a aplicações reais % 
-   \olditem O Quagga fornece implementações de protocolos de roteamento %
-   \olditem O DCE e o Quagga são descritos com mais detalhes a seguir %
-  \end{itemize}
- \item São necessários diversos pacotes % 
- \item Cada guia de instalação lista pacotes diferentes % 
- \item Alguns dos pacotes não são listados em nenhuma das guias % 
-\end{itemize}
+
 \end{frame}
 
 
@@ -340,8 +337,7 @@ Criar uma simulação no NS-3 é relativamente simples
 \end{itemize}
 \end{frame}
 
-\section{Componentes de uma Aplicação Android}
-\begin{frame}{O Módulo DCE}
+\begin{frame}{Componentes de uma Aplicação Android}
 \begin{itemize}
  \item O NS-3 não fornece a implementação completa do OSPF % 
  \item O módulo \textit{Direct Code Execution} (DCE) passa a ser uma alternativa para simular o OSPF %  
