@@ -12,7 +12,15 @@
   são executadas na \textit{thread} principal, pois essas operações podem levar muito tempo para serem 
   concluída, assim evitando o problema de travar a execução da \textit{thread} principal, 
   que já foi discutido anteriormente no capitulo sobre Android.
-  
+   \clearpage
+  A figura \ref{fig:appSchema} mostra como é feito a interação entre classes:
+  \begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.6]{images/apptg.png}
+  \caption{Esquema de interação entra as classes}
+  \label{fig:appSchema}
+  \end{figure}
+
   \section{MainActivity}
   A classe MainActivity é responsável por receber as entradas do usuário e exibir os resultados calculados.
   Ela também é responsável por instanciar as duas outras classes. Há três funções disponíveis: 
@@ -22,6 +30,16 @@
    \item \textit{Get Position}: Obtém a provável posição do aparelho. 
   \end{itemize}
 
+  \begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.23]{images/tela1.png}
+  \includegraphics[scale=0.23]{images/tela2.png}
+  \includegraphics[scale=0.23]{images/tela3.png}
+  \caption{Tela inicial, tela na obtenção do \text{fingerprint} e 
+  tela da obtenção da posição corrente do aparelho.}
+  \label{fig:app}
+  \end{figure}
+  \clearpage
   A MainActivity cria novas \textit{threads} para executar cada uma das operações requerida pelo o usuário.
   
   \section{WifiInterface}
@@ -56,7 +74,7 @@
   dados previamente coletados $sqrt((rss1-rss1')^{2}+(rss2-rss2')^{2}+(rss3-rss3')^{2})$.
   A entrada com a menor distância euclidiana é escolhida como uma provável estimativa da
   posição do aparelho, esse processo é repetido para cada conjunto de três APs do \textit{fingerprint} coletado na fase 1. 
- Assim obtêm-se um conjunto de $n$ pontos que são utilizada na próxima fase. 
+ Assim obtêm-se um conjunto de $n$ pontos que são utilizados na próxima fase. 
  \item A estimativa da posição corrente do aparelho é obtida através do calculo do centroide $C(x_c,y_c)$ desses $n$ pontos:
   \begin{figure}[hbt]
   \centering
@@ -84,7 +102,7 @@
   \subsection{Testes realizados}
   Na etapa de aprendizagem, para compor o mapa de \textit{fingerprints}, foram coletados \textit{fingerprints} de 67 locais distintos,
   onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF. 
-  A imagem abaixo mostra os locais das amostras retiradas:
+  A imagem abaixo mostra os locais das amostras retiradas, marcados com quadrados pretos:
    
    \begin{figure}[hbt]
   \centering
@@ -171,6 +189,8 @@
       a possibilidade de utilizar outros sensores neles disponíveis, para aumentar a precisão
       da técnica, incrementando o \textit{fingerprint} com os dados coletados por 
       esses sensores, e assim adicionando mais características para distinguir os \textit{fingerprints}.
+      Claro que deve ser considerado que o ambiente escolhido é bastante favorável a abordagem escolhida, dado
+      o grande número de APs presentes.
       
      \begin{comment}
   -Criação da tabela:

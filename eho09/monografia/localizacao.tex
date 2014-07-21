@@ -1,15 +1,15 @@
-\chapter{\textit{Wireless sensor networks} - WSNs}
+\chapter{Localização baseada em \textit{Wireless sensor networks} - WSNs}
 
-Este capitulo aborda as principais técnicas de localização utilizando WSNs.
+Este capitulo aborda as principais técnicas de localização utilizando WSNs, técnica para localização 
+abordada neste trabalho.
 
 \label{wsn}
-	WSNs é uma rede de sensores que coleta informações em um campo monitorado. Este tipo de rede tem sido utilizada em 
-	várias aplicações, incluindo rastreamento de objetos, resgate, monitoramento de ambiente, entre outros \cite{omc}. Localização é um 
-	tópico muito importante, pois, muitas aplicações das WSNs dependem do conhecimento das posições dos sensores. Na maioria das WSNs 
-	os sensores são estáticos, mas a tendência em aplicações modernas é os sensores terem mobilidade.
+	WSN é uma rede de sensores que coleta informações em um campo monitorado. Este tipo de rede tem sido utilizada em 
+	várias aplicações, incluindo rastreamento de objetos, resgate, monitoramento de ambiente, entre outros \cite{omc}.
+	Na maioria das WSNs os sensores são estáticos, mas a tendência em aplicações modernas é os sensores terem mobilidade.
 	
-	Há um conjunto de algoritmos de localização que utilizam WSNs. Onde o calculo da localização depende das informações 
-	de localização dos nodos(que podem ser estáticos ou móveis) da rede. Esses algoritmos podem ser divididos em duas categorias: \textit{range-based}
+	Há um conjunto de algoritmos de localização que utilizam WSNs. Onde o cálculo da localização depende das informações 
+	de localização dos nodos (podem ser estáticos ou móveis) da rede. Esses algoritmos podem ser divididos em duas categorias: \textit{range-based}
 	e \textit{range-free}. Algoritmos do tipo \textit{range-free} \cite{omc} \cite{wsnsLinear} geralmente requerem que os nodos conhecidos, estejam dentro 
 	do raio de comunicação dos sensores em comum. Eles tem sido muito explorados pois não precisam de \textit{hardware} extra. Os algoritmos do tipo \textit{range-based},
 	geralmente necessitam de algum tipo de \textit{hardware} especial, onde a posição de um certo nodo pode ser obtida a partir da posição ou direção dos nodos conhecidos por ele.
@@ -64,7 +64,7 @@ O método dos mínimos quadrados ajuda a encontrar as estimativas de $\alpha$ e 
 
 O método dos mínimos quadrados minimiza a soma dos quadrado dos resíduos, ou seja, minimiza $\sum_{i=1}^n e_i^2$.
 
-A ideia por trás dessa técnica é que, minimizando a soma do quadrado dos resíduos, encontraremos a e b que trarão 
+A ideia dessa técnica é que, minimizando a soma do quadrado dos resíduos, encontraremos a e b que trarão 
 a menor diferença entre a previsão de y e o y realmente observado.
 
 \section{AOA(\textit{Angle of Arrival})}
@@ -118,7 +118,7 @@ http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.134.5991&rep=rep1&type=
 
 
 \section{RSS(\textit{Received Signal Strength})}	
-	A localização baseada em RSS apresenta-se como uma das únicas a não necessitar de \textit{hardware} extra, e ser uma técnica
+	A localização baseada em RSS apresenta-se como uma das únicas a não necessitar de \textit{hardware} extra e é uma técnica
 de fácil aplicação. 
 	
 	Há três métodos de localização que utilizam a medição de RSS em WSNs: estação base mais forte, modelo de propagação e \textit{fingerprinting}.
@@ -157,17 +157,18 @@ corresponde a um resultado não confiável, obstruções e obstáculos proporcio
 sendo esse um dos maiores problemas dos métodos de localização baseados em RSS, várias técnicas foram propostas para 
 contornar esse problema como pode ser visto em \cite{wifiRadar}\cite{rss1}\cite{wsnsLinear}\cite{multAgent} \cite{rss2}.
 
-A figura abaixo mostra como a estimativa da real posição de um nodo é afetado pela interferências de obstrução:
+A figura \ref{fig:rsserror} mostra como a estimativa da real posição de um nodo é afetado pelas interferências de obstrução:
 	\begin{figure}[ht]
 	\centering
 	\includegraphics[scale=0.5]{images/rsserror.png}
-	\caption{Influência de um obstáculos na localização de um nodo\cite{rss1}. }
+	\caption{Influência de um obstáculo na localização de um nodo\cite{rss1}. }
 	\label{fig:rsserror}
 	\end{figure}
 	
 	Recentemente, localização em WSNs baseado em RSS \textit{fingerprinting} tem se tornado uma das técnicas mais exploradas 
-	em ambientes \textit{indoor}\cite{fingerPrint}\cite{wifiRadar}\cite{fingerPrint2}. Comparada com as outras duas técnicas, \textit{fingerprinting} é facilmente empregada 
-	e é tolerante ao ruido do sinal, e isso permite uma maior precisão em relação aos outros. Este método normalmente é composto por duas fases: 
+	em ambientes \textit{indoor}\cite{fingerPrint}\cite{wifiRadar}\cite{fingerPrint2}. Comparada com as outras duas técnicas
+	anteriormente apresentadas, \textit{fingerprinting} é facilmente empregada 
+	e é tolerante ao ruido do sinal, e isso permite uma maior precisão em relação às outras. Este método normalmente é composto por duas fases: 
 	aprendizado e determinação. Na primeira fase o objetivo é construir uma tabela para cada coordenada de amostras de RSS 
 	de alguns APs. Na fase de determinação, o nodo informa uma amostra do RSS que é comparada com cada entrada do tabela, o registro
 	que mais se aproxima da amostra informada é adotada como atual posição do nodo.

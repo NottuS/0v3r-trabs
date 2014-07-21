@@ -1,22 +1,22 @@
 \chapter{Robôs Móveis}
 \label{robosMoveis}
 
-  Neste capitulo serão discutidas algumas das principais tarefas que o robô deve desempenhar,
-  para que ele possa concluir seu objetivos de forma autônoma e da melhor maneira possível, sendo elas: localização e construção de mapas.
+  Neste capitulo são discutidas as principais tarefas que o robô deve desempenhar
+  para que ele possa concluir seu objetivos de navegação de forma autônoma e da melhor maneira possível, sendo elas: localização e construção de mapas.
   
 \section{Localização}
-A obtenção da posição e orientação(pose) do robô pode ser feita através da identificação e 
+A obtenção da posição e orientação (pose) do robô pode ser feita através da identificação e 
 subsequente triangulação por ângulos e por distância dos \textit{landmarks} percebidos pelo robô e
- previamente conhecidos. Onde a identificação dos \textit{landmarks} 
+ previamente conhecidos, onde a identificação dos \textit{landmarks} 
  é feita fazendo observações do ambiente utilizando seus sensores(sonar, laser, câmera).
  
- No calculo da localização o robô deve ser capaz de lidar com os erros de medição dos sensores, 
- incertezas(que tendem a crescer com o deslocamento do robô) 
+ No cálculo da localização, o robô deve ser capaz de lidar com os erros de medição dos sensores, 
+ incertezas (que tendem a crescer com o deslocamento do robô) 
  e informações incompletas \cite{localization1}.  Portanto, ao invés de calcular a posição exata, 
  o que pode ser feito é calcular a probabilidade do robô estar numa certa posição. Daí a necessidade da 
  localização probabilística, na qual, a incerteza é representada utilizando teoria da probabilidade: 
  ao invés de dar a melhor estimativa da configuração atual do robô, 
- a localização probabilística nos da a distribuição de probabilidade de todas as possíveis 
+ a localização probabilística dá a distribuição de probabilidade de todas as possíveis 
  configurações do robô \cite{localization1}. Essa distribuição de probabilidade é chamada \textit{belief}.
  
  Quando o robô se movimenta a incerteza de sua posição aumenta. 
@@ -25,8 +25,8 @@ subsequente triangulação por ângulos e por distância dos \textit{landmarks} 
  Deste modo, a cada movimento o robô pode
  obter uma melhor estimativa de sua real posição, isso é chamado modelo de movimento e percepção.
  
- A cada deslocamento do robô é necessário fazer a atualização da distribuição de probabilidade de sua configuração, 
- a atualização pode ser dividida em 2 passos \cite{localization1}:
+ A cada deslocamento do robô é necessário fazer a atualização da distribuição de probabilidade de sua configuração. 
+ A atualização pode ser dividida em 2 passos \cite{localization1}:
  \begin{itemize}
   \item Atualização de ação: o robô se move e estima sua posição através de seus sensores nesse passo a incerteza aumenta.
   \item Atualização de percepção: o robô faz uma observação usando seus sensores e corrige sua posição, 
@@ -34,15 +34,15 @@ subsequente triangulação por ângulos e por distância dos \textit{landmarks} 
   Aqui a incerteza diminui.
  \end{itemize}
 
- No calculo da localização probabilística é necessário ter: a distribuição de probabilidade inicial, 
+ No cálculo da localização probabilística é necessário ter: a distribuição de probabilidade inicial, 
  o modelo de erro estatístico dos sensores e o mapa do ambiente.
  Há duas principais abordagens para solução da localização probabilística de robôs móveis: 
  localização de Markov e filtro de Kalman, descritos a seguir.  
  
  \subsection{Localização de Markov}
 	A localização de Markov usa um \textit{grid} para representar a configuração do robô, onde cada célula do \textit{grid}
-	contêm a probabilidade de robô estar nela \cite{localization1}. A distribuição de probabilidade associada à percepção 
-	dos sensores também é discretizado. Durante as etapas de ação e percepção todas as células do \textit{grid} são atualizadas. 
+	contém a probabilidade de o robô estar nela \cite{localization1}. A distribuição de probabilidade associada à percepção 
+	dos sensores também é discretizada. Durante as etapas de ação e percepção todas as células do \textit{grid} são atualizadas. 
 	
 	A atualização na etapa de ação é feita através da convolução da distribuição do \textit{belief} inicial com a distribuição
 	da probabilidade da possível pose do robô após seu deslocamento, com a incerteza aumentada, segundo o modelo de deslocamento.
@@ -67,7 +67,7 @@ subsequente triangulação por ângulos e por distância dos \textit{landmarks} 
  
  
  Na localização filtro de Kalman, assume-se que a distribuição de probabilidade da configuração do robô e o modelo dos sensores,
- são continuas e gaussiana \cite{localization2}. Como a distribuição gaussiana é descrita através da média e variância, somente essas duas variáveis 
+ são continuas e gaussianas \cite{localization2}. Como a distribuição gaussiana é descrita através da média e variância, somente essas duas variáveis 
  são atualizadas nas etapas de ação e percepção. Portanto, seu custo computacional é pequeno se comparado com a localização de Markov.
  
 O filtro de Kalman produz estimativas dos valores reais de grandezas medidas e valores associados predizendo um valor, 
@@ -93,7 +93,6 @@ apresentando uma melhor incerteza estimada que qualquer um dos dois unicamente.
 Este processo é repetido a cada fase, com a nova estimativa e sua covariância gerando a predição usada na próxima iteração. 
 Isto significa que o filtro de Kalman funciona recursivamente e requer apenas a 
 última estimativa - não o histórico completo - do estado de um sistema para calcular o próximo estado\cite{localization2}.
-
  
  \begin{comment}
   The probability distribution of both the
@@ -144,7 +143,7 @@ menos sujeito a ambiguidades \cite{construcaoMapas2}. Como os mapas métricos
 demandam uma grande quantidade de informações, eles exigem muita capacidade de processamento e 
 armazenamento.
 
-Atualmente grande parte dos sistemas de mapeamento assumem que o ambiente é estático
+Atualmente grande parte dos sistemas de mapeamento assume que o ambiente é estático
 durante o mapeamento. Se uma pessoa anda dentro do alcance dos sensores do robô durante o
 mapeamento, o mapa resultante conterá evidências a respeito de um objeto na localização
 correspondente. Além disso, se o robô retornar para esta localização e varrer a área uma
@@ -154,12 +153,12 @@ resultante pode ter uma influência negativa no desempenho da localização rob�
 
 \subsection{Mapas Topológicos}
 No caso de mapas topológicos, o objetivo é construir uma estrutura relacional, normalmente um grafo, 
-de forma geral, registram informações sobre determinados
+que de forma geral, registra informações sobre determinados
 elementos ou locais do ambiente, chamados marcos \cite{construcaoMapas2}. 
 Assim, marcos e relações são os elementos dos mapas topológicos.
 Essas relações podem ser de vários tipos, tais como o deslocamento
 relativo entre dois marcos, a existência de um caminho entre eles,
-quantidade de energia gasto em um caminho entre marcos,etc. 
+ou a quantidade de energia gasta em um caminho entre marcos. 
 É fácil perceber que a informação contida no mapa topológico é
 menos detalhada e distribui-se de forma dispersa, concentrando-se apenas em pontos de interesse.
 Assim esta representação, é muito seletiva com relação à informação que ele registra \cite{construcaoMapas2}. 
@@ -176,7 +175,7 @@ em uma localização desconhecida, em um ambiente desconhecido e então construi
 desse ambiente de maneira incremental, enquanto utiliza o mapa simultaneamente para calcular a sua localização \cite{slam}.
  
  O SLAM tem sido tema de várias pesquisas na área de robótica. A grande vantagem do SLAM é que elimina a necessidade 
-um conhecimento topológico a priori do ambiente. Há três abordagens principais que são utilizadas no problema do SLAM. 
+um conhecimento a priori do ambiente. Há três abordagens principais que são utilizadas no problema do SLAM. 
 \begin{comment}
 Pick natural scene features to serve as landmarks
 (in most modern SLAM systems)
@@ -227,16 +226,16 @@ does the uncertainty in the rest of
 the map
 \end{comment}
 
-A primeira e mais popular deles usa o filtro de Kalman estendido para resolver o SLAM(Extended Kalman Filter SLAM - EKF SLAM) \cite{slam2}. Ele
+A primeira e mais popular deles usa o filtro de Kalman estendido para resolver o SLAM (Extended Kalman Filter SLAM - EKF SLAM) \cite{slam2}. Ele
 fornece uma solução recursiva para o problema da navegação e uma maneira de calcular
 estimativas consistentes para a incerteza na localização do robô e nas posições dos marcos do
 ambiente, com base em modelos estatísticos para o movimento dos robôs e observações
 relativas dos marcos do ambiente\cite{slam}.
 
 O EKF SLAM resume toda a toda experiencia obtida pelo robô em um vetor de estados estendido $Y$, compreendendo a pose do 
-robô, a posição dos marcos do mapa e a matriz de covariância $P$\cite{slam2}. Quando o robô se desloca $Y$ e $P$ são atualizadas
+robô e posição dos marcos do mapa, e a matriz de covariância $P$\cite{slam2}. Quando o robô se desloca $Y$ e $P$ são atualizadas
 usando o EKF. Os marcos do ambiente são extraídos do ambiente de sua nova posição. Em seguida, o robô tenta associar esses
-marcos com os marcos previamente observados. A Reobservação dos marcos são usados para atualizar a posição do robô. 
+marcos com os marcos previamente observados. A Reobservação dos marcos é usada para atualizar a posição do robô. 
 Os marcos que não foram observados previamente, são adicionados no mapa de marcos.
 
 \begin{comment}
@@ -332,7 +331,7 @@ http://ocw.mit.edu/courses/aeronautics-and-astronautics/16-412j-cognitive-roboti
 http://www.asl.ethz.ch/education/master/mobile_robotics/year2012/Lecture10.pdf
 \end{comment}
 
-A segunda abordagem chamada filtro de partículas SLAM, consiste em evitar a necessidade de estimativas absolutas da
+A segunda abordagem, chamada filtro de partículas SLAM, consiste em evitar a necessidade de estimativas absolutas da
 posição e de medições precisas das incertezas para utilizar conhecimento mais qualitativo da
 localização relativa dos marcos do ambiente e do robô para a construção do mapa global e
 planejamento da trajetória\cite{construcaoMapas}. 
