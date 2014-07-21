@@ -195,7 +195,7 @@ posição nele.
     \item Mapa detalhado do ambiente, dividido em uma rede de células.
     \item Cada célula contem informações do ambiente como espaço ocupado por um objeto, 
     espaço livre para navegação, etc.
-    \item Localização é mais precisa e menos sujeito a ambiguidades.
+    \item Localização é mais precisa e menos sujeita a ambiguidades.
     \end{itemize}
 
  \item \textbf{Mapas Topológicos}
@@ -253,6 +253,23 @@ Periodicamente, cada roteador:
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Rede de Sensores sem Fio}
+\begin{itemize}
+  \item Principais técnicas:
+    \begin{itemize}
+     \item \textbf{TOA}(\textit{Time of Arrival}).
+     \item \textbf{TDOA}(\textit{Time Difference of Arrival}).
+     \item \textbf{AOA}(\textit{Angle of Arrival}).
+     \item \textbf{RSS}(\textit{Received Signal Strength}).
+    \end{itemize}
+
+ \item Sofrem interferência de obstáculos como paredes, 
+   móveis e outros objetos, trafego de pessoas, além de outros fatores como temperatura ambiente, 
+   umidade do ar, outros sinais, etc.
+\end{itemize}
+\end{frame}
+
+\begin{comment}
 \begin{frame}{TOA(\textit{Time of Arrival})}
 
 \begin{itemize}
@@ -266,93 +283,149 @@ $d_{i,j}$, dividido pela velocidade de propagação do sinal, $v_{p}$.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{TDOA(\textit{Time Difference of Arrival of Two Different Signals})}
-
+\begin{frame}{TDOA(\textit{Time Difference of Arrival})}
+\begin{itemize}
+ \item Os algoritmos de TDOA fazem a medição da diferença no tempo de recepção
+de sinais de diferentes estações de base.
+  \item Supondo que o nodo está na linha de visão de dois BSs,
+  o nodo deve situar-se em uma hipérbole. 
+  \item Uma segunda hipérbole, pode ser obtido através de uma medição adicional de TDOA envolvendo
+um terceiro BS. 
+  \item A posição do nodo pode ser identificada como o ponto de intersecção
+das duas hipérboles.
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}{AOA(\textit{Angle of Arrival})}
-Os desafios de simular o OSPF já se iniciam na instalação
 \begin{itemize}
- \item Três guias de instalação diferentes %  Uma para o somente o NS-3, uma para NS-3 + DCE, uma para NS-3 + DCE + Quagga
-  \begin{enumerate}
-   \olditem Somente o NS-3 % 
-   \olditem O NS-3 e o DCE %
-   \olditem O NS-3 e o DCE com suporte para o Quagga % 
-  \end{enumerate}
-  \begin{itemize}
-   \olditem O DCE é um módulo do NS-3 que oferece suporte a aplicações reais % 
-   \olditem O Quagga fornece implementações de protocolos de roteamento %
-   \olditem O DCE e o Quagga são descritos com mais detalhes a seguir %
-  \end{itemize}
- \item São necessários diversos pacotes % 
- \item Cada guia de instalação lista pacotes diferentes % 
- \item Alguns dos pacotes não são listados em nenhuma das guias % 
+ \item A Localização baseada em AOA envolve a medição do ângulo de chegada de um sinal de uma BS
+a um receptor ou vice-versa. 
+ \item Uma única medida produz uma linha reta 
+entre a \textit{base station} e o receptor. 
+  \item A medida do ângulo de chegada com outra \textit{base station}
+produzirá uma segunda linha reta e a intersecção das duas linhas, vai fornecer a posição
+do dispositivo.
 \end{itemize}
 \end{frame}
-
+\end{comment}
 \begin{frame}{RSS(\textit{Received Signal Strength})}
-Os desafios de simular o OSPF já se iniciam na instalação
+Há três métodos de localização que utilizam a medição de RSS:
 \begin{itemize}
- \item Três guias de instalação diferentes %  Uma para o somente o NS-3, uma para NS-3 + DCE, uma para NS-3 + DCE + Quagga
-  \begin{enumerate}
-   \olditem Somente o NS-3 % 
-   \olditem O NS-3 e o DCE %
-   \olditem O NS-3 e o DCE com suporte para o Quagga % 
-  \end{enumerate}
+ \olditem \textbf{Estação base mais forte}.
+ \begin{itemize}
+  \item A localização de um nodo da rede pode ser estimado como a posição do \textit{Access Points}(AP) mais próximo, no 
+	qual o nodo se comunicou.
+ \end{itemize}
+
+ \olditem \textbf{Modelo de propagação}.
   \begin{itemize}
-   \olditem O DCE é um módulo do NS-3 que oferece suporte a aplicações reais % 
-   \olditem O Quagga fornece implementações de protocolos de roteamento %
-   \olditem O DCE e o Quagga são descritos com mais detalhes a seguir %
-  \end{itemize}
- \item São necessários diversos pacotes % 
- \item Cada guia de instalação lista pacotes diferentes % 
- \item Alguns dos pacotes não são listados em nenhuma das guias % 
+  \item A medição do sinal no receptor e o valor obtido indica a distância até o transmissor.
+  \item A localização é obtida fazendo triangulação com outros 3 APs, cuja posição conhecida.
+ \end{itemize}
+ \olditem \textbf{\textit{Fingerprinting}}, composta por duas fases:
+  \begin{itemize}
+  \item Aprendizado: constrói uma tabela para cada coordenada de amostras.
+  \item Determinação: o nodo informa uma amostra do RSS, o registro que mais se aproxima da amostra informada é adotada como atual posição do nodo.
+ \end{itemize}
 \end{itemize}
 \end{frame}
 
 
 \section{Android} % Detalhe os experimentos que vc fez no NS-3
-\begin{frame}{Introdução}
-Criar uma simulação no NS-3 é relativamente simples
+\begin{frame}{Android}
 \begin{itemize}
- \item Documentação detalhada %  
- \item Diversos exemplos % 
- \item Diversos mecanismos de monitoramento, porém alguns deles exijem determinado nível de conhecimento % 
- \item Oferece alguns desafios como, por exemplo, a documentação sobre falhas de enlace é escassa % 
+\item O Android é um sistema operacional baseado no núcleo do Linux para dispositivos móveis, 
+desenvolvido pela \textit{Open Handset Alliance}.
+
+ \item Apresenta vários recursos que podem facilmente empregados na robótica como
+câmeras, GPS, aceleradores gráficos 2D e 3D, \textit{bluetooth} e wifi.
+
+\item Suporta diversos sensores como barômetro, magnetômetro, acelerômetro, 
+ sensor de proximidade, sensor de pressão, termômetro e compasso. 
+ 
+ \item Possui um rico ambiente de desenvolvimento provido pelo Android SDK com documentação farta.
+
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Arquitetura}
-\begin{itemize}
- \item Em simulações sem falhas o roteamento ocorre de acordo com o esperado %  
- \item Quando ocorre uma falha os pacotes que utilizam o caminho falho não chegam aos seus destinos % 
- \item Não é calculado um novo caminho mínimo % portanto
- \item Os roteadores não são informados sobre a falha do enlace % porque
-  \begin{enumerate}
-   \olditem Não é implementado o protocolo \textit{Hello} para identificar a falha % 
-   \olditem Não é implementado o protocolo \textit{Flooding} para informar todos os roteadores %
-  \end{enumerate}
- \item Somente o protocolo \textit{Exchange} está implementado no NS-3 % não é exatamente o exchange mas tem a mesma função
-\end{itemize}
+\begin{figure}[hb]
+\centering
+\includegraphics[scale=0.38]{../images/Android-architecture.jpg}
+\caption{Arquitetura Android\cite{android1}. }
+\label{fig:android-arc}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Componentes de uma Aplicação Android}
 \begin{itemize}
- \item O NS-3 não fornece a implementação completa do OSPF % 
- \item O módulo \textit{Direct Code Execution} (DCE) passa a ser uma alternativa para simular o OSPF %  
- \item O DCE possui a implementação do protocolo OSPF feita pela \textit{Quagga Routing Suite} % 
- \item O DCE também permite utilizar executáveis do sistema operacional Linux % 
+ \item Activity.
+ \item Services.
+ \item Broadcast Receiver.
+ \item Content Providers.
 \end{itemize}
 \end{frame}
 
 \section{Implementação}
-\begin{frame}{Conclusão}
+\begin{frame}{Técnica implementada}
 \begin{itemize}
- \item Usar o DCE implica em trabalhar com a própria implementação do protocolo no sistema operacional % 
- \item Elimina a vantagem da simulação, na medida em que múltiplos detalhes devem ser considerados mesmo para testes simples %  
- \item É possível concluir que o trabalho futuro necessário, para permitir a continuidade deste trabalho, é completar a implementação do OSPF nativa do NS-3 % 
+ \item Implementa o RSS \textit{fingerprinting}.
+ \item O algoritmo utiliza o preceito da correlação espacial das localidades adjacentes.
+ \item Obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar.
+ \item A posição final do aparelho 
+  e obtida através do centroide desse conjunto de pontos.
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Aprendizado e Determinação}
+\begin{itemize}
+ \olditem \textbf{Aprendizado:}
+  \begin{enumerate}
+    \item Constrói um mapa de \textit{fingerprints}.
+    \item O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP.
+  \end{enumerate}
+ 
+ \olditem \textbf{Determinação:}
+    \begin{enumerate}
+
+    \item Obtêm-se o \textit{fingerprint} da localidade do aparelho.
+    \item Para cada conjunto de três APs do \textit{fingerprint} obtém-se um ponto, onde 
+    esse ponto é resultado da busca pela menor distância euclidiana entre os dados informados e os dados
+    previamente coletados.
+    \item Assim obtêm-se um conjunto de $n$ pontos.
+    \item Calcula-se o centroide desses pontos: $c(x_c,y_c) = (\frac{1}{n}\sum_{i=1}^{n}x_{i},\frac{1}{n}\sum_{i=1}^{n}y_{i})$.  
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tecnologias utilizadas}
+\begin{itemize}
+ \item Android SDK.
+ \item Escrito em Java e XML.
+ \item LG Nexus 4 com Android KitKat 4.4.4.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Testes}
+Foram coletados \textit{fingerprints} de 67 locais distintos,
+  onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF.
+   
+   \begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.4]{../images/TTmapadinf_andar1_492x327.png}
+  \caption{Mapa do primeiro andar do Departamento de Informática da UFPR.}
+  \label{fig:mapaDinf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Resultados}
+ Foram realizados 35 testes, onde:
+  \begin{itemize}
+      \item 22,8\% das estimativas possuem precisão de 1 metro ou menos.
+      \item 77,1\% das estimativas possuem precisão de 3 metros ou menos.
+      \item 91,4 \% das estimativas possuem precisão de 5 metros ou menos.
+     \end{itemize}
 \end{frame}
 
 \section{Conclusão}
