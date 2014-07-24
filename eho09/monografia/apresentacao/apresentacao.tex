@@ -127,6 +127,28 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Construção de Mapas}
+A tarefa de mapeamento corresponde à atribuição de valores aos elementos do mapa, relacionando cada um a uma certa 
+posição nele.
+\begin{itemize}
+ \item \textbf{Mapas Métricos}
+    \begin{itemize}
+    \item Mapa detalhado do ambiente, dividido em uma rede de células.
+    \item Cada célula contem informações do ambiente como espaço ocupado por um objeto, 
+    espaço livre para navegação, etc.
+    \item Localização é mais precisa e menos sujeita a ambiguidades.
+    \end{itemize}
+
+ \item \textbf{Mapas Topológicos}
+      \begin{itemize}
+    \item  Marcos e relações são os elementos dos mapas topológicos, concentra-se apenas em pontos de interesse.
+    \item Essas relações podem ser de vários tipos, tais como o deslocamento
+relativo entre dois marcos, a existência de um caminho entre eles,
+quantidade de energia gasta em um caminho entre marcos, etc.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Localização}
 
  \begin{itemize}
@@ -149,9 +171,10 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
   \item A localização probabilística nos da a distribuição de probabilidade de todas as possíveis 
  configurações do robô: \textit{\textbf{belief}}.
   \item Principais abordagens: \textbf{localização de Markov} e \textbf{filtro de Kalman}.
+  \item \textbf{SLAM}
 \end{itemize}
 \end{frame}
-
+ \begin{comment}
 \begin{frame}{Modelo de Movimento e Percepção}
 \begin{itemize}
 \item Quando o robô se movimenta a incerteza de sua posição aumenta. 
@@ -166,7 +189,7 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
  \end{itemize}
 \end{frame}
  
- \begin{comment}
+
 \begin{frame}{Localização de Markov}
 \begin{itemize}
  \item Encontra caminhos mínimos de maneira rápida e sem ciclos % pois utiliza o Dijkstra
@@ -186,27 +209,6 @@ evitar obstáculos, controle de motores, \textbf{localização}, \textbf{constru
 \end{frame}
 \end{comment}
 
-\begin{frame}{Construção de Mapas}
-A tarefa de mapeamento corresponde à atribuição de valores aos elementos do mapa, relacionando cada um a uma certa 
-posição nele.
-\begin{itemize}
- \item \textbf{Mapas Métricos}
-    \begin{itemize}
-    \item Mapa detalhado do ambiente, dividido em uma rede de células.
-    \item Cada célula contem informações do ambiente como espaço ocupado por um objeto, 
-    espaço livre para navegação, etc.
-    \item Localização é mais precisa e menos sujeita a ambiguidades.
-    \end{itemize}
-
- \item \textbf{Mapas Topológicos}
-      \begin{itemize}
-    \item  Marcos e relações são os elementos dos mapas topológicos, concentra-se apenas em pontos de interesse..
-    \item Essas relações podem ser de vários tipos, tais como o deslocamento
-relativo entre dois marcos, a existência de um caminho entre eles,
-quantidade de energia gasto em um caminho entre marcos, etc.
-    \end{itemize}
-\end{itemize}
-\end{frame}
 \begin{comment}
 \begin{frame}{Mapas Métricos}
 Periodicamente, cada roteador:
@@ -223,7 +225,7 @@ Periodicamente, cada roteador:
  \olditem envia as informações do estado dos enlaces aos roteadores adjacentes % quando ocorre mudanças na rede, stop() quando a ocorre mais troca de mensagem
 \end{itemize}
 \end{frame}
-\end{comment}
+
 
 \begin{frame}{SLAM}
 \begin{itemize}
@@ -238,14 +240,13 @@ Periodicamente, cada roteador:
   \end{itemize}
 \end{itemize}
 \end{frame}
+\end{comment}
+\section{Localização baseada em Wireless sensor networks - WSNs}
 
-\section{Localização em Rede de Sensores sem Fio} % Descreva o NS-3
-
-\begin{frame}{Rede de Sensores sem Fio}
+\begin{frame}{Localização baseada em \textit{Wireless sensor networks} - WSNs}
 \begin{itemize}
  \item Coleta informações em um campo monitorado.
  \item Nodos da rede podem ser estáticos ou móveis.
- \item O calculo da localização depende das informações localização dos nodos na rede.
  \item Geralmente requerem que os nodos conhecidos, estejam dentro 
 	do raio de comunicação dos sensores em comum.
   \item A posição de um certo nodo pode ser obtida 
@@ -253,9 +254,9 @@ Periodicamente, cada roteador:
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Rede de Sensores sem Fio}
+\begin{frame}{Principais abordagens utilizando WSNs}
 \begin{itemize}
-  \item Principais técnicas:
+  \item Principais abordagens:
     \begin{itemize}
      \item \textbf{TOA}(\textit{Time of Arrival}).
      \item \textbf{TDOA}(\textit{Time Difference of Arrival}).
@@ -349,7 +350,7 @@ câmeras, GPS, aceleradores gráficos 2D e 3D, \textit{bluetooth} e wifi.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Arquitetura}
+\begin{frame}{Arquitetura do Sistema Operaciona Android}
 \begin{figure}[hb]
 \centering
 \includegraphics[scale=0.38]{../images/Android-architecture.jpg}
@@ -407,6 +408,15 @@ câmeras, GPS, aceleradores gráficos 2D e 3D, \textit{bluetooth} e wifi.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Esquema da implementação}
+  \begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.39]{../images/apptg.png}
+  \caption{Esquema de interação entra as classes}
+  \label{fig:appSchema}
+  \end{figure}
+\end{frame}
+
 \begin{frame}{Testes}
 Foram coletados \textit{fingerprints} de 67 locais distintos,
   onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF.
@@ -431,9 +441,14 @@ Foram coletados \textit{fingerprints} de 67 locais distintos,
 \section{Conclusão}
 \begin{frame}{Conclusão}
 \begin{itemize}
- \item Usar o DCE implica em trabalhar com a própria implementação do protocolo no sistema operacional % 
- \item Elimina a vantagem da simulação, na medida em que múltiplos detalhes devem ser considerados mesmo para testes simples %  
- \item É possível concluir que o trabalho futuro necessário, para permitir a continuidade deste trabalho, é completar a implementação do OSPF nativa do NS-3 % 
+ \item Precisão satisfatória, considerando um raio de 2 até 5 metros da posição real do aparelho.
+ \item A oscilação do RSS e a semelhança dos \textit{fingerprints} em um raio de até 5 metros do aparelho
+  dificultaram uma precisão mais aguda.
+  \item O ambiente deve ser lavado em consideração, já que o ambiente escolhido é bastante favorável a abordagem escolhida, dado
+      o grande número de APs presentes.
+ \item Essa técnica pode ser bastante proveitosa na localização de robôs móveis, pois há 
+      a possibilidade de adicionar mais características para distinguir os \textit{fingerprints} com 
+      dados coletados por outros sensores do robô(câmera, laser, sonar).
 \end{itemize}
 \end{frame}
 
