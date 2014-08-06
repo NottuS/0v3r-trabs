@@ -1,0 +1,111 @@
+\documentclass[12pt,a4paper]{ufpr}
+% \usepackage[portuges,brazil]{babel}
+% \usepackage[portuguese,brazil]{babel}
+
+%instalar aspell-pt
+
+\usepackage[brazil]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb,amsmath}
+\usepackage{epsfig}
+\usepackage{multirow}
+\usepackage{lmodern}
+\usepackage{textcomp} 
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{ps-macros}
+\usepackage{comment}
+\usepackage{url}
+% \usepackage{psfig}
+
+\setcounter{secnumdepth}{3}    % n - numero de niveis de subsubsection numeradas
+\setcounter{tocdepth}{3}       % coloca ate o nivel n no sumario
+
+\title{Localiza\c{c}\~ao \textit{indoor} para rob\^os m\'oveis}
+\author{Edileuton Henrique de Oliveira}
+\advisortitle{Orientador} % ou Orientador
+\advisorname{Eduardo Todt.}
+\advisorplace{Departamento de Informática, UFPR}  % departamento, instituicao
+\city{Curitiba}
+\year{2014}
+
+\banca        % nao insira o nome do orientador, ja eh feito automaticamente
+{Prof. Bruno Müller Junior}{Departamento de Informática, UFPR}
+{Prof. Andrey Ricardo Pimentel}{Departamento de Informática, UFPR}
+{}{} % se nao houver deixe em branco {}{}
+{}{}    % se houver um quarto membro na banca, inserir nome e instituicao
+
+\defesa{22 de julho de 2014} % dia em que foi realizada a defesa da dissertacao
+
+
+\begin{document}
+
+%\makecapaproposta             % cria capa para proposta%
+\makecapadissertacao           % cria capa para dissertacao de mestrado %
+%\makerosto                     % cria folha de rosto para versao final da UFPR %
+%\maketermo                     % cria folha com o termo de aprovacao da dissertacao%
+
+%\singlespacing           % espacamento 1 - capa UFPR%
+%\onehalfspacing          % espacamento 1/2 %
+\doublespacing            % espacamento 2 - UFPR %
+
+\pagestyle{headings}
+\pagenumbering{roman}
+
+%\chapter*{Agradecimentos}
+%\input{agradecimentos.tex}          % possiu somente o texto
+
+\tableofcontents
+
+\listoffigures         % se houver mais do que 3 figuras
+\addcontentsline{toc}{chapter}{\MakeUppercase{Lista de Figuras}}
+\newpage
+
+%\listoftables        % se houver mais do que 3 tabelas
+%\addcontentsline{toc}{chapter}{\MakeUppercase{Lista de Tabelas}}
+%\newpage
+
+\chapter*{Resumo}
+\addcontentsline{toc}{chapter}{\MakeUppercase{Resumo}}
+\input{resumo.tex}           % somente o texto
+\newpage
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{\MakeUppercase{Abstract}}
+\input{abstract.tex}        % somente o texto
+\newpage
+
+
+\pagenumbering{arabic}
+
+\input{introducao.tex}
+\input{robosMoveis.tex}
+\input{localizacao.tex}
+\input{android.tex}
+\input{implementacao.tex}
+\input{conclusao.tex}
+%\input{anexo1.tex}     % se houver anexo
+
+\bibliographystyle{brazil}
+\bibliography{bibliografia}
+% utilize macros (3 primeiras letras do mes em ingles, minusculas) no seu
+% .bib para atribuir o nome do mes em portugues nas referencia,
+% se o style for brazil, outros estilos tambem aceitam estas macros
+% Ex:
+%
+% @InProceedings{teste,
+%   author =       {Luciano}
+%   year =         {2013}
+%   month =        {}#sep;
+% }
+%
+\addcontentsline{toc}{chapter}{\MakeUppercase{Bibliografia}}
+
+%\singlespacing
+%\makecapadissertacao
+
+\end{document}
