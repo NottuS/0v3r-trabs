@@ -147,7 +147,9 @@
   \begin{titlepage}%
     \null
     \begin{center}
-      {\large \MakeUppercase\@author}\\
+      %{\large \MakeUppercase\@author}\\
+      {\large \MakeUppercase{Filipe Leuch Bonfim}}\\
+      {\large \MakeUppercase{Michael Liang}}\\
       \vspace{6cm}
       {\large \textbf{\MakeUppercase\@title}}\\
       \vspace{4cm}
@@ -168,7 +170,9 @@ como requisito à conclusão do curso de Bacharelado em Ciência da Computação, Set
   \begin{titlepage}%
     \null
     \begin{center}
-      {\large \MakeUppercase\@author}\\
+      %{\large \MakeUppercase\@author}\\
+      {\large \MakeUppercase{Filipe Leuch Bonfim}}\\
+      {\large \MakeUppercase{Michael Liang}}\\
       \vspace{6cm}
       {\large \textbf{\MakeUppercase\@title}}\\
       \vspace{4cm}
@@ -195,7 +199,9 @@ como requisito à conclusão do curso de Bacharelado em Ciência da Computação, Set
     \null
     {\large
       \begin{center}
-        \MakeUppercase\@author\\
+        %\MakeUppercase\@author\\
+	{\large \MakeUppercase{Filipe Leuch Bonfim}}\\
+	{\large \MakeUppercase{Michael Liang}}\\
         \vspace{4cm}
         \textbf{\MakeUppercase\@title}\\
         \vspace{2cm}

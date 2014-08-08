@@ -1,114 +1,63 @@
-This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2012/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: dissertacao.aux
 The style file: brazil.bst
 Database file #1: bibliografia.bib
+I was expecting a `,' or a `}'---line 239 of file bibliografia.bib
+ : 
+ : @MISC{googleCar,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
 Warning--to sort, need author or key in androidDev
 Warning--to sort, need author or key in android0
-Warning--to sort, need author or key in apacheLicence
-Warning--to sort, need author or key in sdk
-Warning--to sort, need author or key in android1
-Warning--to sort, need author or key in activity
-Warning--to sort, need author or key in openGL
-Warning--to sort, need author or key in niveisExec
-Warning--empty author in android0
-Warning--empty title in android0
-Warning--empty booktitle in android0
-Warning--empty publisher in android0
-Warning--empty year in android0
-Warning--empty author in apacheLicence
-Warning--empty title in apacheLicence
-Warning--empty booktitle in apacheLicence
-Warning--empty publisher in apacheLicence
-Warning--empty year in apacheLicence
-Warning--empty author in sdk
-Warning--empty title in sdk
-Warning--empty booktitle in sdk
-Warning--empty publisher in sdk
-Warning--empty year in sdk
-Warning--empty author in android1
-Warning--empty title in android1
-Warning--empty booktitle in android1
-Warning--empty publisher in android1
-Warning--empty year in android1
-Warning--empty author in openGL
-Warning--empty title in openGL
-Warning--empty booktitle in openGL
-Warning--empty publisher in openGL
-Warning--empty year in openGL
-Warning--empty author in niveisExec
-Warning--empty title in niveisExec
-Warning--empty booktitle in niveisExec
-Warning--empty publisher in niveisExec
-Warning--empty year in niveisExec
-Warning--empty booktitle in wifiRadar
+Warning--empty booktitle in construcaoMapas
 Warning--empty booktitle in slam
+Warning--empty booktitle in centroid
 Warning--empty booktitle in cnn
 Warning--empty publisher in mobileRobotEnergy
-Warning--empty booktitle in multAgent
-Warning--empty booktitle in androidRobot
-Warning--empty publisher in androidRobot
-Warning--empty year in androidRobot
 Warning--empty booktitle in aoa
-Warning--empty booktitle in construcaoMapas
 Warning--empty booktitle in rss1
-Warning--empty booktitle in aoa3
-Warning--empty publisher in aoa3
-Warning--empty year in aoa3
-Warning--empty booktitle in localization1
-Warning--empty publisher in localization1
-Warning--empty year in localization1
-Warning--empty booktitle in localization2
-Warning--empty publisher in localization2
-Warning--empty year in localization2
-Warning--empty booktitle in slam2
-Warning--empty publisher in slam2
-Warning--empty year in slam2
-Warning--empty booktitle in slam4
-Warning--empty publisher in slam4
-Warning--empty year in slam4
 Warning--empty booktitle in tdoa
-Warning--empty booktitle in omc
 Warning--empty booktitle in rss2
-Warning--empty booktitle in wsnsLinear
-You've used 29 entries,
+You've used 38 entries,
             2118 wiz_defined-function locations,
-            601 strings with 7441 characters,
-and the built_in function-call counts, 7417 in all, are:
-= -- 601
-> -- 324
-< -- 0
-+ -- 135
-- -- 104
-* -- 485
-:= -- 1142
-add.period$ -- 67
-call.type$ -- 29
-change.case$ -- 133
+            673 strings with 10227 characters,
+and the built_in function-call counts, 9475 in all, are:
+= -- 875
+> -- 427
+< -- 1
++ -- 177
+- -- 135
+* -- 412
+:= -- 1586
+add.period$ -- 118
+call.type$ -- 38
+change.case$ -- 181
 chr.to.int$ -- 0
-cite$ -- 97
-duplicate$ -- 388
-empty$ -- 757
-format.name$ -- 104
-if$ -- 1565
+cite$ -- 49
+duplicate$ -- 371
+empty$ -- 915
+format.name$ -- 135
+if$ -- 2057
 int.to.chr$ -- 0
-int.to.str$ -- 29
-missing$ -- 26
-newline$ -- 125
-num.names$ -- 42
-pop$ -- 335
+int.to.str$ -- 38
+missing$ -- 13
+newline$ -- 192
+num.names$ -- 74
+pop$ -- 343
 preamble$ -- 1
-purify$ -- 110
+purify$ -- 143
 quote$ -- 0
-skip$ -- 181
+skip$ -- 275
 stack$ -- 0
-substring$ -- 147
-swap$ -- 6
-text.length$ -- 0
+substring$ -- 226
+swap$ -- 39
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 116
-warning$ -- 68
-while$ -- 42
-width$ -- 31
-write$ -- 227
-(There were 68 warnings)
+type$ -- 152
+warning$ -- 11
+while$ -- 76
+width$ -- 40
+write$ -- 374
+(There was 1 error message)

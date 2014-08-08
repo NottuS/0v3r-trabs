@@ -147,15 +147,13 @@
   \begin{titlepage}%
     \null
     \begin{center}
-      %{\large \MakeUppercase\@author}\\
-      {\large \MakeUppercase{Filipe Leuch Bonfim}}\\
-      {\large \MakeUppercase{Michael Liang}}\\
+      {\large \MakeUppercase\@author}\\
       \vspace{6cm}
-      {\large \textbf{Localiza√ß√£o para rob√¥s m√≥veis baseado em RSS}\\
+      {\large \textbf{\MakeUppercase\@title}}\\
       \vspace{4cm}
       
-      \hfill{\parbox{8cm}{Trabalho de Gradua√ß√£o apresentado √† disciplina de CI083 - Trabalho de Gradua√ß√£o em Arquitetura e Organiza√ß√£o de Computadores II
-como requisito √† conclus√£o do curso de Bacharelado em Ci√™ncia da Computa√ß√£o, Setor de Ci√™ncias Exatas Universidade Federal do Paran√°.\\
+      \hfill{\parbox{8cm}{Trabalho de GraduaÁ„o apresentado ‡ disciplina de CI083 - Trabalho de GraduaÁ„o em Arquitetura e OrganizaÁ„o de Computadores II
+como requisito ‡ conclus„o do curso de Bacharelado em CiÍncia da ComputaÁ„o, Setor de CiÍncias Exatas Universidade Federal do Paran·.\\
           \@advisortitle: \@advisorname}}\par \null\vfill
       \MakeUppercase\@city\\
       \vspace{0.5cm}
@@ -170,15 +168,15 @@ como requisito √† conclus√£o do curso de Bacharelado em Ci√™ncia da Computa√ß√£o
   \begin{titlepage}%
     \null
     \begin{center}
-%      {\large \MakeUppercase\@author}\\
-      {\large \MakeUppercase{Filipe Leuch Bonfim}}\\
-      {\large \MakeUppercase{Michael Liang}}\\
+      %{\large \MakeUppercase\@author}\\
+      {\normalsize \MakeUppercase{Filipe Leuch Bonfim}}\\
+      {\normalsize \MakeUppercase{Michael Liang}}\\
       \vspace{6cm}
-      {\large \textbf\@title}\\
+      {\large \textbf{\MakeUppercase\@title}}\\
       \vspace{4cm}
       
-      \hfill{\parbox{8cm}{Trabalho de Gradua√ß√£o apresentado √† disciplina de CI083 - Trabalho de Gradua√ß√£o em Arquitetura e Organiza√ß√£o de Computadores II
-como requisito √† conclus√£o do curso de Bacharelado em Ci√™ncia da Computa√ß√£o, Setor de Ci√™ncias Exatas Universidade Federal do Paran√°.\\
+      \hfill{\parbox{8cm}{Trabalho de GraduaÁ„o apresentado ‡ disciplina de CI083 - Trabalho de GraduaÁ„o em Arquitetura e OrganizaÁ„o de Computadores II
+como requisito ‡ conclus„o do curso de Bacharelado em CiÍncia da ComputaÁ„o, Setor de CiÍncias Exatas Universidade Federal do Paran·.\\
           \@advisortitle: \@advisorname}}\par  \null\vfill
       \MakeUppercase\@city\\
       \vspace{0.5cm}
@@ -200,8 +198,8 @@ como requisito √† conclus√£o do curso de Bacharelado em Ci√™ncia da Computa√ß√£o
     {\large
       \begin{center}
         %\MakeUppercase\@author\\
-	{\large \MakeUppercase{Filipe Leuch Bonfim}}\\
-	{\large \MakeUppercase{Michael Liang}}\\
+        {\normalsize \MakeUppercase{Filipe Leuch Bonfim}}\\
+	{\normalsize \MakeUppercase{Michael Liang}}\\
         \vspace{4cm}
         \textbf{\MakeUppercase\@title}\\
         \vspace{2cm}
@@ -209,7 +207,7 @@ como requisito √† conclus√£o do curso de Bacharelado em Ci√™ncia da Computa√ß√£o
         requisito  parcial  {\`a} obten{\c  c}{\~a}o  do  grau  de
         Mestre no Programa  de     P{\'o}s-Gradua{\c    c}{\~a}o  em
         Inform{\'a}tica da Universidade Federal  do  Paran{\'a}, pela
-        Comiss√£o formada pelos professores:\\
+        Comiss„o formada pelos professores:\\
       \end{center}
       \vspace{0.5cm}
       \hfill{\parbox{12cm}{

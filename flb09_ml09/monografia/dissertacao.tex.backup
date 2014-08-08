@@ -83,10 +83,10 @@
 
 \input{introducao.tex}
 \input{tecnologiasRevisoesBib.tex}
-\input{conceitucaoIdeiaGeral.tex}
+\input{localizacao.tex}
+\input{android.tex}
 \input{implementacao.tex}
 \input{conclusao.tex}
-
 %\input{anexo1.tex}     % se houver anexo
 
 \bibliographystyle{brazil}
@@ -103,8 +103,6 @@
 % }
 %
 \addcontentsline{toc}{chapter}{\MakeUppercase{Bibliografia}}
-
-\input{apendiceA.tex}
 
 %\singlespacing
 %\makecapadissertacao
