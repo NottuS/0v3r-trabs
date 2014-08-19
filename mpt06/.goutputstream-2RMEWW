@@ -1,0 +1,81 @@
+
+// Testar se funciona corretamente o empilhamento de parâmetros
+// passados por valor ou por referência.
+
+
+%{
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include "compilador.h"
+
+int num_vars = 0;
+int nivel_lexico = 0;
+char str[256];
+tabela ts;
+elemenTS element;
+
+%}
+
+%token PROGRAM ABRE_PARENTESES FECHA_PARENTESES 
+%token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO
+%token T_BEGIN T_END VAR IDENT ATRIBUICAO
+
+%%
+
+programa    :{ 
+             geraCodigo (NULL, "INPP");
+             }
+             PROGRAM IDENT 
+             ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
+             bloco PONTO 
+             {
+             sprintf(str, "DMEM %d", num_vars);
+             geraCodigo (NULL, str);
+             geraCodigo (NULL, "PARA");
+             }
+;
+
+bloco       : 
+              parte_declara_vars
+              { 
+              }
+
+              comando_composto 
+              ;
+
+
+
+
+parte_declara_vars:  var 
+;
+
+
+var         : { } VAR declara_vars
+            |
+;
+
+declara_vars: declara_vars declara_var 
+            | declara_var 
+;
+
+declara_var : { } 
+              lista_id_var DOIS_PONTOS 
+              tipo 
+              {
+              sprintf(str, "AMEM %d", num_vars);
+              geraCodigo (NULL, str);
+              }
+              PONTO_E_VIRGULA
+;
+
+tipo        : IDENT
+;
+
+lista_id_var: lista_id_var VIRGULA IDENT 
+              {
+              num_vars++;
+              var_simples(&element, token, variavel_simples, nivel_lexico, inteiro, num_vars);
+              if(insereTS(&ts, element)) {
+                sprintf(str, "redeclaration of 

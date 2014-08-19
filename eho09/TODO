@@ -1,0 +1,9 @@
+if: ultimo comando sem ; e cmd anterior ao else tbm.
+
+for: atr e expr do for tem que ter o mesmo tipo, incrementador n pode ser alterado dentro dele.
+
+paramentros: podem tem o mesmo identifcador que bangs de nivel menor.
+
+função: recurção, e atreibuiçaõ de função
+
+desvios: falta tudo

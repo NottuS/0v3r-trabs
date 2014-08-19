@@ -1,0 +1,55 @@
+     INPP
+     AMEM 2
+     DSVS ROT0
+ROT1: NADA 
+     ENPR 1
+     AMEM 2
+     CRVL 1,-5
+     CRCT 2
+     CMME
+     DSVF ROT2
+     CRVL 1,-5
+     ARMZ 1,-6
+     CRCT 0
+     ARMI 1,-4
+     DSVS ROT3
+ROT2: NADA 
+     CRVL 1,-5
+     CRCT 1
+     SUBT
+     CREN 1,0
+     AMEM 1
+     CHPR ROT1, 1
+     CRVL 1,-5
+     CRCT 2
+     SUBT
+     CREN 1,1
+     AMEM 1
+     CHPR ROT1, 1
+     SOMA
+     ARMZ 1,-6
+     CRVL 1,0
+     CRVL 1,1
+     SOMA
+     CRCT 1
+     SOMA
+     ARMI 1,-4
+ROT3: NADA 
+     CRVL 1,-5
+     IMPR
+     CRVI 1,-4
+     IMPR
+     DMEM 2
+     RTPR 1, 2
+ROT0: NADA 
+     CRCT 3
+     CREN 0,0
+     AMEM 1
+     CHPR ROT1, 0
+     ARMZ 0,1
+     CRVL 0,1
+     IMPR
+     CRVL 0,0
+     IMPR
+     DMEM 2
+     PARA

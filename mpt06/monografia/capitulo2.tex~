@@ -1,0 +1,64 @@
+\chapter{O Protocolo OSPF}
+\label{O Protocolo OSPF}
+
+Este capítulo, descreve o protocolo de roteamento da Internet chamado \textit{Open Shortest Path First (OSPF)}. Antes, a introdução à, roteamento na Internet apresenta os conceitos de Sistemas Autônomos e Protocolos de Roteamento Interno e Externo. Em seguida, descrevemos a tecnologia de roteamento denominada, Estado de Enlace. Terminamos o capítulo com uma descrição detalhada do protocolo OSPF.
+	
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+\section{Roteamento na Internet}
+
+A Internet é organizada em regiões chamadas Sistemas Autônomos\cite{Reference1}. Cada sistema autônomo consiste em um conjunto de roteadores sob o controle de uma única entidade administrativa\cite{Reference1,Reference3}. Dentro de um sistema autônomo os roteadores trocam informações através do Protocolo de Roteamento Interno\cite{Reference1,Reference2}. Para trocar informações entre sistemas autônomos é utilizado o Protocolo de Roteamento Externo\cite{Reference1,Reference2}.
+
+Todos os roteadores que pertencem a um único sistema autônomo devem permanecer conectados entre si\cite{Reference3}. Isto significa que os roteadores devem trocar informações para manter a conectividade do sistema autônomo\cite{Reference3}. Um protocolo de roteamento interno é usado para configurar e manter as tabelas de roteamento dentro dos sistemas autônomos\cite{Reference4}. Segundo Douglas Comer, os roteadores pertencentes ao mesmo sistema autônomo se comunicam periodicamente entre si a fim de trocar informações de roteamento. Nenhum protocolo isolado surgiu para uso dentro de um sistema autônomo. Parte do motivo para a diversidade vem das várias topologias e tecnologias em uso. Outra parte do motivo deriva das conciliações entre simplicidade e funcionalidade. Como resultado, diversos protocolos se tornaram populares. Como não existe um padrão único, o termo \textit{Interior Gateway Protocol(IGP)} é utilizado como uma descrição genérica para qualquer protocolo que os roteadores internos usam quando trocam informações de roteamento. Um único roteador pode utilizar dois protocolos de roteamento diferentes simultaneamente, um para comunicação fora de seu sistema autônomo e outro para comunicação dentro de seu sistema autônomo.
+
+De acordo com Chistian Huitema, dividir a Internet em vários sistemas autônomos visa reduzir a sobrecarga de roteamento e facilitar a gestão da rede. Isolar os elementos falhos é mais fácil quando o número de enlaces e roteadores é mantido relativamente baixo. Entretanto a conectividade deve ser preservada. As tabelas de roteamento de um sistema autônomo devem incluir registros para todos os possíveis destinos da Internet. As tabelas de roteamento são mantidas pelo protocolo de roteamento interno. Porém as mensagens do protocolo de roteamento interno só transitam dentro do sistema autônomo. Os roteadores devem obter informações sobre redes externas. Para obter informações sobre redes externas é necessário realizar a troca de mensagens através de roteadores externos, que são pontos de entrada em sistemas autônomos adjacentes. A função do protocolo de roteamento externo é realizar a troca de informações de acessibilidade. Esta informação consiste de um conjunto de redes alcançáveis. Os roteadores externos utilizam o protocolo de roteamento externo para documentar as redes que eles podem alcançar. Quando um roteador externo recebe informações de um outro roteador externo, ele utiliza o protocolo de roteamento interno para distribuir esta informações dentro do sistema autônomo.
+
+James Kurose e Keith Ross resaltam algumas das diferenças entre o protocolo de roteamento interno e externo. 
+
+%A principal função de um protocolo de roteamento externo é permitir que um sistema autônomo se comunique com outro\cite{Reference2}. Para realizar sua função, o protocolo de roteamento externo, anuncia a alcançabilidade da rede para outros sistemas autônomos\cite{Reference2,Reference3}. Atualmente, o único protocolo de roteamento externo utilizado na Internet é o \textit{Border Gateway Protocol(BGP)}\cite{Reference3}. O protocolo BGP 
+
+%Todos os protocolos de roteamento TCP/IP têm maneiras de descobrir, para cada endereço IP, o próximo salto para encaminhar o tráfego de dados. Como a rede muda os protocolos de roteamento reavaliam continuamente o próximo salto utilizado para acessar cada endereço. O processo para encontrar o novo próximo salto após uma mudança na rede é chamado de convergência. Nós preferimos protocolos de roteamento que encontrem o novo próximo salto de maneira rápida, isto é, protocolos com baixo tempo de convergência. Entretanto conforme o tamanho e a complexidade da rede aumentam o tempo de convergência também aumenta.\cite{Reference1}
+
+%Os protocolos de roteamento interno priorizam calcular, de maneira rápida, os melhores caminhos. No entanto, os protocolos de roteamento externo têm como prioridade transmitir políticas específicas de roteamento. Normalmente a diferença entre as duas classes de protocolos de roteamento associa o uso da tecnologia de estado de enlace aos protocolos de roteamento interno.\cite{Reference1}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+\section{Protocolos de Estado de Enlace}
+
+O enlace pode ser considerado como uma interface do roteador. O estado do enlace é a descrição desta interface. Nos protocolos de estado de enlace os roteadores mantêm um banco de dados com informações da rede. Cada roteador contruibui com uma parte do banco de dados ao distribuir para a rede o estado de seus enlaces. Após todos os roteadores anunciarem os estados de seus enlaces, eles irão dispor do mesmo conjunto de mensagens, que juntas descrevem o mapa da rede. O custo de um caminho na rede é obtido através da soma do custo dos enlaces que compoem o caminho. A partir do mapa da rede, cada roteador executa um cálculo, geralmente o algoritmo Dijkstra, com o objetivo de descobrir o caminho de menor custo para cada endereço destino.\cite{Reference1}
+
+Os algoritmos de estado de enlace possuem as seguintes propriedades.\cite{Reference2}
+\begin{itemize}
+  \item Convergência rápida e sem \textit{loops}
+  \item Uma vez que os protocolos de estado de enlace têm mais dados à sua disposição, eles podem calcular um caminho com características mais sofisticadas do que simplesmente o caminho de menor custo.
+  \item Podem existir vários caminhos de mesmo custo para um destino, quando isso ocorre o tráfego é distribuído de maneira equilibrada entre os caminhos.
+\end{itemize}
+
+\subsection{Falha de um Enlace}
+
+Quando um roteador detecta a mudaça no estado de um enlace, ele deve atualizar os registros afetados em seu banco de dados. Além disso ele deve transmitir esta informação para os demais roteadores.\cite{Reference2}
+
+É necessário tomar precauções para que mensagens antigas, que ainda estão circulando na rede, não preencham o banco de dados com informações incorretas. Portanto, cada mensagem contém um contador. Deste modo, é possível ignorar informações antigas. O algoritmo responsável por distribuir os estados de enlaces pela rede é descrito a seguir.\cite{Reference2}
+
+\begin{enumerate}
+  \item Recebe uma nova mensagem. Verifica no banco de dados pelo registro correspondente.
+  \item Se o registro ainda não está presente, então adiciona o registro no banco de dados. Transmite a mensagem para os demais roteadores.
+  \item Caso o contador no registro for menor do que o contador na mensagem, atualiza o resgistro com o novo valor. Transmite a mensagem para os demais roteadores.
+  \item Caso o contador no registro for maior, transmite o valor do registro em uma nova mensagem através da interface na qual recebeu a última mensagem.
+  \item Caso os ambos os contadores forem iguais, não faz nada
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+\section{OSPF: O Protocolo}
+
+O \textit{Open Shortest Path First (OSPF)} é um protocolo de roteamento interno usado para distribuir informações de roteamento dentro de um sistema autônomo. Além disso, o OSPF pertence à categoria de protocolos de roteamento chamados protocolos de estado de enlace.
+
+
+\subsection{Algoritmo do Caminho Mínimo}
+O protocolo OSPF utiliza o algoritmo do caminho mínimo para calcular o menor caminho para todos os destinos conhecidos. O menor caminho é calculado atavés do algoritmo de Dijkstra. A seguir será apresentada uma versão simplificada do algoritmo.
+
+A tarefa de mapeamento corresponde à atribuição de valores aos elementos do mapa, relacionando cada um a uma certa posição nele \cite{construcaoMapas2}. O tipo ideal de mapa a ser utilizado ou construído por um robô móvel depende da tarefa e do ambiente onde este esteja inserido. Também depende das características do robô, tais como os tipos de sensores que ele tem, bem como a forma com ele se move\cite{construcaoMapas2}.  Há duas abordagens principais para a representação de mapas de ambiente \cite{construcaoMapas}. São os mapas métricos e topológicos, que serão discutidos a seguir.
