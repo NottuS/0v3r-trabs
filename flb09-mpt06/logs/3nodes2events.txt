@@ -1,0 +1,62 @@
+================================================================================
+
+Sou o nodo 0 vou testar o cluster s=1 no tempo  30.0
+	Testei o nodo 1 sem falha, state: [ 0 0 -1 ]
+
+Sou o nodo 1 vou testar o cluster s=1 no tempo  30.0
+	Testei o nodo 0 sem falha, state: [ 0 0 -1 ]
+
+Sou o nodo 2 vou testar o cluster s=1 no tempo  30.0, state: [ -1 -1 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 0 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 2 sem falha, state: [ 0 0 0 ]
+
+Sou o nodo 1 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 2 sem falha, state: [ 0 0 0 ]
+
+Sou o nodo 2 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 0 sem falha, state: [ 0 0 0 ]
+
+================================================================================
+
+ => => => O nodo 2 falha no tempo  40.0
+
+================================================================================
+
+Sou o nodo 0 vou testar o cluster s=1 no tempo  60.0
+	Testei o nodo 1 sem falha, state: [ 0 0 0 ]
+
+Sou o nodo 1 vou testar o cluster s=1 no tempo  60.0
+	Testei o nodo 0 sem falha, state: [ 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 0 vou testar o cluster s=2 no tempo  60.0
+	Testei o nodo 2 falho, state: [ 0 0 1 ]
+
+Sou o nodo 1 vou testar o cluster s=2 no tempo  60.0
+	Testei o nodo 2 falho, state: [ 0 0 1 ]
+
+================================================================================
+
+ => => => O nodo 2 recuperou no tempo  70.0
+
+================================================================================
+
+Sou o nodo 0 vou testar o cluster s=1 no tempo  90.0
+	Testei o nodo 1 sem falha, state: [ 0 0 1 ]
+
+Sou o nodo 1 vou testar o cluster s=1 no tempo  90.0
+	Testei o nodo 0 sem falha, state: [ 0 0 1 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 0 vou testar o cluster s=2 no tempo  90.0
+	Testei o nodo 2 sem falha, state: [ 0 0 0 ]
+
+Sou o nodo 1 vou testar o cluster s=2 no tempo  90.0
+	Testei o nodo 2 sem falha, state: [ 0 0 0 ]
+
+================================================================================

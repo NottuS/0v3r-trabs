@@ -1,0 +1,201 @@
+================================================================================
+
+Sou o nodo 0 vou testar o cluster s=1 no tempo  30.0
+	Testei o nodo 1 sem falha, state: [ 0 0 -1 -1 -1 ]
+
+Sou o nodo 1 vou testar o cluster s=1 no tempo  30.0
+	Testei o nodo 0 sem falha, state: [ 0 0 -1 -1 -1 ]
+
+Sou o nodo 2 vou testar o cluster s=1 no tempo  30.0
+	Testei o nodo 3 sem falha, state: [ -1 -1 0 0 -1 ]
+
+Sou o nodo 3 vou testar o cluster s=1 no tempo  30.0
+	Testei o nodo 2 sem falha, state: [ -1 -1 0 0 -1 ]
+
+Sou o nodo 4 vou testar o cluster s=1 no tempo  30.0, state: [ -1 -1 -1 -1 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 0 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 2 sem falha, state: [ 0 0 0 0 -1 ]
+
+Sou o nodo 1 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 3 sem falha, state: [ 0 0 0 0 -1 ]
+
+Sou o nodo 2 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 0 sem falha, state: [ 0 0 0 0 -1 ]
+
+Sou o nodo 3 vou testar o cluster s=2 no tempo  30.0
+	Testei o nodo 1 sem falha, state: [ 0 0 0 0 -1 ]
+
+Sou o nodo 4 vou testar o cluster s=2 no tempo  30.0, state: [ -1 -1 -1 -1 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 0 vou testar o cluster s=3 no tempo  30.0
+	Testei o nodo 4 sem falha, state: [ 0 0 0 0 0 ]
+
+Sou o nodo 1 vou testar o cluster s=3 no tempo  30.0
+	Testei o nodo 4 sem falha, state: [ 0 0 0 0 0 ]
+
+Sou o nodo 2 vou testar o cluster s=3 no tempo  30.0
+	Testei o nodo 4 sem falha, state: [ 0 0 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=3 no tempo  30.0
+	Testei o nodo 4 sem falha, state: [ 0 0 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=3 no tempo  30.0
+	Testei o nodo 0 sem falha, state: [ 0 0 0 0 0 ]
+
+================================================================================
+
+ => => => O nodo 0 falha no tempo  40.0
+
+================================================================================
+
+Sou o nodo 1 vou testar o cluster s=1 no tempo  60.0
+	Testei o nodo 0 falho, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 2 vou testar o cluster s=1 no tempo  60.0
+	Testei o nodo 3 sem falha, state: [ 0 0 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=1 no tempo  60.0
+	Testei o nodo 2 sem falha, state: [ 0 0 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=1 no tempo  60.0, state: [ 0 0 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 1 vou testar o cluster s=2 no tempo  60.0
+	Testei o nodo 3 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 2 vou testar o cluster s=2 no tempo  60.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=2 no tempo  60.0
+	Testei o nodo 1 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=2 no tempo  60.0, state: [ 0 0 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 1 vou testar o cluster s=3 no tempo  60.0
+	Testei o nodo 4 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 2 vou testar o cluster s=3 no tempo  60.0
+	Testei o nodo 4 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=3 no tempo  60.0
+	Testei o nodo 4 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=3 no tempo  60.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 sem falha, state: [ 1 0 0 0 0 ]
+
+================================================================================
+
+ => => => O nodo 1 falha no tempo  70.0
+
+================================================================================
+
+Sou o nodo 2 vou testar o cluster s=1 no tempo  90.0
+	Testei o nodo 3 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=1 no tempo  90.0
+	Testei o nodo 2 sem falha, state: [ 1 0 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=1 no tempo  90.0, state: [ 1 0 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 2 vou testar o cluster s=2 no tempo  90.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 falho, state: [ 1 1 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=2 no tempo  90.0
+	Testei o nodo 1 falho
+	Testei o nodo 0 falho, state: [ 1 1 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=2 no tempo  90.0, state: [ 1 0 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 2 vou testar o cluster s=3 no tempo  90.0
+	Testei o nodo 4 sem falha, state: [ 1 1 0 0 0 ]
+
+Sou o nodo 3 vou testar o cluster s=3 no tempo  90.0
+	Testei o nodo 4 sem falha, state: [ 1 1 0 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=3 no tempo  90.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 falho
+	Testei o nodo 2 sem falha, state: [ 1 1 0 0 0 ]
+
+================================================================================
+
+ => => => O nodo 2 falha no tempo 110.0
+
+================================================================================
+
+Sou o nodo 3 vou testar o cluster s=1 no tempo 120.0
+	Testei o nodo 2 falho, state: [ 1 1 1 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=1 no tempo 120.0, state: [ 1 1 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 3 vou testar o cluster s=2 no tempo 120.0
+	Testei o nodo 1 falho
+	Testei o nodo 0 falho, state: [ 1 1 1 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=2 no tempo 120.0, state: [ 1 1 0 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 3 vou testar o cluster s=3 no tempo 120.0
+	Testei o nodo 4 sem falha, state: [ 1 1 1 0 0 ]
+
+Sou o nodo 4 vou testar o cluster s=3 no tempo 120.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 falho
+	Testei o nodo 2 falho
+	Testei o nodo 3 sem falha, state: [ 1 1 1 0 0 ]
+
+================================================================================
+
+ => => => O nodo 3 falha no tempo 140.0
+
+================================================================================
+
+Sou o nodo 4 vou testar o cluster s=1 no tempo 150.0, state: [ 1 1 1 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 4 vou testar o cluster s=2 no tempo 150.0, state: [ 1 1 1 0 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 4 vou testar o cluster s=3 no tempo 150.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 falho
+	Testei o nodo 2 falho
+	Testei o nodo 3 falho, state: [ 1 1 1 1 0 ]
+
+================================================================================
+
+Sou o nodo 4 vou testar o cluster s=1 no tempo 180.0, state: [ 1 1 1 1 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 4 vou testar o cluster s=2 no tempo 180.0, state: [ 1 1 1 1 0 ]
+
+--------------------------------------------------------------------------------
+
+Sou o nodo 4 vou testar o cluster s=3 no tempo 180.0
+	Testei o nodo 0 falho
+	Testei o nodo 1 falho
+	Testei o nodo 2 falho
+	Testei o nodo 3 falho, state: [ 1 1 1 1 0 ]
+
+================================================================================

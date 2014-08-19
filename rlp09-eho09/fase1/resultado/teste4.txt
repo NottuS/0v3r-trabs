@@ -1,0 +1,199 @@
+
+Tempo de execução:200
+
+_______________________________________________________________________________
+
+sou o nodo 0 vou testar no tempo  30.0, para s = 1, o(s) nodo(s): 1  
+	state:[ 0 0 -1 -1 -1 ]
+
+sou o nodo 1 vou testar no tempo  30.0, para s = 1, o(s) nodo(s): 0  
+	state:[ 0 0 -1 -1 -1 ]
+
+sou o nodo 2 vou testar no tempo  30.0, para s = 1, o(s) nodo(s): 3  
+	state:[ -1 -1 0 0 -1 ]
+
+sou o nodo 3 vou testar no tempo  30.0, para s = 1, o(s) nodo(s): 2  
+	state:[ -1 -1 0 0 -1 ]
+
+sou o nodo 4 vou testar no tempo  30.0, para s = 1, o(s) nodo(s):
+	state:[ -1 -1 -1 -1 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 0 vou testar no tempo  30.0, para s = 2, o(s) nodo(s): 2  
+	state:[ 0 0 0 0 -1 ]
+
+sou o nodo 1 vou testar no tempo  30.0, para s = 2, o(s) nodo(s): 3  
+	state:[ 0 0 0 0 -1 ]
+
+sou o nodo 2 vou testar no tempo  30.0, para s = 2, o(s) nodo(s): 0  
+	state:[ 0 0 0 0 -1 ]
+
+sou o nodo 3 vou testar no tempo  30.0, para s = 2, o(s) nodo(s): 1  
+	state:[ 0 0 0 0 -1 ]
+
+sou o nodo 4 vou testar no tempo  30.0, para s = 2, o(s) nodo(s):
+	state:[ -1 -1 -1 -1 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 0 vou testar no tempo  30.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 0 0 0 0 0 ]
+
+sou o nodo 1 vou testar no tempo  30.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 0 0 0 0 0 ]
+
+sou o nodo 2 vou testar no tempo  30.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 0 0 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  30.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 0 0 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  30.0, para s = 3, o(s) nodo(s): 0  
+	state:[ 0 0 0 0 0 ]
+
+_______________________________________________________________________________
+
+***O nodo 0 falha no tempo  40.0*** 
+
+_______________________________________________________________________________
+
+sou o nodo 1 vou testar no tempo  60.0, para s = 1, o(s) nodo(s): 0
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 2 vou testar no tempo  60.0, para s = 1, o(s) nodo(s): 3  
+	state:[ 0 0 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  60.0, para s = 1, o(s) nodo(s): 2  
+	state:[ 0 0 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  60.0, para s = 1, o(s) nodo(s):
+	state:[ 0 0 0 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 1 vou testar no tempo  60.0, para s = 2, o(s) nodo(s): 3  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 2 vou testar no tempo  60.0, para s = 2, o(s) nodo(s): 0 1  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  60.0, para s = 2, o(s) nodo(s): 1  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  60.0, para s = 2, o(s) nodo(s):
+	state:[ 0 0 0 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 1 vou testar no tempo  60.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 2 vou testar no tempo  60.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  60.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  60.0, para s = 3, o(s) nodo(s): 0 1  
+	state:[ 1 0 0 0 0 ]
+
+_______________________________________________________________________________
+
+***O nodo 1 falha no tempo  70.0*** 
+
+_______________________________________________________________________________
+
+sou o nodo 2 vou testar no tempo  90.0, para s = 1, o(s) nodo(s): 3  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  90.0, para s = 1, o(s) nodo(s): 2  
+	state:[ 1 0 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  90.0, para s = 1, o(s) nodo(s):
+	state:[ 1 0 0 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 2 vou testar no tempo  90.0, para s = 2, o(s) nodo(s): 0 1
+	state:[ 1 1 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  90.0, para s = 2, o(s) nodo(s): 1 0
+	state:[ 1 1 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  90.0, para s = 2, o(s) nodo(s):
+	state:[ 1 0 0 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 2 vou testar no tempo  90.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 1 1 0 0 0 ]
+
+sou o nodo 3 vou testar no tempo  90.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 1 1 0 0 0 ]
+
+sou o nodo 4 vou testar no tempo  90.0, para s = 3, o(s) nodo(s): 0 1 2  
+	state:[ 1 1 0 0 0 ]
+
+_______________________________________________________________________________
+
+***O nodo 2 falha no tempo 110.0*** 
+
+_______________________________________________________________________________
+
+sou o nodo 3 vou testar no tempo 120.0, para s = 1, o(s) nodo(s): 2
+	state:[ 1 1 1 0 0 ]
+
+sou o nodo 4 vou testar no tempo 120.0, para s = 1, o(s) nodo(s):
+	state:[ 1 1 0 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 3 vou testar no tempo 120.0, para s = 2, o(s) nodo(s): 1 0
+	state:[ 1 1 1 0 0 ]
+
+sou o nodo 4 vou testar no tempo 120.0, para s = 2, o(s) nodo(s):
+	state:[ 1 1 0 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 3 vou testar no tempo 120.0, para s = 3, o(s) nodo(s): 4  
+	state:[ 1 1 1 0 0 ]
+
+sou o nodo 4 vou testar no tempo 120.0, para s = 3, o(s) nodo(s): 0 1 2 3  
+	state:[ 1 1 1 0 0 ]
+
+_______________________________________________________________________________
+
+***O nodo 3 falha no tempo 140.0*** 
+
+_______________________________________________________________________________
+
+sou o nodo 4 vou testar no tempo 150.0, para s = 1, o(s) nodo(s):
+	state:[ 1 1 1 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 4 vou testar no tempo 150.0, para s = 2, o(s) nodo(s):
+	state:[ 1 1 1 0 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 4 vou testar no tempo 150.0, para s = 3, o(s) nodo(s): 0 1 2 3
+	state:[ 1 1 1 1 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 4 vou testar no tempo 180.0, para s = 1, o(s) nodo(s):
+	state:[ 1 1 1 1 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 4 vou testar no tempo 180.0, para s = 2, o(s) nodo(s):
+	state:[ 1 1 1 1 0 ]
+
+_______________________________________________________________________________
+
+sou o nodo 4 vou testar no tempo 180.0, para s = 3, o(s) nodo(s): 0 1 2 3
+	state:[ 1 1 1 1 0 ]
+

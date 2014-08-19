@@ -1,0 +1,10 @@
+											
+										Relatório
+	
+	Para que cada nodo teste os logN clusters a cada rodada de testes, ao invés de testar um único cluster por rodada, é feito um schedule com tempo de zero antes de cada nodo realizar seus testes. Este processo se repete até que todos os clusters sejam testados, e então é feito o schedule da próxima rodada de testes. Além disso, em uma rodada, todos os nodos testam inicialmente o mesmo cluster, depois o próximo e assim por diante, ou seja, os clusters são testados de maneira intercalada.
+	
+	Quando um nodo encontra algum nodo sem falha, para obter informações dos nodos do cluster que ainda não foram testados, é realizado o seguinte processedimento: o nodo que realizou o teste copia os estados do vetor state, pertencente ao nodo sem falha, utilizando como índice os ID's restantes fornecidos pela função C(i,s).
+	
+	Em um modelo no qual a quantidade de nodos não é multiplo de 2, um nodo pode tentar diagnosticar outro não existente, neste caso serão consultados os demais nodos do cluster.
+	
+	Numa situação em que um nodo se recupera, o estado dos demais nodos passa a ser desconhecido para o nodo em questão. Este procedimento é necessário, pois existe a possibilidade de que o vetor state deste nodo contenha informações desatualizadas, sendo assim, o nodo que irá testá-lo, obterá informações inconsistentes.
