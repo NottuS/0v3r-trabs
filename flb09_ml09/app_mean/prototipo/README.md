@@ -1,6 +1,6 @@
 mean-stack
 ==========
 
-Código fonte do artigo no blog da Caelum "Conhecendo a stack MEAN: MongoDB, Express, Angular e Node."
+Esqueleto base do MEAN STACK, prototipo para versão do math-race.
 
 Rode 'npm install' para baixar os módulos necessários
