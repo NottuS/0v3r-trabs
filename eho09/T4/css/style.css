@@ -1,0 +1,37 @@
+html, body{
+	width: 100%;
+	height: auto;
+	padding: 0px;
+	margin: 0px;
+	background-color: #EFECE6;
+}
+
+
+
+#all{
+	margin: 0 auto;
+	width: 500px;
+}
+
+.table_grade {
+	border:1px solid gray;
+	//border-collapse:collapse;
+	font-family:Trebuchet MS, Verdana, Arial, Sans-serif;
+	font-size:12px; color:#000020; font-weight:normal;
+	border-spacing:15px;
+}
+.titulos_table {
+	border:1px solid gray;
+	background-color:#e9ddaf;
+	text-align:center;
+	vertical-align:center;
+	font-weight:bolder;
+	color:#000020;
+}	
+.codigo {
+	border:1px solid gray;
+	vertical-align:center;
+	text-align: center;
+	width:50px;
+	background-color: #f5f5f5;
+}

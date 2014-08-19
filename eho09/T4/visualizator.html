@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>mpt06 Home Page</title>
+	<meta charset="UTF-8">
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="visualizator.js"></script>
+</head>
+<body>
+<div id="frames">
+	<header>
+		<h1>Mozart Pistori Tomazetti</h1>
+		<h4>Bacharelado em Ciência da Computação - UFPR</h4>
+	</header>
+
+	<div id="content">
+		<nav>
+		<ul>
+			<li ><a href="index.html"><div id="home"></div></a></li>
+			<li ><a href="t3.html">T3</a></li>
+			<li ><a class="atual" href="visualizator.html">Vizualizator</a></li>
+			<li ><a href="about.html">Sobre</a></li>
+			<li ><a href="contact.html">Contato</a></li>
+		</ul>
+		</nav>
+		<main>
+			<div class="txt">
+			<table class="table_grade">
+			<tr>
+				<td colspan="8" class="titulos_table">Ciência da Computação <br>períodos semestrais do curso</td>
+			</tr>
+			<tr>
+			<td class="titulos_table">1º</td>
+			<td class="titulos_table">2º</td>
+			<td class="titulos_table">3º</td>
+			<td class="titulos_table">4º</td>
+			<td class="titulos_table">5º</td>
+			<td class="titulos_table">6º</td>
+			<td class="titulos_table">7º</td>
+			<td class="titulos_table">8º</td>
+			</tr>
+
+			<tr>
+			<td class="codigo">CI068</td>
+			<td class="codigo">CI210</td>
+			<td class="codigo">CI212</td>
+			<td class="codigo">CI215</td>
+			<td class="codigo">CI162</td>
+			<td class="codigo">CI163</td>
+			<td class="codigo">CI221</td>
+			<td class="codigo">OPT</td>
+			</tr>
+
+			<tr>
+			<td class="codigo">CI055</td>
+			<td class="codigo">CI056</td>
+			<td class="codigo">CI057</td>
+			<td class="codigo">CI062</td>
+			<td class="codigo">CI065</td>
+			<td class="codigo">CI165</td>
+			<td class="codigo">CI211</td>
+			<td class="codigo">OPT</td>
+			</tr>
+
+			<tr>
+			<td class="codigo">CM046</td>
+			<td class="codigo">CI067</td>
+			<td class="codigo">CI064</td>
+			<td class="codigo">CE003</td>
+			<td class="codigo">CI059</td>
+			<td class="codigo">CI209</td>
+			<td class="codigo">OPT</td>
+			<td class="codigo">OPT</td>
+			</tr>
+
+			<tr>
+			<td class="codigo">CM045</td>
+			<td class="codigo">CM005</td>
+			<td class="codigo">CI237</td>
+			<td class="codigo">CI058</td>
+			<td class="codigo">CI061</td>
+			<td class="codigo">CI218</td>
+			<td class="codigo">OPT</td>
+			<td class="codigo">OPT</td>
+			</tr>
+
+			<tr>
+			<td class="codigo">CM201</td>
+			<td class="codigo">CM202</td>
+			<td class="codigo">CI166</td>
+			<td class="codigo">CI164</td>
+			<td class="codigo">SA214</td>
+			<td class="codigo">CI220</td>
+			<td class="codigo">TG I</td>
+			<td class="codigo">TG II</td>
+			</tr>
+			</table>
+			</div>
+			<br/>
+			Registro Acadêmico:
+			<!--<<input id="ra" type="text">-->
+			<select name="ra">
+			  <option value="GRR00000000">GRR00000000</option>
+			  <option value="GRR00000001">GRR00000001</option>
+			  <option value="GRR00000002">GRR00000002</option>
+			  <option value="GRR00000003">GRR00000003</option>
+			  <option value="GRR00000004">GRR00000004</option>
+			  <option value="GRR00000005">GRR00000005</option>
+			  <option value="GRR00000006">GRR00000006</option>
+			  <option value="GRR00000007">GRR00000007</option>
+			  <option value="GRR00000008">GRR00000008</option>
+			  <option value="GRR00000009">GRR00000009</option>
+			  <option value="GRR00000010">GRR00000010</option>
+			  <option value="GRR00000011">GRR00000011</option>
+			  <option value="GRR00000012"selected>GRR00000012</option>
+			</select> 
+			<button id="search" type="button" onclick="doTest(ra);">Pesquisar</button>
+		</main>
+	</div>
+</div>
+</body>
+</html>

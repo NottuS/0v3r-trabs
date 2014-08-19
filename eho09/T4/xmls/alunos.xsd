@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!-- Esquema de dados do XML contendo informações de alunos -->
+<!-- Cada "sequence" contém os dados de um aluno em uma --> 
+<!-- disciplina que o aluno cursou. Se o aluno cursou 10 disciplinas -->
+<!-- significa que serão dez conjuntos de dados que só se diferenciam -->
+<!-- em poucos campos. Este formato não é o ideal, porém reflete a imagem -->
+<!-- do banco de dados. Por isso, tem de ser assim -->
+
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="ALUNOS_CURSO">
+     <xs:complexType>
+       <xs:sequence>
+       <xs:element name="ALUNO">
+         <xs:complexType>
+           <xs:sequence>
+             <xs:element name="ID_CURSO_ALUNO" type="xs:decimal"/>  
+             <xs:element name="MATR_ALUNO" type="xs:string"/>  
+             <xs:element name="ID_VERSAO_CURSO" type="xs:decimal"/> 
+             <xs:element name="NOME_ALUNO" type="xs:string"/>  
+             <xs:element name="COD_CURSO" type="xs:string"/>  
+             <xs:element name="NOME_CURSO" type="xs:string"/>  
+             <xs:element name="NUM_VERSAO" type="xs:string"/>  
+             <xs:element name="ID_CURRIC_ALUNO" type="xs:string"/>  
+             <xs:element name="ID_ATIV_CURRIC" type="xs:string"/>  
+             <xs:element name="ANO" type="xs:string"/>  
+             <xs:element name="MEDIA_FINAL" type="xs:string"/>  
+             <xs:element name="SITUACAO_ITEM" type="xs:string"/>  
+             <xs:element name="PERIODO" type="xs:string"/>  
+             <xs:element name="SITUACAO"/>  
+             <xs:element name="COD_ATIV_CURRIC" type="xs:string"/>  
+             <xs:element name="NOME_ATIV_CURRIC" type="xs:string"/>  
+             <xs:element name="CREDITOS" type="xs:decimal"/>  
+             <xs:element name="CH_TOTAL" type="xs:decimal"/>  
+             <xs:element name="ID_LOCAL_DISPENSA" type="xs:string"/>  
+             <xs:element name="CONCEITO" type="xs:string"/>  
+             <xs:element name="ID_NOTA" type="xs:decimal"/>  
+             <xs:element name="ID_ESTRUTURA_CUR" type="xs:string"/>  
+             <xs:element name="DESCR_ESTRUTURA" type="xs:string"/>  
+             <xs:element name="FREQUENCIA" type="xs:string"/>  
+             <xs:element name="MEDIA_CREDITO" type="xs:string"/>  
+             <xs:element name="SITUACAO_CURRICULO" type="xs:string"/>  
+             <xs:element name="SIGLA" type="xs:string"/>  
+           </xs:sequence>
+         </xs:complexType>
+       </xs:element>
+       </xs:sequence>
+       </xs:complexType>
+     </xs:element>
+   </xs:schema>
+   

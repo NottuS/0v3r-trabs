@@ -1,0 +1,127 @@
+*{
+    margin:0px;
+    padding:0px;
+}
+
+html{
+    height: 100%;
+    width: 100%;
+}
+
+#index{
+	background-image: url("../images/black-and-blue-cubes-wallpaper.jpg");
+	vertical-align: center;
+}
+
+main{
+	display: inline-block;
+	width: 100%;
+	height: 500px;
+}
+
+#PersonalInfo{
+	background-color: rgba(32,51,64, 0.4);
+	text-align: center;
+	border: 10px;
+	border-color: #fff000;
+	border-radius: 10px;
+	margin: 5px;
+}
+
+#MyName{
+	color: #ffffff;
+}
+
+.MyLinks{
+	color: #ffffff;
+}
+
+.MyLinks:hover{
+	color: rgba(49,141,190, 1);
+}
+
+a{
+	text-decoration: none;
+}
+
+a:visited{
+	color: #ffffff;
+}
+
+.perfilLink{
+	color: #ffffff;
+	background: rgba(49,141,190, 0.5);
+	display: inline-block;
+	margin-bottom: 10px;
+	padding: 10px;
+	width: 200px;
+}
+
+.perfilLink:hover{
+	background: rgba(49,141,190, 1);
+}
+
+#perfilMenu{
+	 width: 200px;
+	 float: left;
+	 padding-top: 50px;
+	 position: fixed;
+	 z-index: 20;
+	 /*background: #182945;*/
+}
+
+#socialNetworkContainer{
+	margin-top: 15px;
+	display: inline-block;
+}
+
+#socialNetworkContainer a img{
+	margin: 1px;
+	height: 32px;
+	width: 32px;
+	transition: width 0.5s ease 0s, height 0.5s ease 0s, margin 0.5s ease 0s;
+}
+
+#socialNetworkContainer a img:hover{
+	width: 40px;
+	height: 40px;
+	margin: 1px;
+}
+
+.content{
+	margin-left: 20%;
+	margin-top: 50px;
+	width: 67%;
+	border: 3px solid rgba(49,141,190, 0.5);
+	height: 100%;
+	background: rgba(200,200,200, 0.5);
+	border-radius: 6px;
+	z-index: 10;
+	text-align: center;
+}
+
+.content:hover{
+	border: 3px solid rgba(49,141,190, 1);
+}
+
+#background ul li{
+	display: inline-block;
+	height: 40px;
+	margin-bottom: 3px;
+}
+
+/*about*/
+#about {
+	margin: default;
+    padding: default;
+}
+#homeFrase {
+	font-size: 35px;
+	text-align: center;
+}
+
+.listas li{
+	list-style: square;
+	li
+	border: solid;
+}
