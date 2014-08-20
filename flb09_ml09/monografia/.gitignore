@@ -10,3 +10,8 @@
 *.idx 
 *.ilg 
 *.ind
+*.backup
+*~
+*.nav
+*.out
+*.snm
