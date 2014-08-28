@@ -6,35 +6,33 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-
-  	<section ng-controller="ContatosController">
-
-	    <h1>Salvar contatos</h1>
-	    <form class="form-inline" ng-submit='adicionaContato()'>
+	<section ng-controller="ChallengeController">
+		<h1>PROTÓTIPO - VERSÃO 1.0</h1>
+	    <h1 ng-show="!valid">Bem Vindo ao Mean Challenge!!!</h1><br>
+		<form class="form-inline" ng-submit="validUser()" ng-show="!valid">
 	    	<div class="form-group">  	
-	    		<input type='text' placeholder='Nome' class="form-control" ng-model='contato.nome'/>
+	    		<input type='text' placeholder="Nome" name="name" class="form-control" ng-model='user.name'/>
 	    	</div>
-	    	<div class="form-group">
-	    		<input type='tel' placeholder='Telefone' class="form-control" ng-model='contato.telefone'/>
-	    	</div>
-	    		<button type='submit' class='btn btn-primary'>Salvar</button>
+	    		<button type='submit' class='btn btn-primary'>Entrar</button>
 	    </form>
 
-	    <h1>Contatos</h1>
-	    <table class="table table-striped">
-	    	<tr>
-	    		<th>Nome</th>
-	    		<th>Telefone</th>
-	    	</tr>
-	    	<tr ng-repeat='contato in contatos'>
-	    		<td>{{contato.nome}}</td>
-	    		<td>{{contato.telefone}}</td>
-	    	</tr>
-	    </table>
-
+	    <div ng-show="valid">
+	    	<h1 >Olá, {{user.name}}</h1>
+	    	<div class="row-fluid">
+	    		<div class="span12 main">
+			    	<h2>
+				    	<span id="operations">X + Y</span>
+				    	<span class="equal">=</span>
+				    	<input class="input_player" maxlength="5" type="text" name="first_player" value="" ng-model="value_p1"/>
+			    	</h2>
+			    </div>		
+			</div>		
+	    </div>
 	</section>
 
 	<script src="/javascripts/angular.js"></script>
-	<script src="/javascripts/ContatosController.js"></script>
+	<script src="/javascripts/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/javascripts/mean_challenge.js"></script>
+	<script src="/javascripts/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
   </body>
 </html>
