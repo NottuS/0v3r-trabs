@@ -154,8 +154,8 @@
       {\large \textbf{\MakeUppercase\@title}}\\
       \vspace{4cm}
       
-      \hfill{\parbox{8cm}{Trabalho de Graduação apresentado à disciplina de CI083 - Trabalho de Graduação em Arquitetura e Organização de Computadores II
-como requisito à conclusão do curso de Bacharelado em Ciência da Computação, Setor de Ciências Exatas Universidade Federal do Paraná.\\
+      \hfill{\parbox{8cm}{Trabalho de Graduaï¿½ï¿½o apresentado ï¿½ disciplina de CI083 - Trabalho de Graduaï¿½ï¿½o em Arquitetura e Organizaï¿½ï¿½o de Computadores II
+como requisito ï¿½ conclusï¿½o do curso de Bacharelado em Ciï¿½ncia da Computaï¿½ï¿½o, Setor de Ciï¿½ncias Exatas Universidade Federal do Paranï¿½.\\
           \@advisortitle: \@advisorname}}\par \null\vfill
       \MakeUppercase\@city\\
       \vspace{0.5cm}
@@ -177,8 +177,8 @@ como requisito à conclusão do curso de Bacharelado em Ciência da Computação, Set
       {\large \textbf{\MakeUppercase\@title}}\\
       \vspace{4cm}
       
-      \hfill{\parbox{8cm}{Trabalho de Graduação apresentado à disciplina de CI083 - Trabalho de Graduação em Arquitetura e Organização de Computadores II
-como requisito à conclusão do curso de Bacharelado em Ciência da Computação, Setor de Ciências Exatas Universidade Federal do Paraná.\\
+      \hfill{\parbox{8cm}{Trabalho de Gradua\c{c}\~ao apresentado \`a disciplina CI083 - Trabalho de Gradua\c{c}\~ao em Arquitetura e Organiza\c{c}\~ao de Computadores II
+como requisito \`a conclus\~ao do curso de Bacharelado em Ci\^encia da Computa\c{c}\~ao, Setor de Ci\^encias Exatas da Universidade Federal do Paran\'a.\\
           \@advisortitle: \@advisorname}}\par  \null\vfill
       \MakeUppercase\@city\\
       \vspace{0.5cm}
@@ -209,7 +209,7 @@ como requisito à conclusão do curso de Bacharelado em Ciência da Computação, Set
         requisito  parcial  {\`a} obten{\c  c}{\~a}o  do  grau  de
         Mestre no Programa  de     P{\'o}s-Gradua{\c    c}{\~a}o  em
         Inform{\'a}tica da Universidade Federal  do  Paran{\'a}, pela
-        Comissão formada pelos professores:\\
+        Comissï¿½o formada pelos professores:\\
       \end{center}
       \vspace{0.5cm}
       \hfill{\parbox{12cm}{

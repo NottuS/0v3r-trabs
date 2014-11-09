@@ -1,75 +1,7 @@
 \chapter{Conclusão}
 \label{conclusao}
-\begin{comment}
-  Os robôs vem sendo muito utilizados na automatização de tarefas, e nesse trabalho 
-  podemos perceber que  uma tarefa simples, como deslocar um robô de um lugar a outro, 
-  de forma autônoma, exige técnicas complexas de estatística e de várias áreas da 
-  computação como inteligência artificial, geometria computacional e processamento de 
-  imagens.
+
   
-    O conceito por trás desse trabalho é muito promissor, pois, a idéia de poder clicar em um mapa, ou falar o endereço onde você deseja ir,
-    e seu celular ou tablet dirige seu carro para você, sem precisar tocar no volante, é extremamente interessante.
-\end{comment}
-    Este capitulo contém as conclusões e as possibilidades de trabalhos futuros referentes ao presente 
-    trabalho.
-  
-   As técnicas de localização baseadas em RSS são muito promissoras e 
-  vem sendo bastante exploradas, isso graças a fácil aplicação e a grande 
-  quantidade de aparelhos disponíveis, 
-  com \textit{hardware} capaz de medir RSS como \textit{smartphones}, \textit{tablets}, \textit{notebooks} e \textit{netbooks}.
-  
-   Mas devido a natureza do RSS, há a necessidade da utilização de técnicas e 
-  algoritmos cada vez mais sofisticados, capazes de contornar as variações indesejados
-  da força do sinal recebido, para se obter uma precisão satisfatória no processo de 
-  localização. O RSS oscila muito em função da interferência 
-   de obstáculos como paredes, 
-   móveis e outros objetos, trafego de pessoas, além de outros fatores como temperatura ambiente, 
-   umidade do ar, outros sinais, etc.
-  
-   A localização baseada em RSS, é uma alternativa interessante para auxiliar robôs móveis
-   no processo de estimar sua real posição em um ambiente \textit{indoor}. A tendencia é que 
-   seja cada vez mais comum, a incorporação de robôs móveis no dia-a-dia dos seres humanos,
-   auxiliando e desempenhando tarefas, também cada vez mais complexas, para que possam 
-   fornecer mais conforto, segurança e comodidade as pessoas.
    
 \section{Trabalhos Futuros}
-  As possibilidades de trabalhos futuros são enormes. Primeiro, há a possibilidade de adicionar um maior precisão a técnica 
-  apresentada, por exemplo, levando em consideração as obstruções que interferem na força do sinal recebido,
-  como o modelo de propagação de sinal proposto no artigo \cite{wifiRadar}. Nele são levados em consideração
-  diversas variáveis para sua elaboração, sendo que a mais importante delas é a quantidade de obstáculos que estão 
-  entre o transmissor de sinal(\textit{access point}) e o receptor (terminal móvel).
-  Com base nesse parâmetro, uma equação da distância em função da força de sinal recebido
-  poderá ser deduzida, que será útil para os cálculos da posição e rastreamento
-  do terminal móvel. Ou ainda combinar técnicas baseadas em RSS com as tecnologias já largamente empregadas, tais como o GPS.
-  
-  Um outro problema importante do RSS \textit{fingerprinting} que não é tratado pelo sistema proposto é o da atualização dinâmica da 
-  base de dados de \textit{fingerprints}. Em \cite{fingerPrint2} utiliza-se um modelo adaptativo para estimar o 
-  RSS de cada \textit{access point} baseado na técnica de interpolação linear planar.
-  
-  E por ultimo, fazer com que o aparelho com Android possa controlar 
-  um robô agindo como o cérebro do robô, onde este um
-  se move e envia dados(via \textit{bluetooth}) de seu sensores para o aparelho conforme for 
-  requerido e assim tomando as decisões necessárias para
-  que o robô haja de maneira autônoma. Com essa combinação, pode-se fazer como no SLAM, 
-  onde os dados de RSS dos \textit{access points} vão sendo coletados conforme o robô se locomove.
-  A precisão da técnica proposta nesse trabalho pode ser aumentada, utilizando 
-  outros sensores do robô, pois um \textit{fingerprint} pode ser composto por outros dados
-   além do RSS dos \textit{access points}, como informações coletadas por laser, sonar, câmera, etc.
-\begin{comment}
-    As possibilidades de trabalhos futuros são enormes. Primeiro poderia implantar o modelo de propagação
-de sinal, proposto no artigo \cite{wifiRadar}. Nele são levados em consideração
-diversas variáveis para sua elaboração, sendo que a mais importante delas é a quantidade de obstáculos que estão 
-entre o transmissor de sinal (Access Point) e o receptor (terminal móvel).
-Com base nesse parâmetro, uma equação da distância em função da força de sinal recebido
-poderá ser deduzida, que será útil para os cálculos da posição e rastreamento
-do terminal móvel. Ou ainda combinar técnicas baseadas em RSS com as tecnologias já largamente empregadas, tais como o GPS.
-    
-    
-    Poderia também, ao contrário do sistema proposto, tratar a possibilidade de não haver um mapa do ambiente, e utilizar técnicas que lidam com o SLAM, 
-    como nos artigos \cite{construcaoMapas2}\cite{construcaoMapas}\cite{slam}. E utilizar um algoritmo de planejamento de trajetos mais robusto 
-    como o proposto em \cite{voronoi}, que utiliza diagrama de Voronoi para criar um \textit{roadmap}. E ainda ao invés de usar um simples sonar para detectar
-     obstáculos, utilizar a câmera do tablet.
-     
-     Podemos aumentar a escala e ao invés de utilizar um simples robô de 40 cm dentro de um prédio, utilizar o sistema de navegação em um carro, 
-      em um ambiente maior \cite{googleCar}.
-\end{comment}
+ 
