@@ -1,0 +1,8 @@
+h1 Listagem de usuários
+
+a(href="/new") Novo usuário
+
+ul(ng-init="load()")
+	li(ng-repeat="registro in registros")
+		a(href="/edit/{{ registro._id }}") {{ registro.name }} - {{ registro.email }} 
+			a(ng-click="delete(registro._id);load()") Deletar

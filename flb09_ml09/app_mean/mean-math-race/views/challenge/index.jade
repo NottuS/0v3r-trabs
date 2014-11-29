@@ -1,0 +1,19 @@
+h1 Math Challenge!
+
+form(action="", method="post", ng-init="get()", ng-show="!valid")
+	label Nome:  
+	input(type="text", name="name",value="{{item.name}}", ng-model="item.name")
+	button(ng-click="verifyName(item); UsersCtrl.valid=true") Entrar
+
+div(ng-show="valid", ng-init="race(item)")
+	h1 Bem Vindo {{item.name}}
+	p {{ operation }}
+	span(id="op")
+	span(class="eq")
+	form(action="", ng-submit="sendResult(item)")
+		input(class="in_usr", maxlength="4", type="text", name="p1", value="", ng-model="item.value")
+	br
+	p {{ item.value }}
+
+div(ng-show="!valid")
+	p Não foi

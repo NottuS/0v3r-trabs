@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+var debug = require('debug')('my-application');
+var app = require('../app');
+app.set('port', process.env.PORT || 3000);
+var server = require('http').createServer(app);
+var io = require("socket.io").listen(server);
+var sockets = require("../lib/mathrace")(io);
+// var sockets = io.sockets;
+// sockets.on('connection', function (client) {
+// 	client.on('send-server', function (item) {
+// 		var msg = "<b>"+item.name+":</b> "+item.value+"<br>";
+// 		client.emit('send-client', "Server->client:"+msg);
+// 		client.broadcast.emit('send-client', "Server->all:"+msg);
+// 	});
+// });
+
+server.listen(app.get('port'), function() {
+	debug('Express server listening on port ' + server.address().port);
+});
+
+// var server = app.listen(app.get('port'), function() {
+//   debug('Express server listening on port ' + server.address().port);
+// });

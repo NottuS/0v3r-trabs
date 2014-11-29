@@ -1,0 +1,13 @@
+h1 Editar usuário
+
+form(action="", method="post")
+	label Nome:
+	input(type="text", name="name",value="{{item.name}}", ng-model="item.name")
+
+	label Email:
+	input(type="text", name="email",value="{{item.email}}", ng-model="item.email")
+
+	label Password:
+	input(type="text", name="password",value="{{item.password}}", ng-model="item.password")
+
+	button(ng-click="add(item)") Salvar

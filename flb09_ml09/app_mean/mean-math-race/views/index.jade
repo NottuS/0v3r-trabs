@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}!
+  div(ng-controller="UsersCtrl")
+    div(ng-view)
+
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-route.min.js")
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-resource.min.js")
+  script(src="/javascripts/app.js")
+  script(src="/javascripts/services.js")
+  script(src="/javascripts/controllers.js")
+  script(src="/socket.io/socket.io.js")
+
+
