@@ -6,14 +6,19 @@ form(action="", method="post", ng-init="get()", ng-show="!valid")
 	button(ng-click="verifyName(item); UsersCtrl.valid=true") Entrar
 
 div(ng-show="valid", ng-init="race(item)")
-	h1 Bem Vindo {{item.name}}
-	p {{ operation }}
-	span(id="op")
-	span(class="eq")
+	span(id="socketio") 
+	h1 {{item.name}}: Resultado-> 
+	span(id="result") Result
+	br
+	span(id="op") = opi
 	form(action="", ng-submit="sendResult(item)")
 		input(class="in_usr", maxlength="4", type="text", name="p1", value="", ng-model="item.value")
 	br
-	p {{ item.value }}
+	p iv: {{ item.value }}
+	p time: 
+	span(id="mrtime") 
+	p score <span id="score">
+	p hof <span id="hall_of_fame">
 
 div(ng-show="!valid")
 	p Não foi
