@@ -30,11 +30,16 @@ Texto:
   * Streams uma maneira de melhorar o desempenho fazendo um "pipeline" entre execuções na cpu e gpu e transfererncias de dados, fazendo a execução destes em paralelo melhorando o desempenho(https://www.youtube.com/watch?v=RGSoRSoHapY min 42) - Muito interessante.
  
 - Uma gpu possui vários SMs(stream Multprocessors) - São + simples, sem pipelines complicados e sistemas de predições, unidade de controle tambem + simples:
-  * SMs possuem dividem a L1 e a shared memory(velocidade aproximada de um registrador, 48kb(apartir das placas com computabilidade 2.0( -arch=sm_20))).
-  * Executam um warp - 32 threads executando a mesma instrução, cada uma pode seguir branchs diferentes, mas isso deixa a execução mais lenta, pois, não eh legal ter 32 threads executando instruções diferentes.
+  * SMs possuem dividem a L1 e a shared memory.
+  * Executam um warp - 32 threads executando a mesma instrução, cada uma pode seguir branchs diferentes, mas isso deixa a execução mais lenta, pois, não eh legal ter 32 threads executando instruções diferentes; utilizar #pragma unroll /*desenrola laços com constantes*/
   * As 32 threads acessam a memoria ao mesmo tempo, ou seja são carregados 32 words - para optmização, evitar acessar a mesma posição de memória, a melhor opção eh fazer com q as threads trabalhem com posições de memoria proximas umas das outras.
   * Utilizar dados read-only aumenta o desempenho: const __registry__ ; alguma parada assim.
 
+- Shared memory possui velocidade aproximada de um registrador, 48kb(apartir das placas com computabilidade 2.0(-arch=sm_20))).
+  * A shared memory esta organizada em bancos de 32, ou seja, 32 thread podem acessar simultanemente esses bancos.
+  * Evitar conflito de banco, a shared memory possui um sistema de broadcast, ou seja se tds as 32 threads acessarem a mesma posição entaum n haverá penalidade.
+  * Criar um esquema de acesso diagonal da shared mem (https://www.youtube.com/watch?v=qOCUQoF_-MM min 7:50).
+ 
 - L2 e global memory são compartilhados entre SMs.
 
 - Evitar mover sempre dados entre cpu e gpu(leva muito tempo).
