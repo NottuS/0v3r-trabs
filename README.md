@@ -9,7 +9,7 @@ Texto:
  4 Copia os dados da GPU para o host e desaloca memoria da GPU; cudaMemCopy; cudaFree(void *p);
 
 - Kernel: um grid de blocos de threads ex: __global__ kernel(params...); uma função que é chamada no host e é executada no device;
-  * chamada kernel<<<NumBlocks, NumThread, shared memory, não lembro>>>(params...); ex:
+  * chamada kernel<<<NumBlocks, NumThread, shared memory, *stream>>>(params...); ex:
     dim3 blockDim(16, 16, 1);
     dim3 gridDim((width + blockDim.x - 1)/ blockDim.x, (height + blockDim.y - 1) / blockDim.y, 1);
     kernel<<< gridDim, blockDim, 0 >>>(d_data, height, width);
@@ -27,7 +27,8 @@ Texto:
   * NumThread: no max 1024 thread por bloco; ideal no minimo 32 threads por bloco e multiplo de 32;
   * Cada bloco é executado em um SM;
   * Sincronização de threads só permitida entre threads de um bloco: __syncthreads();
-
+  * Streams uma maneira de melhorar o desempenho fazendo um "pipeline" entre execuções na cpu e gpu e transfererncias de dados, fazendo a execução destes em paralelo melhorando o desempenho(https://www.youtube.com/watch?v=RGSoRSoHapY min 42) - Muito interessante.
+ 
 - Uma gpu possui vários SMs(stream Multprocessors) - São + simples, sem pipelines complicados e sistemas de predições, unidade de controle tambem + simples:
   * SMs possuem dividem a L1 e a shared memory(velocidade aproximada de um registrador, 48kb(apartir das placas com computabilidade 2.0( -arch=sm_20))).
   * Executam um warp - 32 threads executando a mesma instrução, cada uma pode seguir branchs diferentes, mas isso deixa a execução mais lenta, pois, não eh legal ter 32 threads executando instruções diferentes.
