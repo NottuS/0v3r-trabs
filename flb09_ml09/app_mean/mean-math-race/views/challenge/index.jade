@@ -23,7 +23,7 @@ div(ng-show="valid", ng-init="race(item);")
 
 	ul(ng-init="load()")
 		li(ng-repeat="rank_player in hof")
-			{{ rank_player._id }} {{ rank_player.player }} - {{ rank_player.score }}
+			{{ rank_player.player }}: {{ rank_player.score }} {{ rank_player.timestamp }} 
 	
 
 
