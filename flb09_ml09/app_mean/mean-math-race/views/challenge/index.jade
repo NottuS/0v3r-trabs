@@ -1,11 +1,11 @@
 h1 Math Challenge!
 
-form(action="", method="post", ng-init="get()", ng-show="!valid")
+form(action="", method="post", ng-show="!valid")
 	label Nome:  
 	input(type="text", name="name",value="{{item.name}}", ng-model="item.name")
 	button(ng-click="verifyName(item); UsersCtrl.valid=true") Entrar
 
-div(ng-show="valid", ng-init="race(item)")
+div(ng-show="valid", ng-init="race(item);")
 	span(id="socketio") 
 	h1 {{item.name}}: Resultado-> 
 	span(id="result") Result
@@ -19,6 +19,13 @@ div(ng-show="valid", ng-init="race(item)")
 	span(id="mrtime") 
 	p score <span id="score">
 	p hof <span id="hall_of_fame">
+	p hof_bd <span id="hall_of_fame_bd">
+
+	ul(ng-init="load()")
+		li(ng-repeat="rank_player in hof")
+			{{ rank_player._id }} {{ rank_player.player }} - {{ rank_player.score }}
+	
+
 
 div(ng-show="!valid")
 	p Não foi

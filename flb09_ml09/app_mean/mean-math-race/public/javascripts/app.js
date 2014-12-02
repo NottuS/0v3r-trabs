@@ -1,4 +1,4 @@
-angular.module('sonApp', ['ngRoute','sonApp.controllers']) // Nome, Dependencias
+angular.module('sonApp', ['ngRoute','sonApp.controllers']) // Nome, [Dependencias]
 	.config(
 		['$routeProvider','$locationProvider',
 			function($routeProvider, $locationProvider) {

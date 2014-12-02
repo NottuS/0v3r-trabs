@@ -9,7 +9,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				socket.on('connect',function() {
 					var connSocketio = document.getElementById('socketio');
 					connSocketio.innerHTML = '<span class="label label-success">connected!</label>'; 
-					socket.emit('join', "{ id: user_id }");
+					socket.emit('join', "$scope.item.name");
 				});
 			 	
 			 	socket.on('send-client-result', function (resultValue) {
@@ -31,7 +31,6 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 
 			 	socket.on('time', function (msg) {
-			 		// alert("Foi"+time);
 					var mathTime = document.getElementById('mrtime');
 					mathTime.innerHTML = msg;
 					$scope.mTime = "time: "+msg;
@@ -39,7 +38,6 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 
 				socket.on('new-game', function (msg) {
-					// print_msg ('new game, new score, hurry up!!', 'new', 2000);
 					var op = document.getElementById('op');
 					op.innerHTML = msg;
 				});
@@ -50,28 +48,19 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 				
 				socket.on('scores',function(scores) {
-					// race.scores(sort(scores,'score', true));
 					var score = document.getElementById('score');
 					score.innerHTML= "";
 					if (scores.length){ //effect
-					   for(var key in scores){
-						score.innerHTML += "<br>" + scores[key].player + " : " + scores[key].score;
-					  }
-					  // $('.scores').addClass('selected');
-					  // setTimeout(function (){
-					  //     $('.scores').removeClass('selected')
-					  // }, 200);
+					  	for(var key in scores){
+							score.innerHTML += "<br>" + scores[key].player + " : " + scores[key].score;
+						}
 					}
 				});
 
       			socket.on('hall_of_fame',function(hof) {
-      				// TODO: Falta ordenar pelo score
-      				var hall_of_fame = document.getElementById('hall_of_fame');
-					hall_of_fame.innerHTML= "/";
-      				for(var key in hof){
-						hall_of_fame.innerHTML += "<br>" + hof[key].player + " : " + hof[key].score + "    " + hof[key].timestamp;
-				   }
-
+      			// TODO: Falta ordenar pelo score
+				// Se houve atualização do hall of fame, consultar o bd novamente
+					$scope.load();
 				});
 
 				socket.on('disconnect',function() {
@@ -79,7 +68,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 
 				$scope.load = function() {
-					$scope.registros = UsersSrv.query();
+					$scope.hof = UsersSrv.query();
 				}
 
 				$scope.get = function() {
@@ -131,7 +120,6 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 					if (item.value) {
 						socket.emit('send-server-result', item);
 					};
-					// $scope.op += "\nEnviou: "+item.value;
 				}
 
 				$scope.race = function(item) {

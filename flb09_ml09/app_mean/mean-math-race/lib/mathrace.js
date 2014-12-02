@@ -1,15 +1,15 @@
 module.exports = function(io) {
 	var lastOpSolution;
 	var sockets = io.sockets;
-	var lClient;
+	var HofModel = require("../models/hof");
 	var clients = {};
 	var sessions = [];
 	var newOp = defineOp();
-	var scores = {}
+	var scores = {};
+	var hallF = HofModel.listNode();
 	var hall_of_fame = [];
 
 	sockets.on('connection', function (client) {
-		lClient = client;
 		client.on('send-server-result', function (item) {
 				var msg;
 				if (lastOpSolution == item.value) {
@@ -26,13 +26,10 @@ module.exports = function(io) {
 					client.emit('send-client-result', 0);
 				}	
 				client.broadcast.emit('send-client', newOp);
-				//newOp = defineOp();
-				// msg += "<b>"+item.name+":</b> "+item.value+"<br>";
-				// client.emit('send-client', "Server->client:"+msg+" Op:"+newOp);
-				// client.broadcast.emit('send-client', "Server->all:"+msg+" Op:"+newOp);
 		});
 
-		client.on('join', function (data) {
+
+		client.on('join', function (name) {
 			client.emit ('new_operation', newOp); //send challenge to new client
 			client.emit ('scores', format_scores(scores)); //send scores to new client
 			client.emit ('hall_of_fame', hall_of_fame); //send hall of fame
@@ -43,14 +40,9 @@ module.exports = function(io) {
 				}
 			}
 			if (newClient) {
-				console.log("newClient: "+client.id);
 				sessions.push(client.id);
 				clients[client.id] = client;
-				// client.emit('send-client', newOp);
-				// client.emit ('scores', format_scores(scores)); //send scores to new client
-				// client.emit ('history', history); //send history
-				broadcast ('hall_of_fame', hall_of_fame); //send hall of fame
-		
+				client.emit ('hall_of_fame', hall_of_fame); //send hall of fame
 			}
 		});
 	});
@@ -63,8 +55,11 @@ module.exports = function(io) {
 		var remaining = Math.floor((game_duration - elapsed) / 1000);
 		if (remaining<0){
 			var timestamp = game_started.getDate() + '/' + (game_started.getMonth() + 1) + '/' + game_started.getFullYear() + ' ' +  game_started.getHours() + ":" + (game_started.getMinutes() > 9 ? game_started.getMinutes() : '0' + game_started.getMinutes());
-			if (format_scores(scores).length)
-				hall_of_fame = UpdateHallOfFame(format_scores(scores), timestamp);
+			hallF = HofModel.listNode();
+
+			if (format_scores(scores).length) {
+				NewUpdateHallOfFame(format_scores(scores), timestamp);				
+			}
 			scores = {};
 			game_started = new Date(); //start game again!
 			newOp = defineOp();
@@ -81,41 +76,27 @@ module.exports = function(io) {
 		};
 	}
 
-	function UpdateHallOfFame(scores, timestamp){
+	function NewUpdateHallOfFame(scores, timestamp){
 		var newPlayer = true;
-		// if(hall_of_fame.length)
-		   	for(var score_key in scores) { // Atualiza para o maior score realizado
-				for(var hof_key in hall_of_fame) {
-					if (hall_of_fame[hof_key].player == scores[score_key].player) {
-						if (hall_of_fame[hof_key].score < scores[score_key].score) {
-							hall_of_fame[hof_key].score = scores[score_key].score;
-						};
-						newPlayer = false;
-					};
-				}
-				if (newPlayer) {
-					scores[score_key].timestamp = timestamp;
-					hall_of_fame.push(scores[score_key]); //add all scores
-				};
-				newPlayer = true;
+		for(var score_key in scores) { // Atualiza para o maior score realizado
+			for (var i=0, l=hallF.length; i < l ; i++) {
+		   		if (hallF[i].player == scores[score_key].player) {
+		   			if (hallF[i].score < scores[score_key].score) {
+		   				hallF[i].score = scores[score_key].score;
+		   				HofModel.update(hallF[i]);
+		   			};
+					newPlayer = false;
+		   		};
 			}
-
-		// for (var i = 0, l = scores.length; i < l ;  i++) {
-		// 	var score = scores[i];
-		// 	score.timestamp = timestamp;
-		// 	hall_of_fame.push(score); //add all scores
-		// };
-
-		//sort by score
-		hall_of_fame.sort(function(a,b) {
-      		return (b["score"] - a["score"]);
-		});
-		// util.sort(hall_of_fame, 'score', true);
-
-		//and slice array!
-		return hall_of_fame.slice(0,20);
+			if (newPlayer) {
+				scores[score_key].timestamp = timestamp;
+				HofModel.create(scores[score_key]);
+				hallF[hallF.length] = scores[score_key];
+				console.log("hallF[hallF.length]: "+hallF[hallF.length-1].player);
+			};
+			newPlayer = true;
+		}
 	}
-
 
 	function format_scores (scores){
 	   var arr = [];
