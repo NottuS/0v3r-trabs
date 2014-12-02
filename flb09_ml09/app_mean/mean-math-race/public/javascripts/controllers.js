@@ -57,8 +57,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 					}
 				});
 
-      			socket.on('hall_of_fame',function(hof) {
-      			// TODO: Falta ordenar pelo score
+      			socket.on('hall_of_fame',function() {
 				// Se houve atualização do hall of fame, consultar o bd novamente
 					$scope.load();
 				});

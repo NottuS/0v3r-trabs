@@ -65,7 +65,7 @@ module.exports = function(io) {
 			newOp = defineOp();
 			broadcast("new-game",newOp);
 			broadcast ('scores', format_scores(scores)); //broadcast scores
-			broadcast ('hall_of_fame', hall_of_fame); //broadcast "hall of fame"
+			broadcast ('hall_of_fame', null); //broadcast "hall of fame"
 		} else 
 			broadcast("time",remaining);
 	},1000);

@@ -7,25 +7,19 @@ form(action="", method="post", ng-show="!valid")
 
 div(ng-show="valid", ng-init="race(item);")
 	span(id="socketio") 
-	h1 {{item.name}}: Resultado-> 
-	span(id="result") Result
+	h1 {{item.name}}: 
 	br
-	span(id="op") = opi
+	span(id="op") operation
 	form(action="", ng-submit="sendResult(item)")
 		input(class="in_usr", maxlength="4", type="text", name="p1", value="", ng-model="item.value")
 	br
-	p iv: {{ item.value }}
+	span(id="result") result
 	p time: 
 	span(id="mrtime") 
 	p score <span id="score">
-	p hof <span id="hall_of_fame">
-	p hof_bd <span id="hall_of_fame_bd">
+	h2 Hall Of Fame
 
 	ul(ng-init="load()")
-		li(ng-repeat="rank_player in hof")
+		li(ng-repeat="rank_player in hof | orderBy:'score':true")
 			{{ rank_player.player }}: {{ rank_player.score }} {{ rank_player.timestamp }} 
 	
-
-
-div(ng-show="!valid")
-	p Não foi
