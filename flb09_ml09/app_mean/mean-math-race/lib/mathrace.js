@@ -83,6 +83,8 @@ module.exports = function(io) {
 		   		if (hallF[i].player == scores[score_key].player) {
 		   			if (hallF[i].score < scores[score_key].score) {
 		   				hallF[i].score = scores[score_key].score;
+		   				// delete hallF[i]._id;
+		   				// console.log("hallF["+i+"]._id:"+hallF[i]);
 		   				HofModel.update(hallF[i]);
 		   			};
 					newPlayer = false;

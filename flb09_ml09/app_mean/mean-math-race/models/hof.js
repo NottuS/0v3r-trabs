@@ -50,12 +50,23 @@ exports.create = function(new_score) {
 };
 
 exports.update = function(udata) {
-	var uplayer = udata.player;
-	var data = udata;
+	// var uplayer = udata.player;
+	// delete udata["_id"];
+	// var parsedUdata = udata;
+	// parsedUdata = parsedUdata.toString();
+	// delete parsedUdata._id;
+	
+	var parsedUdata = {
+		timestamp: udata.timestamp,
+		score: udata.score,
+		player: udata.player		
+	};
 
-	Hof.update({player: uplayer}, data,function(err, data) {
+	console.log("UPDATE ---------------> udata:"+parsedUdata);
+
+	Hof.update({player: parsedUdata.player}, parsedUdata,function(err, data) {
 		if(err) {
-			console.log("UPDATE: ERROR MONGODB: "+err+" , data:"+hof_data);			
+			console.log("UPDATE: ERROR MONGODB: "+err+", player:"+uplayer+" , data:"+data);			
 		} else {
 			console.log("UPDATE: UPDATED MONGODB: "+err);
 		}
