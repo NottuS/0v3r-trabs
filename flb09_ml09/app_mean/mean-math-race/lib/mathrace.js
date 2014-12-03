@@ -47,7 +47,7 @@ module.exports = function(io) {
 		});
 	});
 
-	var game_duration = 10 * 1000;
+	var game_duration = 30 * 1000;
 	var game_started = new Date();
 
 	setInterval(function broadcastTime() {
