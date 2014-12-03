@@ -5,54 +5,48 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				$scope.nome = "|Var do angular - controller.js|";
 			 	$scope.valid = false;
 			 	var socket = io.connect('http://localhost:3000');
-
+			 
 				socket.on('connect',function() {
-					var connSocketio = document.getElementById('socketio');
-					connSocketio.innerHTML = '<span class="label label-success">connected!</label>'; 
+					$('#socketio').html('<span class="label label-success">connected!</label>'); 
 					socket.emit('join', "$scope.item.name");
 				});
 			 	
 			 	socket.on('send-client-result', function (resultValue) {
-			 		var result = document.getElementById('result');
 					if (resultValue == 1) {
-						result.innerHTML = "Você acertou!!!";
+						$('#result').html("Você acertou!!!").addClass("alert alert-success");
 					} else if (resultValue == 2) {
-						result.innerHTML = "Alguem acertou antes de você!!!";
+						$('#result').html("Alguem acertou antes de você!!!").addClass("alert alert-warning");
 					} else {
-						result.innerHTML = "Você errou!!!";
+						$('#result').html("Você errou!!!").addClass("alert alert-danger");
 					}
-
 				});
 
 			 	socket.on('send-client', function (msg) {
-					var op = document.getElementById('op');
-					op.innerHTML = msg;
+					// var op = document.getElementById('op');
+					// op.innerHTML = msg;
+					$('#op').html(msg);
 					//$scope.op = msg;
 				});
 
 			 	socket.on('time', function (msg) {
-					var mathTime = document.getElementById('mrtime');
-					mathTime.innerHTML = msg;
-					$scope.mTime = "time: "+msg;
-					//$scope.op = msg;
+					$('#mrtime').html(msg);
+					// $scope.mTime = "time: "+msg;
 				});
 
 				socket.on('new-game', function (msg) {
-					var op = document.getElementById('op');
-					op.innerHTML = msg;
+					$('#op').html(msg);
 				});
 
 				socket.on('new_operation',function(operation) {
-					var op = document.getElementById('op');
-					op.innerHTML = operation;
+					$('#op').html(operation+": ");
+					$('.in_usr').val('').select();
 				});
 				
 				socket.on('scores',function(scores) {
-					var score = document.getElementById('score');
-					score.innerHTML= "";
+					$('#score').html("");
 					if (scores.length){ //effect
 					  	for(var key in scores){
-							score.innerHTML += "<br>" + scores[key].player + " : " + scores[key].score;
+							$('#score').append("<br>" + scores[key].player + "  <span class='label label-default'>" + scores[key].score + "</span>");
 						}
 					}
 				});
@@ -67,6 +61,8 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 
 				$scope.load = function() {
+					// TODO: Ordenar hall of fame, talvez transformando
+					// a string de objs em um array de objs
 					$scope.hof = UsersSrv.query();
 				}
 
@@ -123,6 +119,24 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 
 				$scope.race = function(item) {
 					// item.value = "Iniciou MathRace!"; 
+					// $(function() {
+					// $("#name").focus();
+						// $("#name").select();
+					// });
+				 	// $('#name').focus();
+				 	// $('#name').select();
+					$('.in_usr').click(function(e){
+						this.select();  
+					});
+
+					// $('#name').focus();
+					$('.in_usr').focus();
+					$('.in_usr').keydown(function(e){
+						if (e.keyCode=='13'){ //press return
+							$('.in_usr').select();
+						}
+				    });
+
 				}
 
 				//$scope.load();

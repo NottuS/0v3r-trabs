@@ -6,3 +6,29 @@ body {
 a {
   color: #00B7FF;
 }
+
+.main {
+	margin-top:30px;
+	padding:10px;
+	text-align:center;
+}
+
+#op {
+	font-size:8em;
+}
+
+.in_usr{
+	font-size:9em;	
+	width:270px;	
+	height:140px;
+	padding:0px;
+	margin:0px;
+	display: inline;
+	font-weight: normal;
+	line-height:normal;
+	vertical-align: top;
+}
+
+#mrtime{
+	margin:0px 10px 0px 10px;
+}

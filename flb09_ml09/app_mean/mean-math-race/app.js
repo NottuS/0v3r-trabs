@@ -1,3 +1,12 @@
+/*
+Install
+    npm install
+    npm install -g nodemon
+
+Verify if mongo is running, if its not: sudo service mongod start
+
+*/
+
 var express = require('express');
 var http = require('http');
 var path = require('path');

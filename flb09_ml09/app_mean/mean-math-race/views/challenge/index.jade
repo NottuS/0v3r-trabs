@@ -1,25 +1,48 @@
-h1 Math Challenge!
+h1 
+	span(class="label label-warning") Math Challenge!
 
-form(action="", method="post", ng-show="!valid")
-	label Nome:  
-	input(type="text", name="name",value="{{item.name}}", ng-model="item.name")
-	button(ng-click="verifyName(item); UsersCtrl.valid=true") Entrar
+form(class="form", action="", method="post", ng-show="!valid", role="form")
+	div(class="form-group")
+		div(class="input-group input-group-lg")
+			span(class="input-group-addon") @
+			input(class="form-control", id="name", type="text", name="name",value="{{item.name}}", ng-model="item.name", placeholder="Type your name here" autofocus)
+		br
+		button(class="btn btn-primary btn-lg", ng-click="verifyName(item); UsersCtrl.valid=true") Start
 
-div(ng-show="valid", ng-init="race(item);")
-	span(id="socketio") 
-	h1 {{item.name}}: 
+div(class="jumbotron", ng-show="valid", ng-init="race(item);")
+	h3 
+		span(class="label label-primary") {{item.name}} 
+		span(id="socketio")
 	br
-	span(id="op") operation
-	form(action="", ng-submit="sendResult(item)")
-		input(class="in_usr", maxlength="4", type="text", name="p1", value="", ng-model="item.value")
+	div(class="row-fluid")
+		div(class="span12 main")
+			form(action="", ng-submit="sendResult(item)")
+				| <span id="op">operation</span>  
+				input(class="in_usr", maxlength="4", type="text", name="p1", value="", ng-model="item.value", autofocus)
 	br
-	span(id="result") result
-	p time: 
-	span(id="mrtime") 
-	p score <span id="score">
-	h2 Hall Of Fame
-
-	ul(ng-init="load()")
-		li(ng-repeat="rank_player in hof | orderBy:'score':true")
-			{{ rank_player.player }}: {{ rank_player.score }} {{ rank_player.timestamp }} 
+	span(id="result")
+	br
+	div(class="col-md-3")
+		h2 Time
+			small
+				span(class="glyphicon glyphicon-time" aria-hidden="true")
+			span(class="label label-primary", id="mrtime") 
+	div(class="col-md-4")
+		div(class="panel panel-primary")
+			div(class="panel-heading")
+				div(class="panel-title") 
+					h2 Score
+			div(class="panel-body")
+				span(id="score")
+	
+	div(class="col-md-2")
+		div(class="panel panel-primary")
+			div(class="panel-heading")
+				div(class="panel-title") 
+					h2 Hall Of Fame
+			div(class="panel-body")
+				ul(class="list-group", ng-init="load()")
+					li(class="list-group-item", ng-repeat="rank_player in hof | orderBy:'rank_player.score'")
+						{{ rank_player.player }}  <span class="label label-default">{{ rank_player.score }} </span>
+						h6 <small>{{ rank_player.timestamp }}</small> 
 	
