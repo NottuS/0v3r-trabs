@@ -12,6 +12,7 @@ var HofSchema = new Schema({
 var Hof = mongoose.model("hof", HofSchema);
 
 var hof_data;
+var initHof = false;
 
 exports.list = function(req, res) {
 	Hof
@@ -24,27 +25,53 @@ exports.list = function(req, res) {
 				console.log(err);
 			} else {
 				console.log("LIST: MONGODB, data:"+hofs);
-				hof_data = hofs;
+				// hof_data = hofs;
 				res.json(hofs);
 			}
 		});
+		
+		// TODO: este segundo find foi criado pois o node necessita de todos os
+		// objs do mongo, para criar ou atualizar um documento, e o limit causa
+		// problema nesta parte.
+		if (!initHof)
+			Hof
+				.find()
+				.exec(function(err, hofs) {
+					if(err) {
+						console.log("LISTFULL: ERROR MONGODB: "+err+" , data:"+hofs);
+					} else {
+						console.log("LISTFULL: MONGODB, data:"+hofs);
+						hof_data = hofs;
+					}
+				});
+		initHof = true;
 };
 
 exports.listNode = function() {
+	// Hof
+	// 	.find()
+	// 	.exec(function(err, hofs) {
+	// 		if(err) {
+	// 			console.log("LISTFULLCREATE: ERROR MONGODB: "+err+" , data:"+hofs);
+	// 		} else {
+	// 			console.log("LISTFULLCREATE: MONGODB, data:"+hofs);
+	// 			hof_data = hofs;
+	// 		}
+	// 	});
 	return hof_data;
 };
 
 exports.create = function(new_score) {
-	var hof_data = {
+	var hof_player_data = {
 		player: new_score.player,
 		score: new_score.score,
 		timestamp: new_score.timestamp
 	};
-
-	var new_hof = new Hof(hof_data);
+	
+	var new_hof = new Hof(hof_player_data);
 	new_hof.save(function(err, data) {
 		if(err) {
-			console.log("CREATE: ERROR MONGODB: "+err+" , data:"+hof_data);
+			console.log("CREATE: ERROR MONGODB: "+err+" , data:"+data);
 		} else {
 			console.log("CREATE: INSERTED MONGODB: "+data);
 		}
