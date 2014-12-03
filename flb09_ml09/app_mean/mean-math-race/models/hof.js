@@ -5,7 +5,7 @@ var mongoose = connection.mongoose
 
 var HofSchema = new Schema({
 	player: {type: String, default: '', unique: true},
-	score: {type: String, default: ''},
+	score: {type: Number, default: 0},
 	timestamp: {type: String, default: ''},
 });
 
