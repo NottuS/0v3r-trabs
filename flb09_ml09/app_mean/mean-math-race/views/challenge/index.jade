@@ -42,7 +42,7 @@ div(ng-show="valid", ng-init="race(item);")
 					h2 Hall Of Fame
 			div(class="panel-body")
 				ul(class="list-group", ng-init="load()")
-					li(class="list-group-item", ng-repeat="rank_player in hof | orderBy:'rank_player.score'")
+					li(class="list-group-item", ng-repeat="rank_player in hof | orderBy:'score':'true'")
 						{{ rank_player.player }}  <span class="label label-default">{{ rank_player.score }} </span>
 						h6 <small>{{ rank_player.timestamp }}</small> 
 	

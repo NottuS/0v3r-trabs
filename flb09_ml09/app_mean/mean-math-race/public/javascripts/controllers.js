@@ -5,7 +5,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				$scope.nome = "|Var do angular - controller.js|";
 			 	$scope.valid = false;
 			 	// var socket = io.connect('http://localhost:3000');
-			 	var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
+			 	var socket = io.connect('http://0v3r-trabs-dreamer22001.c9.io/');
 				
 				socket.on('connect',function() {
 					$('#socketio').html('<span class="label label-success">connected!</label>'); 
