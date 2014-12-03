@@ -4,8 +4,9 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 			function($scope, UsersSrv, $routeParams, $location) {
 				$scope.nome = "|Var do angular - controller.js|";
 			 	$scope.valid = false;
-			 	var socket = io.connect('http://localhost:3000');
-			 
+			 	// var socket = io.connect('http://localhost:3000');
+			 	var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
+				
 				socket.on('connect',function() {
 					$('#socketio').html('<span class="label label-success">connected!</label>'); 
 					socket.emit('join', "$scope.item.name");

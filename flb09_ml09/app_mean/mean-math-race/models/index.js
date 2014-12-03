@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 
+// mongoose.connect("mongodb://"+(process.env.IP || "localhost")+"/MEAN");
 mongoose.connect("mongodb://localhost/MEAN");
 
 var db = mongoose.connection;

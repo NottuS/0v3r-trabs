@@ -9,7 +9,7 @@ form(class="form", action="", method="post", ng-show="!valid", role="form")
 		br
 		button(class="btn btn-primary btn-lg", ng-click="verifyName(item); UsersCtrl.valid=true") Start
 
-div(class="jumbotron", ng-show="valid", ng-init="race(item);")
+div(ng-show="valid", ng-init="race(item);")
 	h3 
 		span(class="label label-primary") {{item.name}} 
 		span(id="socketio")
@@ -35,7 +35,7 @@ div(class="jumbotron", ng-show="valid", ng-init="race(item);")
 			div(class="panel-body")
 				span(id="score")
 	
-	div(class="col-md-2")
+	div(class="col-md-3")
 		div(class="panel panel-primary")
 			div(class="panel-heading")
 				div(class="panel-title") 
