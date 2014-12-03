@@ -1,4 +1,4 @@
-h1 
+h1
 	span(class="label label-warning") Math Challenge!
 
 form(class="form", action="", method="post", ng-show="!valid", role="form")
@@ -10,14 +10,14 @@ form(class="form", action="", method="post", ng-show="!valid", role="form")
 		button(class="btn btn-primary btn-lg", ng-click="verifyName(item); UsersCtrl.valid=true") Start
 
 div(ng-show="valid", ng-init="race(item);")
-	h3 
-		span(class="label label-primary") {{item.name}} 
+	h3
+		span(class="label label-primary") {{item.name}}
 		span(id="socketio")
 	br
 	div(class="row-fluid")
 		div(class="span12 main")
 			form(action="", ng-submit="sendResult(item)")
-				| <span id="op">operation</span>  
+				| <span id="op">operation</span>
 				input(class="in_usr", maxlength="4", type="text", name="p1", value="", ng-model="item.value", autofocus)
 	br
 	span(id="result")
@@ -26,23 +26,22 @@ div(ng-show="valid", ng-init="race(item);")
 		h2 Time
 			small
 				span(class="glyphicon glyphicon-time" aria-hidden="true")
-			span(class="label label-primary", id="mrtime") 
+			span(class="label label-primary", id="mrtime")
 	div(class="col-md-4")
 		div(class="panel panel-primary")
 			div(class="panel-heading")
-				div(class="panel-title") 
+				div(class="panel-title")
 					h2 Score
 			div(class="panel-body")
 				span(id="score")
-	
+
 	div(class="col-md-3")
 		div(class="panel panel-primary")
 			div(class="panel-heading")
-				div(class="panel-title") 
+				div(class="panel-title")
 					h2 Hall Of Fame
 			div(class="panel-body")
 				ul(class="list-group", ng-init="load()")
-					li(class="list-group-item", ng-repeat="rank_player in hof | orderBy:'score':'true'")
+					li(class="list-group-item", ng-repeat="rank_player in hof")
 						{{ rank_player.player }}  <span class="label label-default">{{ rank_player.score }} </span>
-						h6 <small>{{ rank_player.timestamp }}</small> 
-	
+						h6 <small>{{ rank_player.timestamp }}</small>

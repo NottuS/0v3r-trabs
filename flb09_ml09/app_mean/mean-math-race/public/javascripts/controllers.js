@@ -5,14 +5,14 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				$scope.nome = "|Var do angular - controller.js|";
 			 	$scope.valid = false;
 			 	// var socket = io.connect('http://localhost:3000');
-			 	var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
-			 	// var socket = io.connect('http://0v3r-trabs-dreamer22001.c9.io/');
-				
+			 	// var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
+			 	var socket = io.connect('http://0v3r-trabs-dreamer22001.c9.io/');
+
 				socket.on('connect',function() {
-					$('#socketio').html('<span class="label label-success">connected!</label>'); 
+					$('#socketio').html('<span class="label label-success">connected!</label>');
 					socket.emit('join', "$scope.item.name");
 				});
-			 	
+
 			 	socket.on('send-client-result', function (resultValue) {
 					if (resultValue == 1) {
 						$('#result').html("Você acertou!!!").addClass("alert alert-success");
@@ -43,7 +43,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 					$('#op').html(operation+": ");
 					$('.in_usr').val('').select();
 				});
-				
+
 				socket.on('scores',function(scores) {
 					$('#score').html("");
 					if (scores.length){ //effect
@@ -59,7 +59,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 
 				socket.on('disconnect',function() {
-					// $('#socketio').html('<span class="label label-important">disconnected</label>'); 
+					// $('#socketio').html('<span class="label label-important">disconnected</label>');
 				});
 
 				$scope.load = function() {
@@ -101,7 +101,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 							function(data, status, headers, config) {
 								$location.path("/");
 							}
-						);	
+						);
 					}
 				}
 
@@ -110,17 +110,17 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 					 	$scope.valid = true;
 					 } else {
 					 	$scope.valid = false;
-					 }					
+					 }
 				}
 
-				$scope.sendResult = function(item) { 
+				$scope.sendResult = function(item) {
 					if (item.value) {
 						socket.emit('send-server-result', item);
 					};
 				}
 
 				$scope.race = function(item) {
-					// item.value = "Iniciou MathRace!"; 
+					// item.value = "Iniciou MathRace!";
 					// $(function() {
 					// $("#name").focus();
 						// $("#name").select();
@@ -128,7 +128,7 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				 	// $('#name').focus();
 				 	// $('#name').select();
 					$('.in_usr').click(function(e){
-						this.select();  
+						this.select();
 					});
 
 					// $('#name').focus();

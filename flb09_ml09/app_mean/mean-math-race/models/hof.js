@@ -16,6 +16,8 @@ var hof_data;
 exports.list = function(req, res) {
 	Hof
 		.find()
+		.sort({"score":-1})
+		.limit(10)
 		.exec(function(err, hofs) {
 			if(err) {
 				console.log("LIST: ERROR MONGODB: "+err+" , data:"+hofs);
@@ -55,18 +57,18 @@ exports.update = function(udata) {
 	// var parsedUdata = udata;
 	// parsedUdata = parsedUdata.toString();
 	// delete parsedUdata._id;
-	
+
 	var parsedUdata = {
 		timestamp: udata.timestamp,
 		score: udata.score,
-		player: udata.player		
+		player: udata.player
 	};
 
 	console.log("UPDATE ---------------> udata:"+parsedUdata);
 
 	Hof.update({player: parsedUdata.player}, parsedUdata,function(err, data) {
 		if(err) {
-			console.log("UPDATE: ERROR MONGODB: "+err+", player:"+uplayer+" , data:"+data);			
+			console.log("UPDATE: ERROR MONGODB: "+err+", player:"+uplayer+" , data:"+data);
 		} else {
 			console.log("UPDATE: UPDATED MONGODB: "+err);
 		}
