@@ -3,11 +3,12 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 		['$scope', 'UsersSrv', '$routeParams', '$location',
 			function($scope, UsersSrv, $routeParams, $location) {
 				$scope.nome = "|Var do angular - controller.js|";
-			 	$scope.valid = false;
+			 	// valid var changed for tests
+			 	$scope.valid = true; 
 			 	// var socket = io.connect('http://localhost:3000');
 			 	var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
 			 	// var socket = io.connect('http://0v3r-trabs-dreamer22001.c9.io/');
-
+				
 				socket.on('connect',function() {
 					$('#socketio').html('<span class="label label-success">connected!</label>');
 					socket.emit('join', "$scope.item.name");
@@ -63,8 +64,6 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				});
 
 				$scope.load = function() {
-					// TODO: Ordenar hall of fame, talvez transformando
-					// a string de objs em um array de objs
 					$scope.hof = UsersSrv.query();
 				}
 
@@ -115,32 +114,24 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 
 				$scope.sendResult = function(item) {
 					if (item.value) {
+						if(item.name === undefined) // change for tests
+							item.name = Math.random().toString(36).substring(Math.floor((Math.random()*6)+1));
 						socket.emit('send-server-result', item);
 					};
 				}
 
 				$scope.race = function(item) {
-					// item.value = "Iniciou MathRace!";
-					// $(function() {
-					// $("#name").focus();
-						// $("#name").select();
-					// });
-				 	// $('#name').focus();
-				 	// $('#name').select();
 					$('.in_usr').click(function(e){
 						this.select();
 					});
 
-					// $('#name').focus();
 					$('.in_usr').focus();
 					$('.in_usr').keydown(function(e){
 						if (e.keyCode=='13'){ //press return
 							$('.in_usr').select();
 						}
 				    });
-
 				}
-
 				//$scope.load();
 			}
 		]
