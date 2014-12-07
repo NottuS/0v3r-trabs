@@ -16,11 +16,11 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 
 			 	socket.on('send-client-result', function (resultValue) {
 					if (resultValue == 1) {
-						$('#result').html("Você acertou!!!").addClass("alert alert-success");
+						$('#result').html("Good, you solve the operation!!!").addClass("alert alert-success");
 					} else if (resultValue == 2) {
-						$('#result').html("Alguem acertou antes de você!!!").addClass("alert alert-warning");
+						$('#result').html("Someone solved this quest faster than you!!!!").addClass("alert alert-warning");
 					} else {
-						$('#result').html("Você errou!!!").addClass("alert alert-danger");
+						$('#result').html("Noooo, wrong result!!!").addClass("alert alert-danger");
 					}
 				});
 
