@@ -9,6 +9,7 @@
 \usepackage{amssymb,amsmath}
 \usepackage{epsfig}
 \usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
 \usepackage{lmodern}
 \usepackage{textcomp} 
 \usepackage[T1]{fontenc}
@@ -20,6 +21,7 @@
 \usepackage{ps-macros}
 \usepackage{comment}
 \usepackage{url}
+\usepackage{listings}
 % \usepackage{psfig}
 
 \setcounter{secnumdepth}{3}    % n - numero de niveis de subsubsection numeradas
@@ -81,11 +83,11 @@
 
 \pagenumbering{arabic}
 
-\input{introducao.tex}
-\input{tecnologias.tex}
-\input{conceitucaoIdeiaGeral.tex}
-\input{implementacao.tex}
-\input{conclusao.tex}
+\input{1_capitulo_introducao.tex}
+\input{2_capitulo_conceitucaoIdeiaGeral.tex}
+\input{3_capitulo_tecnologias.tex}
+\input{4_capitulo_implementacao.tex}
+\input{5_capitulo_conclusao.tex}
 
 %\input{anexo1.tex}     % se houver anexo
 
@@ -104,7 +106,7 @@
 %
 \addcontentsline{toc}{chapter}{\MakeUppercase{Bibliografia}}
 
-\input{apendiceA.tex}
+\input{6_capitulo_apendiceA.tex}
 
 %\singlespacing
 %\makecapadissertacao
