@@ -4,9 +4,10 @@
 \usepackage[brazil]{babel}
 
 \usepackage{verbatim}
+\usepackage{multirow}
 
 \usepackage{graphicx}
-
+%\usepackage[table]{xcolor}
 \usepackage{listings}
 \usepackage{color}
 
@@ -73,14 +74,14 @@
 \let\olditem\item
 \renewcommand{\item}{\setlength{\itemsep}{\wideitemsep}\olditem}
 
-\title[Localização para Robôs Móveis]{Localização \textit{indoor} para robôs móveis}
-\author[Edileuton H. de Oliveira]{Edileuton Henrique de Oliveira}
+\title[Aplicações escaláveis com MEAN \textit{Stack}]{Aplicações escaláveis com MEAN \textit{Stack}}
+\author[Filipe Leuch Bonfim, Michael Liang]{Filipe Leuch Bonfim \\ Michael Liang}
 \institute[UFPR]{
   Departamento de Informática\\
   Universidade Federal do Paraná\\
   Bacharelado em Ciência da Computação\\
   Trabalho de Graduação\\
-  Orientador: Prof. Eduardo Todt.
+  Orientador: Prof. Bruno Muller Junior.
 }
 
 \usepackage{remreset}
@@ -114,342 +115,450 @@
 
 %\section{Introduçao}
 
-\section{Robôs Móveis}
+\section{Conceitos}
 
-\begin{frame}{Robôs Móveis}
-\begin{itemize}
- \item São sistemas incorporados no mundo real que se movem autonomamente e interagem com ele para realizar suas tarefas.
- \item Aplicações: limpeza, corte de grama, detectar riscos, explorações de ambientes desconhecidos, 
-vigilância autônoma, resgatar sobreviventes e assistência a idosos ou pessoas com alguma incapacidade.
-  \item Principais tarefas: planejamento de caminho, navegação,  
-evitar obstáculos, controle de motores, \textbf{localização}, \textbf{construção e atualização de mapas}.
-
-\end{itemize}
+\begin{frame}{Aplicações web escaláveis}
+    \begin{description}
+        \item[Escalabilidade] \hfill \\
+        \item[Aplicações web] \hfill \\
+        \item[Escalabilidade em aplicações web] \hfill \\
+    \end{description}
 \end{frame}
 
-\begin{frame}{Construção de Mapas}
-A tarefa de mapeamento corresponde à atribuição de valores aos elementos do mapa, relacionando cada um a uma certa 
-posição nele.
-\begin{itemize}
- \item \textbf{Mapas Métricos}
+\begin{frame}{Escalabilidade}
+    Escalabilidade é a habilidade de uma aplicação manter o desempenho
+quando a carga de trabalho aumenta.
+\end{frame}
+
+%\begin{frame}{Escalabilidade - Internet}
+%    \begin{figure}[htb]
+%    \centering
+%    \includegraphics[scale=0.32]{../images/internet_usage.png}
+%    \caption{ Quantidade de usuários da internet entre 1993 e 2014 }
+%    \label{fig: graf_iu}
+%    \end{figure}
+%\end{frame}
+
+\begin{frame}{Aplicações web}
+A aplicação web refere-se a sistemas de informática que são executados através de navegadores com internet, geralmente aplicações que utilizam-se de tecnologias web como HTML, Javascript e CSS.
+\end{frame}
+
+%\begin{frame}{Escalabilidade em aplicações web}
+%    \begin{itemize}
+%        \item Escalabilidade vertical
+%        
+%        \hfill É quando existe uma melhoria do hardware de um único servidor. 
+%        \item Escalabilidade horizontal 
+%        
+%        \hfill Significa adicionar mais servidores, permitindo a criação de um \textit{cluster}.
+%    \end{itemize}
+%\end{frame}
+
+\begin{frame}{Escalabilidade vertical e horizontal}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.30]{../images/scal_vh.png}
+    \caption{ Escalabilidade vertical e horizontal}
+    \label{fig: scal_vh}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Programação orientada a eventos}
     \begin{itemize}
-    \item Mapa detalhado do ambiente, dividido em uma rede de células.
-    \item Cada célula contem informações do ambiente como espaço ocupado por um objeto, 
-    espaço livre para navegação, etc.
-    \item Localização é mais precisa e menos sujeita a ambiguidades.
-    \end{itemize}
-
- \item \textbf{Mapas Topológicos}
-      \begin{itemize}
-    \item  Marcos e relações são os elementos dos mapas topológicos, concentra-se apenas em pontos de interesse.
-    \item Essas relações podem ser de vários tipos, tais como o deslocamento
-relativo entre dois marcos, a existência de um caminho entre eles,
-quantidade de energia gasta em um caminho entre marcos, etc.
-    \end{itemize}
-\end{itemize}
+        \item É um paradigma de programação  
+        
+         \item É um laço que recebe repetidamente informação para processar e disparam uma função de resposta de acordo com o evento recebido.
+         
+        \item Um evento é qualquer ação do usuário que interaja com o sistema.
+        \end{itemize}
 \end{frame}
 
-\begin{frame}{Localização}
-
- \begin{itemize}
-  \item A obtenção da posição e orientação do robô no mapa: \textbf{pose($x$, $y$, $\theta$)}.
-  
-  \item Identificação e subsequente triangulação por ângulos e por distância dos \textit{landmarks}.
-  
-  \item A identificação dos \textit{landmarks} 
- é feita fazendo observações do ambiente utilizando seus sensores(sonar, laser, câmera).
- 
-  \item O robô deve ser capaz de lidar com os erros de medição dos sensores, 
- incertezas e informações incompletas.
-\end{itemize}
+\begin{frame}{Programação orientada a eventos - Event Loop}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.30]{../images/event_loop_diagram.png}
+    \caption{Event Loop}
+    \label{fig: graf_eld}
+    \end{figure}
 \end{frame}
 
-\begin{frame}{Localização Probabilística}
-\begin{itemize}
-  \item Ao invés de calcular a posição exata, calcula-se a 
-  probabilidade do robô estar numa certa posição.
-  \item A localização probabilística nos da a distribuição de probabilidade de todas as possíveis 
- configurações do robô: \textit{\textbf{belief}}.
-  \item Principais abordagens: \textbf{localização de Markov} e \textbf{filtro de Kalman}.
-  \item \textbf{SLAM}
-\end{itemize}
-\end{frame}
- \begin{comment}
-\begin{frame}{Modelo de Movimento e Percepção}
-\begin{itemize}
-\item Quando o robô se movimenta a incerteza de sua posição aumenta. 
-\item A cada deslocamento do robô faz a atualização da distribuição de probabilidade que pode ser dividida em 2 passos:
-   \begin{itemize}
-  \item \textbf{Atualização de ação}: o robô se move e estima sua posição através estimação da odometria: incerteza aumenta.
-  \item \textbf{Atualização de percepção}: o robô faz uma observação usando seus sensores e corrige sua posição, 
-  combinando seu \textit{belief} com a probabilidade das observações feitas: incerteza diminui.
- \end{itemize}
- 
- \item Desse modo, a cada movimento o robô pode obter uma melhor estimativa de sua real posição.
- \end{itemize}
-\end{frame}
- 
-
-\begin{frame}{Localização de Markov}
-\begin{itemize}
- \item Encontra caminhos mínimos de maneira rápida e sem ciclos % pois utiliza o Dijkstra
- \item Utiliza menos largura de banda % pois nao envia a tabela de roteamento inteira, envia somente o estado de seus enlaces 
- \item É possível utilizar diversas métricas no calculo do caminho mínimo % menor custo, maior vazão, maior confiabilidade
- \item Mantém mais de um caminho mínimo para um dado destino % caminhos devem possuir valores de métrica idênticos  % aumenta eficiencia pois possibilita a divisão do trafego 
-\end{itemize}
+\begin{frame}{Javascript}
+    \begin{description}
+        %\item[Imperativa e estruturada] \hfill \\
+        \item[Tipagem dinâmica] \hfill \\
+        \item[Baseada em protótipos] \hfill \\
+        \item[Linguagem orientada a eventos] \hfill \\
+    \end{description}
 \end{frame}
 
-\begin{frame}{Localização filtro de Kalman}
-\begin{itemize}
- \item Encontra caminhos mínimos de maneira rápida e sem ciclos % pois utiliza o Dijkstra
- \item Utiliza menos largura de banda % pois nao envia a tabela de roteamento inteira, envia somente o estado de seus enlaces 
- \item É possível utilizar diversas métricas no calculo do caminho mínimo % menor custo, maior vazão, maior confiabilidade
- \item Mantém mais de um caminho mínimo para um dado destino % caminhos devem possuir valores de métrica idênticos  % aumenta eficiencia pois possibilita a divisão do trafego 
-\end{itemize}
-\end{frame}
-\end{comment}
-
-\begin{comment}
-\begin{frame}{Mapas Métricos}
-Periodicamente, cada roteador:
-\begin{itemize}
- \olditem verifica o estado de seus enlaces % através do envio de pequenas mensagens
- \olditem envia as informações do estado dos enlaces aos roteadores adjacentes % quando ocorre mudanças na rede, stop() quando a ocorre mais troca de mensagem
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Mapas Topológicos}
-Periodicamente, cada roteador:
-\begin{itemize}
- \olditem verifica o estado de seus enlaces % através do envio de pequenas mensagens
- \olditem envia as informações do estado dos enlaces aos roteadores adjacentes % quando ocorre mudanças na rede, stop() quando a ocorre mais troca de mensagem
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{SLAM}
-\begin{itemize}
-  \item O robô inicia a navegação em uma localização desconhecida e em um ambiente desconhecido.
-  \item Constrói um mapa desse ambiente de maneira incremental.
-  \item Utiliza esse mapa simultaneamente para calcular a sua localização.
-  \item Principais abordagens:
-  \begin{itemize}
-  \item \textbf{Extended Kalman Filter SLAM}. 
-  \item \textbf{Filtro de partículas}.
-  \item \textbf{GraphSLAM}.
-  \end{itemize}
-\end{itemize}
-\end{frame}
-\end{comment}
-\section{Localização baseada em Wireless sensor networks - WSNs}
-
-\begin{frame}{Localização baseada em \textit{Wireless sensor networks} - WSNs}
-\begin{itemize}
- \item Coleta informações em um campo monitorado.
- \item Nodos da rede podem ser estáticos ou móveis.
- \item Geralmente requerem que os nodos conhecidos, estejam dentro 
-	do raio de comunicação dos sensores em comum.
-  \item A posição de um certo nodo pode ser obtida 
-  a partir da posição ou direção dos nodos conhecidos por ele.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Principais abordagens utilizando WSNs}
-\begin{itemize}
-  \item Principais abordagens:
+\begin{frame}{NoSQL - Not Only SQL}
     \begin{itemize}
-     \item \textbf{TOA}(\textit{Time of Arrival}).
-     \item \textbf{TDOA}(\textit{Time Difference of Arrival}).
-     \item \textbf{AOA}(\textit{Angle of Arrival}).
-     \item \textbf{RSS}(\textit{Received Signal Strength}).
+        \item Costuma ser projetado para ser executado em um \textit{cluster};
+        \item Costuma ser Open-Source; 
+        \item Não possui esquema fixo (SCHEMA-LESS), permitindo gravar qualquer dado em qualquer estrutura.
+        \item Categorias: Chave/Valor, Orientado a colunas, Orientado a documentos, Baseado em grafos
     \end{itemize}
-
- \item Sofrem interferência de obstáculos como paredes, 
-   móveis e outros objetos, trafego de pessoas, além de outros fatores como temperatura ambiente, 
-   umidade do ar, outros sinais, etc.
-\end{itemize}
 \end{frame}
 
-\begin{comment}
-\begin{frame}{TOA(\textit{Time of Arrival})}
+\section{Tecnologias}
 
+\begin{frame}{MEAN \textit{Stack}}
 \begin{itemize}
- \item Tempo medido em que um sinal chega a um
-receptor pela primeira vez depois de emitido.
-\item O valor medido é o tempo de transmissão somado ao
-atraso do tempo de propagação.
-\item Este atraso,$t_{i,j}$, entre a transmissão do sensor i e recepção do sensor j, é igual a distância entre o transmissor e o receptor, 
-$d_{i,j}$, dividido pela velocidade de propagação do sinal, $v_{p}$.
-
-\end{itemize}
+        \item MongoDB
+        \item Express.js
+        \item AngularJS
+        \item Node.js
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{TDOA(\textit{Time Difference of Arrival})}
-\begin{itemize}
- \item Os algoritmos de TDOA fazem a medição da diferença no tempo de recepção
-de sinais de diferentes estações de base.
-  \item Supondo que o nodo está na linha de visão de dois BSs,
-  o nodo deve situar-se em uma hipérbole. 
-  \item Uma segunda hipérbole, pode ser obtido através de uma medição adicional de TDOA envolvendo
-um terceiro BS. 
-  \item A posição do nodo pode ser identificada como o ponto de intersecção
-das duas hipérboles.
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{AOA(\textit{Angle of Arrival})}
-\begin{itemize}
- \item A Localização baseada em AOA envolve a medição do ângulo de chegada de um sinal de uma BS
-a um receptor ou vice-versa. 
- \item Uma única medida produz uma linha reta 
-entre a \textit{base station} e o receptor. 
-  \item A medida do ângulo de chegada com outra \textit{base station}
-produzirá uma segunda linha reta e a intersecção das duas linhas, vai fornecer a posição
-do dispositivo.
-\end{itemize}
-\end{frame}
-\end{comment}
-\begin{frame}{RSS(\textit{Received Signal Strength})}
-Há três métodos de localização que utilizam a medição de RSS:
-\begin{itemize}
- \olditem \textbf{Estação base mais forte}.
- \begin{itemize}
-  \item A localização de um nodo da rede pode ser estimado como a posição do \textit{Access Points}(AP) mais próximo, no 
-	qual o nodo se comunicou.
- \end{itemize}
-
- \olditem \textbf{Modelo de propagação}.
-  \begin{itemize}
-  \item A medição do sinal no receptor e o valor obtido indica a distância até o transmissor.
-  \item A localização é obtida fazendo triangulação com outros 3 APs, cuja posição conhecida.
- \end{itemize}
- \olditem \textbf{\textit{Fingerprinting}}, composta por duas fases:
-  \begin{itemize}
-  \item Aprendizado: constrói uma tabela para cada coordenada de amostras.
-  \item Determinação: o nodo informa uma amostra do RSS, o registro que mais se aproxima da amostra informada é adotada como atual posição do nodo.
- \end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\section{Android} % Detalhe os experimentos que vc fez no NS-3
-\begin{frame}{Android}
-\begin{itemize}
-\item O Android é um sistema operacional baseado no núcleo do Linux para dispositivos móveis, 
-desenvolvido pela \textit{Open Handset Alliance}.
-
- \item Apresenta vários recursos que podem facilmente empregados na robótica como
-câmeras, GPS, aceleradores gráficos 2D e 3D, \textit{bluetooth} e wifi.
-
-\item Suporta diversos sensores como barômetro, magnetômetro, acelerômetro, 
- sensor de proximidade, sensor de pressão, termômetro e compasso. 
- 
- \item Possui um rico ambiente de desenvolvimento provido pelo Android SDK com documentação farta.
-
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Arquitetura do Sistema Operaciona Android}
-\begin{figure}[hb]
-\centering
-\includegraphics[scale=0.38]{../images/Android-architecture.jpg}
-\caption{Arquitetura Android\cite{android1}. }
-\label{fig:android-arc}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Componentes de uma Aplicação Android}
-\begin{itemize}
- \item Activity.
- \item Services.
- \item Broadcast Receiver.
- \item Content Providers.
-\end{itemize}
-\end{frame}
-
-\section{Implementação}
-\begin{frame}{Técnica implementada}
-\begin{itemize}
- \item Implementa o RSS \textit{fingerprinting}.
- \item O algoritmo utiliza o preceito da correlação espacial das localidades adjacentes.
- \item Obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar.
- \item A posição final do aparelho 
-  e obtida através do centroide desse conjunto de pontos.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Aprendizado e Determinação}
-\begin{itemize}
- \olditem \textbf{Aprendizado:}
-  \begin{enumerate}
-    \item Constrói um mapa de \textit{fingerprints}.
-    \item O \textit{fingerprint} é composto da média de 8 amostras do RSS de cada AP.
-  \end{enumerate}
- 
- \olditem \textbf{Determinação:}
-    \begin{enumerate}
-
-    \item Obtêm-se o \textit{fingerprint} da localidade do aparelho.
-    \item Para cada conjunto de três APs do \textit{fingerprint} obtém-se um ponto, onde 
-    esse ponto é resultado da busca pela menor distância euclidiana entre os dados informados e os dados
-    previamente coletados.
-    \item Assim obtêm-se um conjunto de $n$ pontos.
-    \item Calcula-se o centroide desses pontos: $c(x_c,y_c) = (\frac{1}{n}\sum_{i=1}^{n}x_{i},\frac{1}{n}\sum_{i=1}^{n}y_{i})$.  
-    \end{enumerate}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Tecnologias utilizadas}
-\begin{itemize}
- \item Android SDK.
- \item Escrito em Java e XML.
- \item LG Nexus 4 com Android KitKat 4.4.4.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Esquema da implementação}
-  \begin{figure}[hbt]
-  \centering
-  \includegraphics[scale=0.39]{../images/apptg.png}
-  \caption{Esquema de interação entra as classes}
-  \label{fig:appSchema}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{Testes}
-Foram coletados \textit{fingerprints} de 67 locais distintos,
-  onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF.
-   
-   \begin{figure}[hbt]
-  \centering
-  \includegraphics[scale=0.4]{../images/TTmapadinf_andar1_492x327.png}
-  \caption{Mapa do primeiro andar do Departamento de Informática da UFPR.}
-  \label{fig:mapaDinf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{Resultados}
- Foram realizados 35 testes, onde:
-  \begin{itemize}
-      \item 22,8\% das estimativas possuem precisão de 1 metro ou menos.
-      \item 77,1\% das estimativas possuem precisão de 3 metros ou menos.
-      \item 91,4 \% das estimativas possuem precisão de 5 metros ou menos.
+\begin{frame}{MongoDB}
+    \begin{itemize}
+        \item NoSQL 
+        \item Orientado a documentos
+        \item O formado dos documentos é JSON/BSON
      \end{itemize}
+\end{frame}
+
+%\begin{frame}{MongoDB - Termos/Conceitos}
+%    \begin{table}[ht]
+%    \begin{tabular}{|p{5cm}|p{5cm}|}
+%    \hline
+    %\rowcolor[HTML]{CFCFCF} 
+%    Termos/Conceitos SQL & Termos/Conceitos MongoDB \\ \hline
+%    base de dados        & base de dados          \\ \hline
+%    tabela               & coleção                \\ \hline
+%    linha                & documento (BSON)       \\ \hline
+%    coluna               & campo                  \\ \hline
+%    índice               & índice                 \\ \hline
+%    joins                & documentos incorporados (\textit{embedded})                                            \\ \hline
+%    chave primária       & chave primária         \\ \hline
+%                         &                        \\
+%                         &                        \\
+%    \multirow{-3}{5cm}{Especificar uma coluna ou um conjunto   de colunas como chave primária} & \multirow{-3}{5cm}{No MongoDB, a chave primária é  automaticamente atribuída ao campo \_id} \\ \hline
+%    \end{tabular}
+%    \caption{Comparação entre as terminologias do SQL e do MongoDB.}
+%    \label{fig:tab_mg_sql}
+%    \end{table}
+%\end{frame}
+
+\begin{frame}{MongoDB - Escalabilidade através do Sharding}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.35]{../images/1sharding_topology.png}
+    \caption{Topologia do Sharding}
+    \label{fig: shard_top}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{MongoDB - Armazenamento}
+    \begin{itemize}
+        \item Utiliza arquivos mapeados
+em memória.
+        \item Consistência eventual
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Express.js}
+
+    \begin{itemize}
+        \item O Express é um \textit{framework} que visa facilitar o desenvolvimento de aplicações Web com o Node.js.
+        \item O Express.js permite criar servidores web e receber requisições HTTP de maneira simples. 
+        \item  Ele também permite a criação de um conjunto de diretórios com uma estrutura padrão, além de organizar as rotas dos arquivos para as \textit{views} da aplicação.
+        \item  Geralmente os projetos que utilizam-se do Express também aderem há algum \textit{framework} de \textit{templates} como Jade ou EJS.
+    \end{itemize}
+\end{frame}
+
+ 
+\begin{frame}{AngularJS}
+    \begin{itemize}
+        \item Framework Javascript \textit{client-side}
+        \item MVC
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{AngularJS - Comparando com outros frameworks}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.22]{../images/angularjs_framework_comparison.png}
+    \caption{Gráfico comparando frameworks Javascript.}
+    \label{fig: ang_fw_comp}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{AngularJS - Características}
+    \begin{description}
+        \item[SPA - Single Page Application] \hfill \\
+            Cada parte de página é carregada de forma independente.
+        \item[Injeção de dependências] \hfill \\
+            Fornecer recursos extras necessários na aplicação de forma transparente ao usuário. Ex: ng-Resources, ng-Routes, etc.
+        \item[Two-Way Data Biding] \hfill \\
+            Sincroniza os dados na \textit{view} e no \textit{model}.
+
+    \end{description}
+\end{frame}
+
+\begin{frame}{AngularJS - Características}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.20]{../images/Two_way_databiding_diagram.png}
+    \caption{Digrama do \textit{Two-way data biding}}
+    \label{fig: twdb}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Node.js}
+    \begin{itemize}
+        \item É uma plataforma de desenvolvimento web
+        \item Linguagem Javascript
+no lado do servidor.
+        \item Desenvolvida em C e Javascript
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Node.js - Arquitetura}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.35]{../images/node_platform.png}
+    \caption{Arquitetura do Node.js.}
+    \label{fig: node_plat}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Node.js - I/O não bloqueante e orientado a eventos}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.25]{../images/node_event_loop.png}
+    \caption{Event Loop do Node.js.}
+    \label{fig: node_el}
+    \end{figure}
+\end{frame}
+
+%\begin{frame}{Socket.io}
+%O Socket.io é uma API em Javascript que permite que a comunicação entre o servidor e o cliente ocorra sem dificuldades e em tempo real.
+%\end{frame}
+
+\section{Aplicações web com MEAN Stack} 
+
+\begin{frame}{Aplicações web com MEAN \textit{Stack}}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.25]{../images/mean_stack_diagram.png}
+    \caption{MEAN Stack visto como uma pilha}
+    \label{fig: mean_diag}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Comparativo em relação a arquitetura de aplicações LAMP}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.26]{../images/mean_lamp.png}
+    \caption{MEAN Stack vs LAMP}
+    \label{fig: mean_lamp}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Math Race - Proposta da aplicação}
+%\begin{itemize}
+% \item Implementa o RSS \textit{fingerprinting}.
+% \item O algoritmo utiliza o preceito da correlação espacial das localidades adjacentes.
+% \item Obtém-se um conjunto de pontos que definem uma região de onde o aparelho possa estar.
+% \item A posição final do aparelho 
+%  e obtida através do centroide desse conjunto de pontos.
+%\end{itemize}
+    Aplicação \textit{Math Race} desenvolvida com MEAN \textit{Stack}, com intuito de demonstrar a organização e integração das ferramentas propostas.
+\end{frame}
+
+% \begin{frame}{Math Race - Utilização e funcionamento da aplicação}
+%     \begin{figure}[htb]
+%     \centering
+%     \includegraphics[scale=0.19]{../images/index_mean_math_race.png}
+%     \caption{Imagem da interface da aplicação}
+%     \label{fig: int_mr}
+%     \end{figure}
+% \end{frame}
+
+\begin{frame}{Math Race - Desenvolvimento da aplicação}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.35]{../images/estrutura_exp_gen.png}
+    \caption{Estrutura criada pelo express-generator}
+    \label{fig: dir_mean_exp}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Math Race - Integração das ferramentas do MEAN Stack}
+    \begin{figure}[hbt]
+    \centering
+    \includegraphics[scale=0.39]{../images/diagrama_de_seq_acesso.png}
+    \caption{Diagrama de sequência do acesso da aplicação}
+    \label{fig:appSchema}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr0}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s1.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr1}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s2.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr2}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s3.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr3}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s4.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr4}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s5.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr5}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s6.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr6}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s7.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr7}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s8.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr8}
+    \end{figure}
+\end{frame}
+\begin{frame}{Math Race - Fluxo de execução}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.2]{../images/func_mr_s9.png}
+    \caption{Diagrama do funcionamento da aplicação}
+    \label{fig: func_mr9}
+    \end{figure}
+\end{frame}
+
+%\begin{frame}{Testes de desempenho}
+%Foram coletados \textit{fingerprints} de 67 locais distintos,
+%  onde o incremento de um no eixo $x$ ou $y$ significa um metro do primeiro andar do DINF.
+%\end{frame}
+
+\begin{frame}{Math Race - Testes na Aplicação}
+    \begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.5]{../images/reqxtempo.png}
+    \caption{Gráfico de requisições por tempo}
+    \label{fig: grad_rq_tmp}
+    \end{figure}
+% Foram realizados 35 testes, onde:
+%  \begin{itemize}
+%      \item 22,8\% das estimativas possuem precisão de 1 metro ou menos.
+%      \item 77,1\% das estimativas possuem precisão de 3 metros ou menos.
+%      \item 91,4 \% das estimativas possuem precisão de 5 metros ou menos.
+%     \end{itemize}
+\end{frame}
+
+\begin{frame}{Análise de testes de desempenho do Node.js e do MongoDB
+com outros ambientes}
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\cline{1-3}
+%\rowcolor[HTML]{CFCFCF}
+Servidor & Linguagem de Programação & Banco de Dados \\ \cline{1-3}
+Node.JS  & Javascript               & MongoDB        \\ \cline{1-3}
+Node.Js  & Javascript               & PostgresSQL    \\ \cline{1-3}
+Netty    & Java                     & MongoDB        \\ \cline{1-3}
+Netty    & Java                     & PostgresSQL    \\ \cline{1-3}
+Apache   & PHP                      & MongoDB        \\ \cline{1-3}
+Apache   & PHP                      & PostgresSQL    \\ \cline{1-3}
+\end{tabular}
+\caption{Ambientes dos testes}
+\label{fig: ap_amb_testes}
+\end{table}
+\end{frame}
+
+\begin{frame}{Consumo de Memória RAM}
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.35]{../images/graf_memoria.png}
+  \caption{ Consumo de memória RAM durante a execução dos teste.}
+  \label{fig: consumo_ram}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Utilização de CPU}
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.33]{../images/graf_cpu.png}
+  \caption{Utilização de CPU}
+  \label{fig: utilizacao_cpu}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Quantidade de requisições por tempo}
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[scale=0.30]{../images/graf_req_tempo.png}
+  \caption{Quantidade de requisições por tempo}
+  \label{fig: req_tempo}
+  \end{figure}
 \end{frame}
 
 \section{Conclusão}
 \begin{frame}{Conclusão}
-\begin{itemize}
- \item Precisão satisfatória, considerando um raio de 2 até 5 metros da posição real do aparelho.
- \item A oscilação do RSS e a semelhança dos \textit{fingerprints} em um raio de até 5 metros do aparelho
-  dificultaram uma precisão mais aguda.
-  \item O ambiente deve ser lavado em consideração, já que o ambiente escolhido é bastante favorável a abordagem escolhida, dado
-      o grande número de APs presentes.
- \item Essa técnica pode ser bastante proveitosa na localização de robôs móveis, pois há 
-      a possibilidade de adicionar mais características para distinguir os \textit{fingerprints} com 
-      dados coletados por outros sensores do robô(câmera, laser, sonar).
-\end{itemize}
+
+ O MEAN \textit{Stack} é de fato uma ótima opção para o desenvolvimento de aplicações web escaláveis, principalmente através do o Node.js e o MongoDB. 
+ 
+ O Angular.js e o Express.js atuam como facilitadores no processo de desenvolvimento, sem estes componentes, dependendo da complexidade da aplicação, o tempo gasto no desenvolvimento da aplicação do lado do cliente pode aumentar drasticamente, e a utilização do Node.js pode ser consideravelmente mais trabalhosa. 
+%\begin{itemize}
+% \item Precisão satisfatória, considerando um raio de 2 até 5 metros da posição real do aparelho.
+% \item A oscilação do RSS e a semelhança dos \textit{fingerprints} em um raio de até 5 metros do aparelho
+%  dificultaram uma precisão mais aguda.
+%  \item O ambiente deve ser lavado em consideração, já que o ambiente escolhido é bastante favorável a abordagem escolhida, dado
+%      o grande número de APs presentes.
+% \item Essa técnica pode ser bastante proveitosa na localização de robôs móveis, pois há 
+%      a possibilidade de adicionar mais características para distinguir os \textit{fingerprints} com 
+%      dados coletados por outros sensores do robô(câmera, laser, sonar).
+%\end{itemize}
 \end{frame}
 
 \end{document}
