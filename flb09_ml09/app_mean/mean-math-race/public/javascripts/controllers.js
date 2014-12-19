@@ -5,8 +5,8 @@ angular.module('sonApp.controllers', ['sonApp.services'])
 				$scope.nome = "|Var do angular - controller.js|";
 			 	// valid var changed for tests
 			 	$scope.valid = true; 
-			 	// var socket = io.connect('http://localhost:3000');
-			 	var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
+			 	 var socket = io.connect('http://localhost:3000');
+			 	//var socket = io.connect('http://0v3r-trabs-filipe1309.c9.io/');
 			 	// var socket = io.connect('http://0v3r-trabs-dreamer22001.c9.io/');
 				
 				socket.on('connect',function() {
