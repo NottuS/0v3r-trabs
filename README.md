@@ -31,9 +31,10 @@ Texto:
  
 - Uma gpu possui vários SMs(stream Multprocessors) - São + simples, sem pipelines complicados e sistemas de predições, unidade de controle tambem + simples:
   * SMs possuem dividem a L1 e a shared memory.
-  * Executam um warp - 32 threads executando a mesma instrução, cada uma pode seguir branchs diferentes, mas isso deixa a execução mais lenta, pois, não eh legal ter 32 threads executando instruções diferentes; utilizar #pragma unroll /*desenrola laços com constantes*/
+  * Executam warps - 32 threads executando a mesma instrução, cada uma pode seguir branchs diferentes, mas isso deixa a execução mais lenta, pois, as threads num warp em um branch de execução deferente tem q esperar que as outras threads terminem a execução da instrução par então executar as thread nesse branch ; utilizar #pragma unroll /*desenrola laços com constantes*/
   * As 32 threads acessam a memoria ao mesmo tempo, ou seja são carregados 32 words - para optmização, evitar acessar a mesma posição de memória, a melhor opção eh fazer com q as threads trabalhem com posições de memoria proximas umas das outras.
   * Utilizar dados read-only aumenta o desempenho: const __registry__ ; alguma parada assim.
+  * Um SM pode executar warps simultaneamente dependendo do numero de threads restantes no bloco e/ou disponibilidade de registradores e shared memory(Ocuppancy, ver mais em http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#occupancy-calculator)
 
 - Shared memory possui velocidade aproximada de um registrador, 48kb(apartir das placas com computabilidade 2.0(-arch=sm_20))).
   * A shared memory esta organizada em bancos de 32, ou seja, 32 thread podem acessar simultanemente esses bancos.
