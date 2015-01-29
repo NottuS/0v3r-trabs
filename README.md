@@ -34,7 +34,24 @@ Texto:
   * Executam warps - 32 threads executando a mesma instrução, cada uma pode seguir branchs diferentes, mas isso deixa a execução mais lenta, pois, as threads num warp em um branch de execução deferente tem q esperar que as outras threads terminem a execução da instrução par então executar as thread nesse branch ; utilizar #pragma unroll /*desenrola laços com constantes*/
   * As 32 threads acessam a memoria ao mesmo tempo, ou seja são carregados 32 words - para optmização, evitar acessar a mesma posição de memória, a melhor opção eh fazer com q as threads trabalhem com posições de memoria proximas umas das outras.
   * Utilizar dados read-only aumenta o desempenho: const __registry__ ; alguma parada assim.
-  * Um SM pode executar warps simultaneamente dependendo do numero de threads restantes no bloco e/ou disponibilidade de registradores e shared memory(Ocuppancy, ver mais em http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#occupancy-calculator)
+  * Um SM pode executar warps simultaneamente dependendo do numero de threads restantes no bloco e/ou disponibilidade de registradores e shared memory(Ocuppancy, ver mais em http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#occupancy-calculator), codigo pra checar ocupação:
+ int main() { 
+    int numBlocks; // Occupancy in terms of active blocks 
+    int blockSize = 32; 
+    // These variables are used to convert occupancy to warps int device; 
+    cudaDeviceProp prop; 
+    int activeWarps; 
+    int maxWarps; cudaGetDevice(&device); 
+    cudaGetDeviceProperties(&prop, device); 
+    cudaOccupancyMaxActiveBlocksPerMultiprocessor( &numBlocks, MyKernel, blockSize, 0); 
+    activeWarps = numBlocks * blockSize / prop.warpSize; 
+    maxWarps = prop.maxThreadsPerMultiProcessor / prop.warpSize; 
+    std::cout << "Occupancy: " << (double)activeWarps / maxWarps * 100 << "%" << std::endl; 
+    return 0;
+}
+
+Read more at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#ixzz3QEtX6vP7 
+Follow us: @GPUComputing on Twitter | NVIDIA on Facebook
 
 - Shared memory possui velocidade aproximada de um registrador, 48kb(apartir das placas com computabilidade 2.0(-arch=sm_20))).
   * A shared memory esta organizada em bancos de 32, ou seja, 32 thread podem acessar simultanemente esses bancos.
