@@ -61,3 +61,4 @@ Follow us: @GPUComputing on Twitter | NVIDIA on Facebook
 - L2 e global memory são compartilhados entre SMs.
 
 - Evitar mover sempre dados entre cpu e gpu(leva muito tempo).
+- gprof: ferramente pra analisar desempenho; gcc -O2 -g -pg myprog.c gprof ./a.out > profile.txt
