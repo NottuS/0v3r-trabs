@@ -1,0 +1,18 @@
+22:05:38 **** Incremental Build of configuration Default for project gpuSURF ****
+make all 
+Building file: gpuIntegral.cu
+Invoking: NVCC Compiler
+/usr/local/cuda-6.5/bin/nvcc -G -g -O0 --compile -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21  -x cu -o lib/gpuIntegral.o gpuIntegral.cu 
+Finished building: gpuIntegral.cu
+ 
+Building file: kernel.cu
+Invoking: NVCC Compiler
+/usr/local/cuda-6.5/bin/nvcc -G -g -O0 --compile -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21  -x cu -o lib/kernel.o kernel.cu 
+Finished building: kernel.cu
+ 
+/usr/local/cuda-6.5/bin/nvcc -lib gpuIntegral.o kernel.o -o gpuSURF.a
+ar: gpuIntegral.o: No such file or directory
+make: *** [all] Error 1
+
+22:05:42 Build Finished (took 4s.385ms)
+

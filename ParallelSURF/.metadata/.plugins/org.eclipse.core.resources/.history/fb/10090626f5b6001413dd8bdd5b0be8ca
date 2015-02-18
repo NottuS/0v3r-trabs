@@ -1,0 +1,11 @@
+SRC =
+OBJ =  
+EXEC
+
+.PHONY: all clean mrproper
+
+clean:
+	rm -rf lib *.o *~
+	
+mrproper:
+	rm -rf $(EXEC)

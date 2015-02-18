@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;gpuSURF/Makefile&apos; to &apos;makefile&apos;" description="Rename resource &apos;Makefile&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Makefile" name="makefile" stamp="1424193449219" updateReferences="true"/>
+</session>

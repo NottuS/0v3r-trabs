@@ -1,0 +1,26 @@
+SRC = $(wildcard *.cu)
+OBJ = $(SRC:.cu=.o)
+NVCC = /usr/local/cuda-6.5/bin/nvcc
+CUDACOMP = -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21
+NVCCFLAGS = -G -g -O0 --compile --relocatable-device-code=false $(CUDACOMP)
+TARGET = gpuSURF.o
+
+.PHONY: all clean
+all: teste #$(OBJ) 
+		cd lib && nvcc –arch=sm_20 –dlink $(OBJ) -o $(TARGET)
+
+teste: 
+	@mkdir -p lib
+	$(NVCC) $(NVCCFLAGS) -dc $(SRC)
+	$(NVCC) $(NVCCFLAGS) $(OBJ)
+		
+%.o: %.cu
+	@mkdir -p lib
+	@echo 'Building file: $<'
+	@echo 'Invoking: NVCC Compiler'
+	$(NVCC) $(NVCCFLAGS) -x cu -o lib/$@ $< 
+	@echo 'Finished building: $<'
+	@echo ' '
+
+clean:
+	@rm -rf  lib *.o *~

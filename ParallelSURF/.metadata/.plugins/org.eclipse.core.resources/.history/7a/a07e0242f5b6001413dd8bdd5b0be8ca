@@ -1,0 +1,13 @@
+SRC = $(wildcard *.cu)
+OBJ = $(SRC:.cu=.o)
+EXEC = parallelsurf
+
+.PHONY: all clean mrproper
+all:
+	echo $(gpuSURF)
+
+clean:
+	rm -rf lib *.o *~
+	
+mrproper:
+	rm -rf $(EXEC)

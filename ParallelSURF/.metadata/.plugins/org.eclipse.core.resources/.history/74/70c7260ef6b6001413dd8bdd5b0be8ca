@@ -1,0 +1,22 @@
+SRC = $(wildcard *.cpp)
+OBJ = $(SRC:.cpp=.o)
+EXEC = bin/parallelsurf
+CC = g++
+CXXFLAGS = -W -Wall -ansi -pedantic
+
+.PHONY: all clean mrproper
+all: $(EXEC)
+	@echo $(gpuSURF)
+
+$(EXEC): $(OBJ)
+	mkdir -p bin
+
+%.o: %.cpp
+	mkdir -p lib
+	
+
+clean:
+	rm -rf lib *.o *~
+	
+mrproper:
+	rm -rf $(EXEC)
