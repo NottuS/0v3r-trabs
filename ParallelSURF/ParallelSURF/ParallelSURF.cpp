@@ -4,7 +4,7 @@
 #pragma warning (disable : 4996)
 
 #ifdef _WIN32
-	#include "header/stdafx.h"
+	#include "stdafx.h"
 #endif
 
 #include "surflib.h"
@@ -29,10 +29,9 @@ bool cmpImages(IplImage *img1, IplImage *img2){
 
 	if (height1 != height2 || width1 != width2)
 		return FALSE;
-	for (int i = 0; i < height1 * width1; i+=100) {
+	for (int i = 0; i < height1 * width1; i++) {
 		if (data1[i] != data2[i])
-			int y;
-			//return FALSE;
+			int y;//return FALSE;
 	}
 
 	return TRUE;
