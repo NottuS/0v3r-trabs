@@ -11,9 +11,12 @@
 #include <ctime>
 #include <iostream>
 
+
 #ifdef linux
 	#include <getopt.h>
 #endif
+
+#define MYFLOAT_ERROR 2
 
 bool cmpImages(IplImage *img1, IplImage *img2){
 	// set up variables for data access
@@ -30,8 +33,10 @@ bool cmpImages(IplImage *img1, IplImage *img2){
 	if (height1 != height2 || width1 != width2)
 		return FALSE;
 	for (int i = 0; i < height1 * width1; i++) {
-		if (data1[i] != data2[i])
-			int y;//return FALSE;
+		if (fabs(data1[i] - data2[i]) > MYFLOAT_ERROR) {
+			printf("%d, %f, % f, %f\n", i, data1[i], data2[i], fabs(data1[i] - data2[i]));
+		}
+		//	return FALSE;
 	}
 
 	return TRUE;

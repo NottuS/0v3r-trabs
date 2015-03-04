@@ -12,7 +12,6 @@
 #pragma warning (disable : 4996)
 #include <opencv/cv.h>
 #include <vector>
-
 #include "ipoint.h"
 
 //! Populate IpPairVec with matched ipts 

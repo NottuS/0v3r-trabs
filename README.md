@@ -50,8 +50,6 @@ Texto:
     return 0;
 }
 
-Read more at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#ixzz3QEtX6vP7 
-Follow us: @GPUComputing on Twitter | NVIDIA on Facebook
 
 - Shared memory possui velocidade aproximada de um registrador, 48kb(apartir das placas com computabilidade 2.0(-arch=sm_20))).
   * A shared memory esta organizada em bancos de 32, ou seja, 32 thread podem acessar simultanemente esses bancos.

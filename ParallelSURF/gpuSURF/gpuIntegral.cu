@@ -75,7 +75,7 @@ void gpuIntegralImage(float *data, float *r_data, int height, int width){
 	integralImage <<<dimGrid, dimBlock>>>(d_r_data1, d_r_data2, height, width);
 	CUDA_CHECK_RETURN(cudaDeviceSynchronize());	// Wait for the GPU launched work to complete
 
-	CUDA_CHECK_RETURN(cudaMemcpy(r_data, d_r_data2, height * width * sizeof(float), cudaMemcpyDeviceToHost)); //<--CORRETO
+	CUDA_CHECK_RETURN(cudaMemcpy(r_data, d_r_data2, height * width * sizeof(float), cudaMemcpyDeviceToHost)); // <--CORRETO
 	//CUDA_CHECK_RETURN(cudaMemcpy(r_data, d_r_data1, height * width * sizeof(float), cudaMemcpyDeviceToHost));// <--- TESTE
 	/*for (int i = 0; i < height * width; i++) {
 		if (teste[i] != r_data[i])
