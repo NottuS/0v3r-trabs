@@ -1,24 +1,24 @@
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 EXEC = parallelsurf
+GPUSURF = $(shell cd ../ && pwd)/gpuSURF
+GPUSURFLIB = $(GPUSURF)/lib/gpuSURF.o
 CC = g++
-CFLAGS = `pkg-config --cflags opencv`
-LIBS = `pkg-config --libs opencv` -lcudart
-GPUSURF = ../gpuSURF/lib/
-GPUSURFLIB = $(GPUSURF)/gpuSURF.a
+CFLAGS = `pkg-config --cflags opencv` -g -I$(GPUSURF)
+LIBS = `pkg-config --libs opencv`  -L/usr/local/cuda/lib64 -L/usr/local/cuda/lib -lcuda -lcudart -lcudadevrt
 
 .PHONY: all clean mrproper
-all: $(GPUSURF) $(EXEC)
+all: $(GPUSURFLIB) $(EXEC)
 
-$(GPUSURF): 
-	cd $(GPUSURF) && make 
-	
 $(EXEC): $(OBJ)
-	cd build && $(CC) -o $@ $(OBJ) $(GPUSURFLIB) -lcudart 
+	 cd build && $(CC) $(CFLAGS) $(GPUSURF)/lib/gpuSURF.o $^ -o $@ $(LIBS)
+
+$(GPUSURFLIB): 
+	cd $(GPUSURF) && make 
 
 %.o: %.cpp
 	mkdir -p build
-	$(CC) $(CFLAGS) $(LIBS) -o build/$@ -c $<
+	$(CC) -c $< -o build/$@
 
 clean:
 	rm -rf build *.o *~

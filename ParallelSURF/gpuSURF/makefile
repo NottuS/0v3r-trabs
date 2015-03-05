@@ -5,18 +5,18 @@ CUDACOMP = -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,cod
 #-G : Generate debug-able device code
 #-g : Generate debug-able code
 #-O : Generate optimized code
-NVCCFLAGS = -G -g -O0 --compile $(CUDACOMP) 
+NVCCFLAGS = -G -g -O0 $(CUDACOMP) -dc 
 TARGET = gpuSURF.a
 
 .PHONY: all clean
 all: $(OBJ) 
-	cd lib && $(NVCC) -lib $(OBJ) -o $(TARGET)
+	cd lib && $(NVCC) -dlink $(OBJ) -lcudadevrt -o $(TARGET)
 		
 %.o: %.cu
 	@mkdir -p lib
 	@echo 'Building file: $<'
 	@echo 'Invoking: NVCC Compiler'
-	$(NVCC) $(NVCCFLAGS) -x cu -o lib/$@ $< 
+	$(NVCC) $(NVCCFLAGS) $< -o lib/$@  
 	@echo 'Finished building: $<'
 	@echo ' '
 
