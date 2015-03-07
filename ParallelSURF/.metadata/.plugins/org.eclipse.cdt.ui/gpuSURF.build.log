@@ -1,18 +1,16 @@
-22:05:38 **** Incremental Build of configuration Default for project gpuSURF ****
+15:44:29 **** Incremental Build of configuration Default for project gpuSURF ****
 make all 
 Building file: gpuIntegral.cu
 Invoking: NVCC Compiler
-/usr/local/cuda-6.5/bin/nvcc -G -g -O0 --compile -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21  -x cu -o lib/gpuIntegral.o gpuIntegral.cu 
+/usr/local/cuda-6.5/bin/nvcc -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21 -c  gpuIntegral.cu -o lib/gpuIntegral.o  
 Finished building: gpuIntegral.cu
  
 Building file: kernel.cu
 Invoking: NVCC Compiler
-/usr/local/cuda-6.5/bin/nvcc -G -g -O0 --compile -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21  -x cu -o lib/kernel.o kernel.cu 
+/usr/local/cuda-6.5/bin/nvcc -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21 -c  kernel.cu -o lib/kernel.o  
 Finished building: kernel.cu
  
-/usr/local/cuda-6.5/bin/nvcc -lib gpuIntegral.o kernel.o -o gpuSURF.a
-ar: gpuIntegral.o: No such file or directory
-make: *** [all] Error 1
+cd lib && /usr/local/cuda-6.5/bin/nvcc -lib gpuIntegral.o kernel.o -lcudadevrt -o gpuSURF.a
 
-22:05:42 Build Finished (took 4s.385ms)
+15:44:34 Build Finished (took 4s.380ms)
 

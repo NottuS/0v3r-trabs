@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="25" version="2.0">
+<workbench progressCount="23" version="2.0">
 <workbenchAdvisor/>
-<window height="1024" width="841" x="840" y="27">
+<window height="1024" maximized="true" width="841" x="840" y="27">
 <fastViewData fastViewLocation="1024">
 <orientation position="512" view="org.eclipse.cdt.ui.CView"/>
 </fastViewData>
@@ -12,7 +12,7 @@
 <coolItem id="group.file" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="232" y="30"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.cdt.ui.CElementCreationActionSet" itemType="typeToolBarContribution" x="405" y="30"/>
+<coolItem id="org.eclipse.cdt.ui.CElementCreationActionSet" itemType="typeToolBarContribution" x="204" y="30"/>
 <coolItem id="org.eclipse.debug.ui.launch.toolbar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="204" y="30"/>
 <coolItem id="org.eclipse.debug.ui.main.toolbar" itemType="typeToolBarContribution" x="40" y="30"/>
@@ -42,45 +42,65 @@
 <part id="6"/>
 <part id="7"/>
 <part id="8"/>
+<part id="9"/>
+<part id="10"/>
+<part id="11"/>
+<part id="12"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="gpuIntegral.cu" partName="gpuIntegral.cu" path="/home/nottus/0v3r-trabs/ParallelSURF/gpuSURF/gpuIntegral.cu" title="gpuIntegral.cu" tooltip="gpuSURF/gpuIntegral.cu" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/gpuSURF/gpuIntegral.cu"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="66" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2478" selectionTopPixel="726"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="gpuUtils.h" partName="gpuUtils.h" path="/home/nottus/0v3r-trabs/ParallelSURF/gpuSURF/gpuUtils.h" title="gpuUtils.h" tooltip="gpuSURF/gpuUtils.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/gpuSURF/gpuUtils.h"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="499" selectionTopPixel="0"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="teste.cu" partName="teste.cu" path="/home/nottus/0v3r-trabs/ParallelSURF/teste/src/teste.cu" title="teste.cu" tooltip="teste/src/teste.cu" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/teste/src/teste.cu"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="437" selectionTopPixel="0"/>
-</editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ParallelSURF.cpp" partName="ParallelSURF.cpp" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/ParallelSURF.cpp" title="ParallelSURF.cpp" tooltip="ParallelSURF/ParallelSURF.cpp" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/ParallelSURF.cpp"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="404" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="214" selectionTopPixel="556"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="integral.cpp" partName="integral.cpp" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/integral.cpp" title="integral.cpp" tooltip="ParallelSURF/integral.cpp" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/integral.cpp"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="62" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1133" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="integral.h" partName="integral.h" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/integral.h" title="integral.h" tooltip="ParallelSURF/integral.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/integral.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="931" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="6" selectionOffset="850" selectionTopPixel="0"/>
 </editor>
-<editor id="org.eclipse.cdt.make.editor" name="subdir.mk" partName="subdir.mk" path="/home/nottus/0v3r-trabs/ParallelSURF/teste/Debug/src/subdir.mk" title="subdir.mk" tooltip="teste/Debug/src/subdir.mk" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/teste/Debug/src/subdir.mk"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="466" selectionTopPixel="0"/>
-</editor>
-<editor id="org.eclipse.cdt.make.editor" name="makefile" partName="makefile" path="/home/nottus/0v3r-trabs/ParallelSURF/gpuSURF/makefile" title="makefile" tooltip="gpuSURF/makefile" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.make.editor" name="makefile" partName="makefile" path="/home/nottus/0v3r-trabs/ParallelSURF/gpuSURF/makefile" title="makefile" tooltip="gpuSURF/makefile" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/gpuSURF/makefile"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="310" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="569" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.make.editor" name="makefile" partName="makefile" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/makefile" title="makefile" tooltip="ParallelSURF/makefile" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.make.editor" name="makefile" partName="makefile" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/makefile" title="makefile" tooltip="ParallelSURF/makefile" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/makefile"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="506" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="304" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ipoint.cpp" partName="ipoint.cpp" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/ipoint.cpp" title="ipoint.cpp" tooltip="ParallelSURF/ipoint.cpp" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/ipoint.cpp"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="952"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ipoint.h" partName="ipoint.h" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/ipoint.h" title="ipoint.h" tooltip="ParallelSURF/ipoint.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/ipoint.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="831" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="fasthessian.cpp" partName="fasthessian.cpp" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/fasthessian.cpp" title="fasthessian.cpp" tooltip="ParallelSURF/fasthessian.cpp" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/fasthessian.cpp"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="62" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="fasthessian.h" partName="fasthessian.h" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/fasthessian.h" title="fasthessian.h" tooltip="ParallelSURF/fasthessian.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/fasthessian.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="62" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="kernel.cu" partName="kernel.cu" path="/home/nottus/0v3r-trabs/ParallelSURF/gpuSURF/kernel.cu" title="kernel.cu" tooltip="gpuSURF/kernel.cu" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/gpuSURF/kernel.cu"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="294" selectionTopPixel="101"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="surflib.h" partName="surflib.h" path="/home/nottus/0v3r-trabs/ParallelSURF/ParallelSURF/surflib.h" title="surflib.h" tooltip="ParallelSURF/surflib.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ParallelSURF/surflib.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="50" selectionOffset="683" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
@@ -109,12 +129,14 @@
 </customFilters>
 </viewState>
 </view>
-<view id="org.eclipse.ui.views.PropertySheet" partName="Properties"/>
+<view id="org.eclipse.ui.views.PropertySheet" partName="Properties">
+<viewState/>
+</view>
 <view id="org.eclipse.cdt.make.ui.views.MakeView" partName="Make Target"/>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
 <expanded>
-<category IMemento.internal.id="Warnings (1 item)"/>
+<category IMemento.internal.id="Warnings (7 items)"/>
 <category IMemento.internal.id="Errors"/>
 </expanded>
 <columnWidths org.eclipse.ui.ide.locationField="105" org.eclipse.ui.ide.markerType="711" org.eclipse.ui.ide.pathField="140" org.eclipse.ui.ide.resourceField="105" org.eclipse.ui.ide.severityAndDescriptionField="421"/>
@@ -128,7 +150,18 @@
 <view id="org.eclipse.ui.console.ConsoleView" partName="Console">
 <viewState/>
 </view>
-<view id="org.eclipse.ui.views.TaskList" partName="Tasks"/>
+<view id="org.eclipse.ui.views.TaskList" partName="Tasks">
+<viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.completionField" categoryGroup="none" markerContentGenerator="org.eclipse.ui.ide.tasksGenerator" partName="Tasks">
+<columnWidths org.eclipse.ui.ide.completionField="40" org.eclipse.ui.ide.descriptionField="350" org.eclipse.ui.ide.locationField="105" org.eclipse.ui.ide.markerType="451" org.eclipse.ui.ide.pathField="140" org.eclipse.ui.ide.priorityField="35" org.eclipse.ui.ide.resourceField="105"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.completionField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.priorityField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.descriptionField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.locationField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.markerType"/>
+</viewState>
+</view>
 <view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
 <viewState/>
 </view>
@@ -221,8 +254,15 @@
 <page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.3929471" ratioLeft="312" ratioRight="482" relationship="2" relative="topLeft"/>
-<info folder="true" part="bottom" ratio="0.7406103" ratioLeft="631" ratioRight="221" relationship="4" relative="org.eclipse.ui.editorss">
+<info part="org.eclipse.ui.editorss" ratio="0.20780857" ratioLeft="165" ratioRight="629" relationship="2" relative="topLeft"/>
+<info folder="true" part="topRight" ratio="0.74934036" ratioLeft="568" ratioRight="190" relationship="2" relative="org.eclipse.ui.editorss">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
+<page content="org.eclipse.cdt.make.ui.views.MakeView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@bb92b47" ratio="0.59954494" ratioLeft="527" ratioRight="352" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.ui.views.TaskList" label="Tasks"/>
@@ -236,13 +276,6 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="topRight" ratio="0.74934036" ratioLeft="568" ratioRight="190" relationship="2" relative="org.eclipse.ui.editorss">
-<folder appearance="2" expanded="0">
-<page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
-<page content="org.eclipse.cdt.make.ui.views.MakeView" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
-</folder>
-</info>
 </mainWindow>
 </layout>
 </perspective>
@@ -250,165 +283,163 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/teste/Debug/makefile"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/teste/Debug/sources.mk"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/teste/Debug/src/subdir.mk"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/ParallelSURF/makefile"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/ParallelSURF/ParallelSURF.cpp"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/ParallelSURF/integral.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/gpuSURF/makefile"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/gpuSURF/gpuIntegral.cu"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/ParallelSURF/ParallelSURF.cpp"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/ParallelSURF/surflib.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/ParallelSURF/integral.cpp"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/ParallelSURF/integral.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/ParallelSURF/makefile"/>
 </editors>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="517" y="0"/>
-</item>
-<item historyLabel="makefile" index="0">
-<position/>
-</item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="293" y="0"/>
-</item>
-<item historyLabel="subdir.mk" index="2">
-<position info="not_deleted" x="466" y="0"/>
-</item>
-<item historyLabel="gpuIntegral.cu" index="4">
-<position info="not_deleted" x="66" y="0"/>
-</item>
-<item historyLabel="subdir.mk" index="2">
-<position info="not_deleted" x="466" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="293" y="0"/>
-</item>
-<item historyLabel="subdir.mk" index="2">
-<position info="not_deleted" x="466" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="293" y="0"/>
-</item>
-<item historyLabel="subdir.mk" index="2">
-<position info="not_deleted" x="466" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position/>
-</item>
-<item historyLabel="subdir.mk" index="2">
-<position info="not_deleted" x="466" y="0"/>
-</item>
-<item historyLabel="gpuIntegral.cu" index="4">
-<position info="not_deleted" x="66" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position/>
-</item>
-<item historyLabel="ParallelSURF.cpp" index="5">
-<position info="not_deleted" x="404" y="0"/>
-</item>
 <item historyLabel="integral.cpp" index="6">
 <position info="not_deleted" x="62" y="0"/>
 </item>
-<item historyLabel="integral.h" index="7">
-<position info="not_deleted" x="931" y="0"/>
+<item historyLabel="integral.cpp" index="6">
+<position info="not_deleted" x="1311" y="0"/>
+</item>
+<item historyLabel="integral.cpp" index="6">
+<position info="not_deleted" x="1310" y="0"/>
 </item>
 <item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
-</item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="506" y="0"/>
-</item>
-<item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
+<position info="not_deleted" x="584" y="0"/>
 </item>
 <item historyLabel="makefile" index="3">
-<position info="not_deleted" x="232" y="17"/>
+<position info="not_deleted" x="501" y="0"/>
 </item>
-<item historyLabel="makefile" index="8">
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="553" y="0"/>
+</item>
+<item historyLabel="surflib.h" index="5">
+<position info="not_deleted" x="683" y="50"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="501" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="535" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="304" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="443" y="0"/>
+</item>
+<item historyLabel="gpuIntegral.cu" index="4">
+<position info="not_deleted" x="1981" y="0"/>
+</item>
+<item historyLabel="ParallelSURF.cpp" index="1">
+<position info="not_deleted" x="214" y="0"/>
+</item>
+<item historyLabel="integral.cpp" index="6">
+<position info="not_deleted" x="1133" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="413" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="443" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="90" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
 <position/>
 </item>
 <item historyLabel="makefile" index="3">
-<position info="not_deleted" x="0" y="42"/>
+<position info="not_deleted" x="382" y="0"/>
 </item>
 <item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
+<position info="not_deleted" x="350" y="0"/>
 </item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="111" y="0"/>
-</item>
-<item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
-</item>
-<item historyLabel="sources.mk" index="1">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="382" y="0"/>
 </item>
 <item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
+<position info="not_deleted" x="398" y="0"/>
 </item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="306" y="0"/>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="376" y="0"/>
 </item>
-<item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
+<item historyLabel="integral.cpp" index="6">
+<position info="not_deleted" x="1133" y="0"/>
 </item>
-<item historyLabel="sources.mk" index="1">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
-</item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="306" y="0"/>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="376" y="0"/>
 </item>
 <item historyLabel="makefile" index="0">
-<position info="not_deleted" x="962" y="0"/>
+<position info="not_deleted" x="460" y="0"/>
 </item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="306" y="0"/>
+<item historyLabel="makefile" index="3">
+<position/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="205" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="101" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="259" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="538" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="162" y="0"/>
 </item>
 <item historyLabel="gpuIntegral.cu" index="4">
-<position info="not_deleted" x="66" y="0"/>
+<position info="not_deleted" x="2478" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position/>
 </item>
 <item historyLabel="makefile" index="3">
-<position info="not_deleted" x="262" y="0"/>
+<position info="not_deleted" x="537" y="0"/>
 </item>
-<item historyLabel="gpuIntegral.cu" index="4">
-<position info="not_deleted" x="66" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="262" y="0"/>
-</item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="306" y="0"/>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="242" y="0"/>
 </item>
 <item historyLabel="makefile" index="3">
-<position info="not_deleted" x="209" y="0"/>
+<position info="not_deleted" x="609" y="0"/>
 </item>
-<item historyLabel="gpuIntegral.cu" index="4">
-<position info="not_deleted" x="66" y="0"/>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="460" y="0"/>
+</item>
+<item historyLabel="integral.h" index="2">
+<position info="not_deleted" x="850" y="6"/>
+</item>
+<item historyLabel="integral.cpp" index="6">
+<position info="not_deleted" x="1133" y="0"/>
+</item>
+<item historyLabel="integral.h" index="2">
+<position info="not_deleted" x="850" y="6"/>
 </item>
 <item historyLabel="makefile" index="3">
-<position info="not_deleted" x="209" y="0"/>
+<position info="not_deleted" x="527" y="10"/>
 </item>
-<item historyLabel="makefile" index="8">
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="315" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="323" y="0"/>
+</item>
+<item historyLabel="integral.cpp" index="6">
+<position info="not_deleted" x="1133" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="323" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
+<position info="not_deleted" x="242" y="0"/>
+</item>
+<item historyLabel="makefile" index="3">
+<position info="not_deleted" x="355" y="0"/>
+</item>
+<item historyLabel="makefile" index="0">
 <position info="not_deleted" x="304" y="0"/>
 </item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="286" y="0"/>
-</item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="304" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="286" y="0"/>
-</item>
-<item historyLabel="makefile" index="8">
-<position info="not_deleted" x="306" y="0"/>
-</item>
-<item historyLabel="makefile" index="3">
-<position info="not_deleted" x="310" y="0"/>
-</item>
-<item active="true" historyLabel="makefile" index="8">
-<position info="not_deleted" x="306" y="0"/>
+<item active="true" historyLabel="makefile" index="3">
+<position info="not_deleted" x="355" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -416,6 +447,9 @@
 <workbenchWindowAdvisor/>
 <actionBarAdvisor/>
 <trimLayout>
+<trimArea IMemento.internal.id="16384">
+<trimItem IMemento.internal.id="topLeft"/>
+</trimArea>
 <trimArea IMemento.internal.id="131072">
 <trimItem IMemento.internal.id="topRight"/>
 </trimArea>
@@ -426,10 +460,35 @@
 <trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
 <trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.ViewStack@bb92b47"/>
 </trimArea>
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="surflib.h" tooltip="ParallelSURF/surflib.h">
+<persistable path="/ParallelSURF/surflib.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="kernel.cu" tooltip="gpuSURF/kernel.cu">
+<persistable path="/gpuSURF/kernel.cu"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stdafx.h" tooltip="ParallelSURF/stdafx.h">
+<persistable path="/ParallelSURF/stdafx.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="targetver.h" tooltip="ParallelSURF/targetver.h">
+<persistable path="/ParallelSURF/targetver.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="fasthessian.h" tooltip="ParallelSURF/fasthessian.h">
+<persistable path="/ParallelSURF/fasthessian.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="fasthessian.cpp" tooltip="ParallelSURF/fasthessian.cpp">
+<persistable path="/ParallelSURF/fasthessian.cpp"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ipoint.h" tooltip="ParallelSURF/ipoint.h">
+<persistable path="/ParallelSURF/ipoint.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ipoint.cpp" tooltip="ParallelSURF/ipoint.cpp">
+<persistable path="/ParallelSURF/ipoint.cpp"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" name="makefile" tooltip="ParallelSURF/makefile">
 <persistable path="/ParallelSURF/makefile"/>
 </file>
@@ -450,27 +509,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" name="objects.mk" tooltip="teste/Debug/objects.mk">
 <persistable path="/teste/Debug/objects.mk"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="nsightbuilddata" tooltip="teste/Debug/nsightbuilddata">
-<persistable path="/teste/Debug/nsightbuilddata"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="integral.h" tooltip="ParallelSURF/header/integral.h">
-<persistable path="/ParallelSURF/header/integral.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="integral.cpp" tooltip="ParallelSURF/src/integral.cpp">
-<persistable path="/ParallelSURF/src/integral.cpp"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ParallelSURF.cpp" tooltip="ParallelSURF/src/ParallelSURF.cpp">
-<persistable path="/ParallelSURF/src/ParallelSURF.cpp"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="teste.cu" tooltip="teste/src/teste.cu">
-<persistable path="/teste/src/teste.cu"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="gpuUtils.h" tooltip="gpuSURF/header/gpuUtils.h">
-<persistable path="/gpuSURF/header/gpuUtils.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="gpuIntegral.cu" tooltip="gpuSURF/gpuIntegral.cu">
-<persistable path="/gpuSURF/gpuIntegral.cu"/>
 </file>
 </mruList>
 </workbench>

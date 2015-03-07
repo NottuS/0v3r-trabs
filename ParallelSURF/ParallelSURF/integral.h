@@ -33,7 +33,7 @@
 #endif
 
 #ifdef linux
-	#include "gpuIntegral.h"
+	#include "../gpuSURF/gpuIntegral.h"
 #endif
 
 //! Computes the integral image of image img.  Assumes source image to be a 

@@ -35,6 +35,9 @@
 								<inputType id="nvcc.compiler.input.c.134929862" superClass="nvcc.compiler.input.c"/>
 							</tool>
 							<tool id="nvcc.linker.base.2010335427" name="NVCC Linker" superClass="nvcc.linker.base">
+								<option id="nvcc.linker.option.libs.749540506" superClass="nvcc.linker.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="&quot;${workspace_loc:/gpuSURF/lib/gpuSURF.a}&quot;"/>
+								</option>
 								<inputType id="nvcc.linker.input.491689195" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -42,7 +45,7 @@
 							</tool>
 							<tool id="nvcc.archiver.base.5310527" name="NVCC Archiver" superClass="nvcc.archiver.base"/>
 							<tool id="com.nvidia.host.assembler.117734576" name="Host Assembler" superClass="com.nvidia.host.assembler">
-								<option id="gnu.both.asm.option.include.paths.973034726" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
+								<option id="gnu.both.asm.option.include.paths.973034726" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1392768642" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>

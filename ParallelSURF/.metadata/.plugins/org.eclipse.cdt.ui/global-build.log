@@ -1,15 +1,24 @@
-22:05:38 **** Incremental Build of configuration Default for project gpuSURF ****
+17:10:14 **** Incremental Build of configuration Default for project ParallelSURF ****
 make all 
-Building file: gpuIntegral.cu
-Invoking: NVCC Compiler
-/usr/local/cuda-6.5/bin/nvcc -G -g -O0 --compile -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21  -x cu -o lib/gpuIntegral.o gpuIntegral.cu 
-Finished building: gpuIntegral.cu
- 
-Building file: kernel.cu
-Invoking: NVCC Compiler
-/usr/local/cuda-6.5/bin/nvcc -G -g -O0 --compile -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,code=sm_21  -x cu -o lib/kernel.o kernel.cu 
-Finished building: kernel.cu
- 
-/usr/local/cuda-6.5/bin/nvcc -lib gpuIntegral.o kernel.o -o gpuSURF.a
-ar: gpuIntegral.o: No such file or directory
-make: *** [all] Error 1
+mkdir -p build
+g++ -c fasthessian.cpp -o build/fasthessian.o
+mkdir -p build
+g++ -c integral.cpp -o build/integral.o
+mkdir -p build
+g++ -c ipoint.cpp -o build/ipoint.o
+mkdir -p build
+g++ -c main.cpp -o build/main.o
+main.cpp: In function ‘int mainMatch()’:
+main.cpp:120:95: warning: extended initializer lists only available with -std=c++11 or -std=gnu++11 [enabled by default]
+main.cpp:120:95: warning: extended initializer lists only available with -std=c++11 or -std=gnu++11 [enabled by default]
+main.cpp:120:95: warning: extended initializer lists only available with -std=c++11 or -std=gnu++11 [enabled by default]
+main.cpp:120:95: warning: extended initializer lists only available with -std=c++11 or -std=gnu++11 [enabled by default]
+mkdir -p build
+g++ -c ParallelSURF.cpp -o build/ParallelSURF.o
+mkdir -p build
+g++ -c stdafx.cpp -o build/stdafx.o
+mkdir -p build
+g++ -c surf.cpp -o build/surf.o
+mkdir -p build
+g++ -c utils.cpp -o build/utils.o
+cd build && g++ `pkg-config --cflags opencv` /home/nottus/0v3r-trabs/ParallelSURF/gpuSURF/lib/* fasthessian.o integral.o ipoint.o main.o ParallelSURF.o stdafx.o surf.o utils.o -o parallelsurf `pkg-config --libs opencv`  -L/usr/local/cuda/lib64 -L/usr/local/cuda/lib -lcuda -lcudart -lcudadevrt -I/home/nottus/0v3r-trabs/ParallelSURF/gpuSURF

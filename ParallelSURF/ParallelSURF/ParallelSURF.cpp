@@ -11,7 +11,6 @@
 #include <ctime>
 #include <iostream>
 
-
 #ifdef linux
 	#include <getopt.h>
 #endif
@@ -31,7 +30,7 @@ bool cmpImages(IplImage *img1, IplImage *img2){
 	float *data2 = (float *)img2->imageData;
 
 	if (height1 != height2 || width1 != width2)
-		return FALSE;
+		return 0;
 	for (int i = 0; i < height1 * width1; i++) {
 		if (fabs(data1[i] - data2[i]) > MYFLOAT_ERROR) {
 			printf("%d, %f, % f, %f\n", i, data1[i], data2[i], fabs(data1[i] - data2[i]));
@@ -39,7 +38,7 @@ bool cmpImages(IplImage *img1, IplImage *img2){
 		//	return FALSE;
 	}
 
-	return TRUE;
+	return 1;
 }
 
 int integralImage(char path[], int gpu){

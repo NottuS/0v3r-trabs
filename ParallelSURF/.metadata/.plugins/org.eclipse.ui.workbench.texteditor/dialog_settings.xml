@@ -15,6 +15,7 @@
 		<item value="false" key="wholeword"/>
 		<item value="" key="selection"/>
 		<list key="findhistory">
+			<item value="printf"/>
 			<item value="-lib"/>
 			<item value="CU_D"/>
 		</list>

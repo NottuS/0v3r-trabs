@@ -15,6 +15,10 @@
 #pragma warning (disable : 4996)
 #include <vector>
 #include <math.h>
+#include "opencv2/core/core_c.h"
+#include "opencv2/highgui/highgui_c.h"
+#include "opencv2/features2d/features2d.hpp"
+#include "opencv2/calib3d/calib3d.hpp"
 
 //-------------------------------------------------------
 

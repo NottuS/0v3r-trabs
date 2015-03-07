@@ -30,6 +30,7 @@ IplImage *Integral(IplImage *source, int gpu)
 
   if (gpu) {
 	  gpuIntegralImage(data, i_data, height, width);
+	 // puts("teste");
   }  else {
 	  // first row only
 	  float rs = 0.0f;
