@@ -57,6 +57,8 @@ Texto:
   * Criar um esquema de acesso diagonal da shared mem (https://www.youtube.com/watch?v=qOCUQoF_-MM min 7:50).
  
 - L2 e global memory são compartilhados entre SMs.
+ * Acessar a mem em pos multiplas de 32, e de maneira unificada onde tds as threads acessem pos "seguidas" 
+ * Evitar acessar a memória de forma desalinhada, permutada ou q so algumas threads carreguem dados; o hardware serializa o acesso nesses casos.
 
 - Evitar mover sempre dados entre cpu e gpu(leva muito tempo).
 - gprof: ferramente pra analisar desempenho; gcc -O2 -g -pg myprog.c gprof ./a.out > profile.txt
