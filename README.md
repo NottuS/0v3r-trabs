@@ -67,6 +67,7 @@ GPU - CUDA
 
 -------------------------------------------------------------------------------------------------------------------
 Robotica - SLAM
+
 -Coordenada Homogeneas para distancia euclidiana; sistema de coordenadas utilizadas em projeção geometrica.
  * 3d - 2d; para um ponto X
  
@@ -126,3 +127,12 @@ rotação no eixo y
 
  - Inverte Transformações 
   x = M^-1 * x'
+
+- Estimativa da posição (Bayes Filter): estimar o estado x do sistema dado as observações z e um conjunto de instruções u.
+ * p(x|z,u)
+ * belief: prob de um certo estado do sistema em um tempo t; 
+ * bel(Xt) = p(Xt| Z1:t, U1:t) = N * p(Zt|Xt) * Integral xt - 1 (p(Xt|Xt-1, Ut) * bel(Xt-1)) DXt-1 
+ * Bayes filter pode ser descrito em duas etapas:
+  + Predição : bel'(Xt) = integral (p(Xt|Ut,Xt-1) * bel(Xt-1)) DXt-1; a partir do deslocamento(modelo) do robô; estima-se qual sua atual posição.
+  + Correção : bel(Xt) = n p(Zt|Xt) * bel'(Xt); a partir das observações(modelo) do ambiente o belief é ajustado ou corrigido.
+ 
