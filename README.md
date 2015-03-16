@@ -2,6 +2,8 @@ openacc compile:
 pgcc -acc Minfo=accel -o teste1 teste1.c
 
 Texto:
+GPU - CUDA
+
 - Modelo de execução de GPUs:
  1 Aloca memoria na GPU; cudaMalloc(void **d_p, size);
  2 Copia os dados pra GPU; cudaMemCopy(void *dest, void *src, CopyTo/*cudaHostToDevice*/));
@@ -62,3 +64,65 @@ Texto:
 
 - Evitar mover sempre dados entre cpu e gpu(leva muito tempo).
 - gprof: ferramente pra analisar desempenho; gcc -O2 -g -pg myprog.c gprof ./a.out > profile.txt
+
+-------------------------------------------------------------------------------------------------------------------
+Robotica - SLAM
+-Coordenada Homogeneas para distancia euclidiana; sistema de coordenadas utilizadas em projeção geometrica.
+ * 3d - 2d; para um ponto X
+ 
+X = matrix u = u/w -> u/w = x
+           v   v/w    v/w   y
+           w    1
+ * Um ponto no infinito pode ser representado como:
+ Xinf = matrix u
+               v
+               0
+* 4d - 3d
+X = matrix u = u/t -> u/t
+           v   v/t    v/t
+           w   w/t    w/t
+           t    1
+
+-Qualquer tranformação em coordenada homogeneas pode ser expressa por:
+ x' = Mx
+ 
+-Translação
+ M = scala * matrix I   t
+                    0^p 1
+                    
+ scala = depende da scala
+ p = dimensão
+ I = matrix 1 0 0   t = matrix tx
+            0 1 0              ty
+            0 0 1              tz
+            
+ - Rotação
+ * M = scala * matrix R    0
+                      0^p  1
+ * 2d 
+ R(teta) = matrix cos(teta)  -sen(teta)
+                  sen(teta)   cos(teta)
+ * 3d 
+ rotação no eixo x
+ Rx(w) = matrix 1   0       0
+                0 cos(w) -sen(w)
+                0 sen(w)  cos(w)
+
+rotação no eixo y
+ Ry(l) = matrix cos(l) 0  sen(l)
+                 0     1    0
+               -sen(l) 0  cos(l)
+ 
+ rotação no eixo z              
+ Rz(k) = matrix cos(k) -sen(k) 0
+                sen(k) cos(k)  0
+                 0       0     1
+ qualquer eixo:                
+ R(w,l,k) = Rz(k)Ry(l)Rx(w)
+ 
+ - Movimento = Rotação + Translação
+ * M = scalar * matrix R    t
+                       0^p  1
+
+ - Inverte Transformações 
+  x = M^-1 * x'
