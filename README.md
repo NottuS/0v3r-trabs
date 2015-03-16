@@ -158,11 +158,13 @@ rotação no eixo y
   * Modelo para laser scanner
     + O scan consiste de K medidas; ;Cada medida é independe da posição do robô
        Zt = {Zt1,Zt2, ..., Ztk}
-       p(Zt| Xt, m) = produtorio de i = 1 ate k (p(Zti | Xt, m))
+       p(Zt| Xt, m) = produtorio de i = 1 ate k (p(Z_ti | Xt, m))
  * Modelo Beam-Endpoint 
    + Facil processamento
  
  * Modelo Ray-cast
     + Considera o primeiro obstáculo na linha de visão
-    + Mistura de 4 modelos: modelo gaussiano para a presença do obstáculo
+    + Mistura de 4 modelos: modelo gaussiano para a presença do obstáculo; 
+    + Processamento n muito eficiente
    
+*  Modelo para observar landmarks com sensores range-bearing
