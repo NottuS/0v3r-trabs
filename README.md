@@ -128,7 +128,7 @@ rotação no eixo y
  - Inverte Transformações 
   x = M^-1 * x'
 
-- Estimativa da posição (Bayes Filter): estimar o estado x do sistema dado as observações z e um conjunto de instruções u.
+- Estimativa da posição (Bayes Filter): estimar o estado x do sistema dado as observações z e um conjunto de instruções u em um mapa m.
  * p(x|z,u)
  * belief: prob de um certo estado do sistema em um tempo t; 
  * bel(Xt) = p(Xt| Z1:t, U1:t) = N * p(Zt|Xt) * Integral xt - 1 (p(Xt|Xt-1, Ut) * bel(Xt-1)) DXt-1 
@@ -136,3 +136,33 @@ rotação no eixo y
   + Predição : bel'(Xt) = integral (p(Xt|Ut,Xt-1) * bel(Xt-1)) DXt-1; a partir do deslocamento(modelo) do robô; estima-se qual sua atual posição.
   + Correção : bel(Xt) = n p(Zt|Xt) * bel'(Xt); a partir das observações(modelo) do ambiente o belief é ajustado ou corrigido.
  
+- Modelo de Movimentação do Robô: Robo se move de (x,y,teta) para (x', y', teta');
+* Os dois tipo + utilizados são:
+1 - Baseado em odometria; + preciso
+ + Geralmente utilizados quando se tem encoders nas rodas;
+       u = (rot1, trans, rot2)
+       trans = raiz((x' - x)^2 + (y' - y)^2)
+       rot1 = atan2(y' - y, x' - x) - teta
+       rot2 = teta1 - teta - rot1
+
+2 -  Baseado em velocidade
+ + Geralmente utilizados quando não se tem encoders nas rodas
+ + Se o robo se move em circulo, o circulo(caminho) contem a orientação final, por isso há a necessidade de adcionar um certo erro na orientação final: gama * delta t;
+  u = (v, w)
+  
+  x'      x        -v/w * sen(teta) + v/w * sen(teta + w * deltat)
+  y' =    y    +   -v/w * cos(teta) + v/w * cos(teta + w * deltat)
+ teta   teta              w * delta t + gama * delta t
+
+- Modelo de Observação
+  * Modelo para laser scanner
+    + O scan consiste de K medidas; ;Cada medida é independe da posição do robô
+       Zt = {Zt1,Zt2, ..., Ztk}
+       p(Zt| Xt, m) = produtorio de i = 1 ate k (p(Zti | Xt, m))
+ * Modelo Beam-Endpoint 
+   + Facil processamento
+ 
+ * Modelo Ray-cast
+    + Considera o primeiro obstáculo na linha de visão
+    + Mistura de 4 modelos: modelo gaussiano para a presença do obstáculo
+   
