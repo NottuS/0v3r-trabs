@@ -167,4 +167,14 @@ rotação no eixo y
     + Mistura de 4 modelos: modelo gaussiano para a presença do obstáculo; 
     + Processamento n muito eficiente
    
-*  Modelo para observar landmarks com sensores range-bearing
+ *  Modelo para observar landmarks com sensores range-bearing
+
+
+- Extended Kalman Filter
+ * Distribuição Gaussiana
+ * Marginalização: 
+    + u: media;dado p(x) = p(x_a, x_b) = N(u, E); com u = u_a; E = E_aa   E_ab
+                                                              u_b      E_ba   E_bb
+   
+    +A distribuição marginal eh p(x_a) = integral (p(x_a, x_b)) Dx_b = N(u, E); com u = u_a e E = E_aa
+ 
