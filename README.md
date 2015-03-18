@@ -170,11 +170,22 @@ rotação no eixo y
  *  Modelo para observar landmarks com sensores range-bearing
 
 
-- Extended Kalman Filter
+- Extended Kalman Filter(EKF)
  * Distribuição Gaussiana
  * Marginalização: 
     + u: media;dado p(x) = p(x_a, x_b) = N(u, E); com u = u_a; E = E_aa   E_ab
-                                                              u_b      E_ba   E_bb
+                                                          u_b      E_ba   E_bb
    
     +A distribuição marginal eh p(x_a) = integral (p(x_a, x_b)) Dx_b = N(u, E); com u = u_a e E = E_aa
  
+ * Kalman filter assume um modelo de transição e observação linear:
+    x_t = A_t*x_t-1 + B_t*u_t + e_t
+    z_t = C_t * x_t + sigma_t
+ * Componentes do kalman filter  
+    A_t : Matrix(n*m) que descreve como o estado evolui de t-1 para t sem controle/instruções ou noise.
+
+    B_t : Matrix(n*l) que descreve como o controle u_t muda o estado de t-1 para t.
+    
+    C_t : Matrix(k*n) que descreve como o mapear o estado x_t para a observação z_t; o que espero encontrar em uma observação em t;
+   
+    e_t e sigma_t : Variavel randomica representando o processo e a medida do noise que assume-se ser independente e normalmente distribuido com covariância R_t e Q_t respectivamente.
