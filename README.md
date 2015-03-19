@@ -173,7 +173,7 @@ rotação no eixo y
 - Extended Kalman Filter(EKF)
  * Distribuição Gaussiana
  * Marginalização: 
-    + u: media;dado p(x) = p(x_a, x_b) = N(u, E); com u = u_a; E = E_aa   E_ab
+    + u: media;E matrix de covariancia;dado p(x) = p(x_a, x_b) = N(u, E); com u = u_a; E = E_aa   E_ab
                                                           u_b      E_ba   E_bb
    
     +A distribuição marginal eh p(x_a) = integral (p(x_a, x_b)) Dx_b = N(u, E); com u = u_a e E = E_aa
@@ -189,3 +189,67 @@ rotação no eixo y
     C_t : Matrix(k*n) que descreve como o mapear o estado x_t para a observação z_t; o que espero encontrar em uma observação em t;
    
     e_t e sigma_t : Variavel randomica representando o processo e a medida do noise que assume-se ser independente e normalmente distribuido com covariância R_t e Q_t respectivamente.
+
+* Movimeto em relação ao noise gaussiano:
+   + p(x_t, u_t, x_t-1) = det(2*pi*R_t)^-1/2 * exp(-1/2*(x_t - A*x_t1 - B_t * u_t)^T * (R_t)^-1 * (x_t - A*x_t1 - B_t) * u_t))
+
+   + R_t : descreve o noise do movimento
+   + p(z_t|x_t) = det(2*pi*Q_t)^⁻1/2 * exp(-1/2 *(z_t - C_t*x_t)^T * (Q_t)^-1 * (z_t - C_t*x_t)) 
+   + Q_t : descreve a medida do noise
+ 
+* Dado um belief gaussiano, o belief é sempre gaussiano
+
+* Kalman_filter(media_t-1, E_t-1, u_t, z_t)
+       // E: matriz de covariância;
+       // prediction step
+       media'_t = A_t * media_t-1 + B_t * u_t;
+       E'_t = A_t * E_t-1 * (A_t)^T + R_t;
+      
+       /K_t : kalman gain
+       // correction step
+       K_t = E'_t * (C_t)^T * (C_t * E'_t * (C_t)^T + Q_t)^-1;
+       media_t =  media'_t + K_t(z_t - C_t * media'_t);
+       E_t = (I - K_t*C_t)*E'_t;
+       return media_t, E_t;
+
+* Se houve duas distribuições gaussianas, uma como muita incerteza e a outra com muita certeza, a multiplicação das duas resulta numa nova gaussiana mais proxima à com maior certeza.
+* Kalman gain :  indica o quanto estou certo sobre as observações em relação a meu movimento.
+* O Kalman filter te da a média entre o valor predito e o observado.
+* A maioria dos problemas em robotica envolvem funções não lineares(ex: trajetorias circulares), o q resulta em funções n gaussianas e impossibilite a utilização do KF. 
+   x_t = g(u_t, x_t-1) + e_T
+   z_t = h(X_t) + sigma_t
+* O q pode ser feito é fazer uma linearização local dessas funções, oq o Extended Kalman Filter faz!
+* A linearização é feito utilizando a matrix jacobiana; que dado um vetor de funções e uma matrix (n*m) onde cada elemento da matrix é a derivada parsial de uma variavel em uma determinada dimensão:
+   f(x) = f_1(x)
+          f_2(x)
+           :
+           .
+          f_m(x)
+
+ jacobiano = f'_x1()   f'_x2()   ...  f'_xn()
+             f''_x1()  f''_x2()  ...  f''_xn()
+             f^m_x1()  f^m_x2()  ...  f^m_xn()
+   
+   g() : vetor de funções
+   G_t: jacobiano de g
+   Predição:
+   p(x_t|u_t, x_t-1) = det(2*pi*Rt)^-1/2 * exp(-1/2 *(x_t - g(u_t, media_t-1) - G_t* (x_t-1 - media_t-1))^T * (R_t)^-1 *(x_t - g(u_t, media_t-1) - G_t * (x_t-1 - media_t-1)))
+   
+   h(): vetor de funções
+   H_t: jacobiano de h
+   Correção: 
+   p(z_t, x_t) = det(2*pi*Rt)^-1/2 * exp(-1/2 * (z_t - h(media'_t) - H_t(x_t - media'_t))^T * (Q_t)^-1 * (z_t - h(media'_t) - H_t(x_t - media'_t)))
+   
+ * Extended Kalman_filter(media_t-1, E_t-1, u_t, z_t)
+       // E: matriz de covariância;
+       // prediction step
+       media'_t = g(u_t, media_t)
+       E'_t = G_t * E_t-1 * (G_t)^T + R_t;
+      
+       /K_t : kalman gain
+       // correction step
+       K_t = E'_t * (H_t)^T * (H_t * E'_t * (H_t)^T + Q_t)^-1;
+       media_t =  media'_t + K_t * (z_t - h(media'_t));
+       E_t = (I - K_t*H_t)*E'_t;
+
+       return media_t, E_t;
