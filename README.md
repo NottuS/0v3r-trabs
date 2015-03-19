@@ -242,7 +242,7 @@ rotação no eixo y
    p(z_t, x_t) = det(2*pi*Rt)^-1/2 * exp(-1/2 * (z_t - h(media'_t) - H_t(x_t - media'_t))^T * (Q_t)^-1 * (z_t - h(media'_t) - H_t(x_t - media'_t)))
    
  * Extended Kalman_filter(media_t-1, E_t-1, u_t, z_t)
-       // E: matriz de covariância;
+       // E: matriz de covariância; T: transposta
        // prediction step
        media'_t = g(u_t, media_t)
        E'_t = G_t * E_t-1 * (G_t)^T + R_t;
@@ -251,7 +251,7 @@ rotação no eixo y
        // correction step
        K_t = E'_t * (H_t)^T * (H_t * E'_t * (H_t)^T + Q_t)^-1;
        media_t =  media'_t + K_t * (z_t - h(media'_t));
-       E_t = (I - K_t*H_t)*E'_t;
+       E_t = (I - K_t * H_t) * E'_t;
 
        return media_t, E_t;
 
@@ -262,3 +262,5 @@ rotação no eixo y
  * Estimar a posição do robô e a localização dos landmarks do ambiente.
  * Estado do sistema(plano 2D): x_t = ((x,y,teta) = pose, (m_(1,x), m_(1,y)) = lanmark1, ..., (m_(1,x), m_(n,y)) = landmark n)^T.
  * Representação do estado(ver https://www.youtube.com/watch?v=XeWG5D71gC0&index=6&list=PLgnQpQtFTOGQrZ4O5QzbIHgl3b1JHimN_, min = 13:32);
+ * EKF SLAM: ciclo do filtro: Predição do estado; Medição da predição, medição, relacionar dados, atualizar.
+ 
