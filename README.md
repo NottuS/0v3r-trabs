@@ -173,10 +173,11 @@ rotação no eixo y
 - Extended Kalman Filter(EKF)
  * Distribuição Gaussiana
  * Marginalização: 
-    + u: media;E matrix de covariancia;dado p(x) = p(x_a, x_b) = N(u, E); com u = u_a; E = E_aa   E_ab
-                                                          u_b      E_ba   E_bb
+    + u: media;E matrix de covariancia, que indica a incerteza do sistema;
+    + dado p(x) = p(x_a, x_b) = N(u, E); com u = u_a; E = E_aa   E_ab
+                                                 u_b      E_ba   E_bb
    
-    +A distribuição marginal eh p(x_a) = integral (p(x_a, x_b)) Dx_b = N(u, E); com u = u_a e E = E_aa
+    + A distribuição marginal eh p(x_a) = integral (p(x_a, x_b)) Dx_b = N(u, E); com u = u_a e E = E_aa
  
  * Kalman filter assume um modelo de transição e observação linear:
     x_t = A_t*x_t-1 + B_t*u_t + e_t
@@ -218,7 +219,7 @@ rotação no eixo y
 * A maioria dos problemas em robotica envolvem funções não lineares(ex: trajetorias circulares), o q resulta em funções n gaussianas e impossibilite a utilização do KF. 
    x_t = g(u_t, x_t-1) + e_T
    z_t = h(X_t) + sigma_t
-* O q pode ser feito é fazer uma linearização local dessas funções, oq o Extended Kalman Filter faz!
+* O q pode ser feito é fazer uma linearização local(parte delas, pense no gráfico) dessas funções, oq o Extended Kalman Filter faz!
 * A linearização é feito utilizando a matrix jacobiana; que dado um vetor de funções e uma matrix (n*m) onde cada elemento da matrix é a derivada parsial de uma variavel em uma determinada dimensão:
    f(x) = f_1(x)
           f_2(x)
@@ -253,3 +254,11 @@ rotação no eixo y
        E_t = (I - K_t*H_t)*E'_t;
 
        return media_t, E_t;
+
+ * O EKF lineariza todas as funções não lineares para calcular o KF, onde g e h são vetores com funções locais da trajetoria não linear do robô.
+ 
+
+- EKF SLAM (online: apenas calcula a posição atual do robô não todo o trajeto)
+ * Estimar a posição do robô e a localização dos landmarks do ambiente.
+ * Estado do sistema(plano 2D): x_t = ((x,y,teta) = pose, (m_(1,x), m_(1,y)) = lanmark1, ..., (m_(1,x), m_(n,y)) = landmark n)^T.
+ * Representação do estado(ver https://www.youtube.com/watch?v=XeWG5D71gC0&index=6&list=PLgnQpQtFTOGQrZ4O5QzbIHgl3b1JHimN_, min = 13:32);
