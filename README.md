@@ -219,8 +219,8 @@ rotação no eixo y
 * A maioria dos problemas em robotica envolvem funções não lineares(ex: trajetorias circulares), o q resulta em funções n gaussianas e impossibilite a utilização do KF. 
    x_t = g(u_t, x_t-1) + e_T
    z_t = h(X_t) + sigma_t
-* O q pode ser feito é fazer uma linearização local(parte delas, pense no gráfico) dessas funções, oq o Extended Kalman Filter faz!
-* A linearização é feito utilizando a matrix jacobiana; que dado um vetor de funções e uma matrix (n*m) onde cada elemento da matrix é a derivada parsial de uma variavel em uma determinada dimensão:
+* O q pode ser feito é fazer uma linearização local(parte delas, pense no gráfico) dessas funções, oq o Extended Kalman Filter faz! se as não linearidades são altas então podem ocorrer divergencias.
+* A linearização é feito via expanção de taylor utilizando a matrix jacobiana; que dado um vetor de funções e uma matrix (n*m) onde cada elemento da matrix é a derivada parsial de uma variavel em uma determinada dimensão:
    f(x) = f_1(x)
           f_2(x)
            :
@@ -257,10 +257,13 @@ rotação no eixo y
 
  * O EKF lineariza todas as funções não lineares para calcular o KF, onde g e h são vetores com funções locais da trajetoria não linear do robô.
  
-
 - EKF SLAM (online: apenas calcula a posição atual do robô não todo o trajeto)
  * Estimar a posição do robô e a localização dos landmarks do ambiente.
  * Estado do sistema(plano 2D): x_t = ((x,y,teta) = pose, (m_(1,x), m_(1,y)) = lanmark1, ..., (m_(1,x), m_(n,y)) = landmark n)^T.
  * Representação do estado(ver https://www.youtube.com/watch?v=XeWG5D71gC0&index=6&list=PLgnQpQtFTOGQrZ4O5QzbIHgl3b1JHimN_, min = 13:32);
  * EKF SLAM: ciclo do filtro: Predição do estado; Medição da predição, medição, relacionar dados, atualizar.
- 
+ * Loop closing: reconhecer uma area previamente mapeada.
+  + Problemas: Relacionamento de dados sobre alta ambiguidade, e possiveis ambientes simétricos.
+  + Apos um Loop closing as incertezas das posições dos landmarks e da pose do robô colapsam(Diminuem muito).
+  + Loop closing errados(ex achar que esta num loop closing) podem causar divergencias.
+ * As incertezas em relação aos landmarks tendem a diminuir com o tempo(varias re-observações);
