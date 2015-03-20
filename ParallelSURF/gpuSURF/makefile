@@ -5,7 +5,7 @@ CUDACOMP = -gencode arch=compute_20,code=compute_20 -gencode arch=compute_20,cod
 #-G : Generate debug-able device code
 #-g : Generate debug-able code
 #-O : Generate optimized code
-NVCCFLAGS = -G -g -O0 $(CUDACOMP) -c 
+NVCCFLAGS = --ptxas-options=-v -G -g -O0 $(CUDACOMP) -c 
 TARGET = gpuSURF.a
 
 .PHONY: all clean
