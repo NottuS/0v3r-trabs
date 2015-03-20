@@ -260,10 +260,22 @@ rotação no eixo y
 - EKF SLAM (online: apenas calcula a posição atual do robô não todo o trajeto)
  * Estimar a posição do robô e a localização dos landmarks do ambiente.
  * Estado do sistema(plano 2D): x_t = ((x,y,teta) = pose, (m_(1,x), m_(1,y)) = lanmark1, ..., (m_(1,x), m_(n,y)) = landmark n)^T.
- * Representação do estado(ver https://www.youtube.com/watch?v=XeWG5D71gC0&index=6&list=PLgnQpQtFTOGQrZ4O5QzbIHgl3b1JHimN_, min = 13:32);
+ * Representação do estado(media e covariancia)(ver https://www.youtube.com/watch?v=XeWG5D71gC0&index=6&list=PLgnQpQtFTOGQrZ4O5QzbIHgl3b1JHimN_, min = 13:32);
  * EKF SLAM: ciclo do filtro: Predição do estado; Medição da predição, medição, relacionar dados, atualizar.
+   + Normalizar os componentes angulares.
  * Loop closing: reconhecer uma area previamente mapeada.
   + Problemas: Relacionamento de dados sobre alta ambiguidade, e possiveis ambientes simétricos.
   + Apos um Loop closing as incertezas das posições dos landmarks e da pose do robô colapsam(Diminuem muito).
   + Loop closing errados(ex achar que esta num loop closing) podem causar divergencias.
  * As incertezas em relação aos landmarks tendem a diminuir com o tempo(varias re-observações);
+
+
+- Grid Map
+ * O Mapa do ambiente é dividido em celulas;cada celulas contem a prob de estarem ocupadas
+ * Assume-se q o ambiente n mude;
+ * Dado um mapa m, celulas m_i; a distribuiçâo de probabilidade do mapa é dado por: p(m) = produtorio_i(p(m_i)); isso se deve ao fato de que as probabilidades de cada celula é independente.
+ * Dado as informações dos sensores z_1:t e as poses x_1:t o mapa pode ser estimado, utilizando o Bayes filter:
+    p(m|z_1:t, x_1:t) = produtorio_i(p(m_i, z_1:t, x_1:t))
+   +  Não a necessidade de calcular a etapa de predição, pois o ambiente é estático
+   +  Static State Binary Bayes Filter
+   +  
