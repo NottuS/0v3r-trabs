@@ -279,3 +279,12 @@ rotação no eixo y
    +  Não a necessidade de calcular a etapa de predição, pois o ambiente é estático
    +  Static State Binary Bayes Filter
    +  
+
+- Particle Filters SLAM
+  * Bom com distribuições arbitrárias (mas deve haver uma distribuição alvo e um distribuição proposta, utilizada para geras uma nova reamostragem, n ficou claro como isso funciona :( ).
+  * Usa multiplas amostras para representar distribuiçôes arbitrárias; as amostras tem peso (onde é levado em consideração as diferenças entre a distribuição proposta e a alvo, tbm n ficou claro) de acordo com a verosemelhança da observação feita.
+  * Deve haver um modelo de movimentação.
+  * Cada particula(amostra) representa uma hipotetica pose do robô.
+  * Assume que o robô inicialmente esta numa pose aleatóra e a medida que se movimenta(passo de predição) e vai fazendo observações do ambiente(reamostragem, passo de correção), as particulas tendem a se agrupar, assim melhorando a estimativa de onde o robô está.
+  * Localização de Monte Carlo(MCL).
+  * Otima tecnica para ser utilizada nos dias atuais para robôs móveis.
