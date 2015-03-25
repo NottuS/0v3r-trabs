@@ -281,10 +281,35 @@ rotação no eixo y
    +  
 
 - Particle Filters SLAM
-  * Bom com distribuições arbitrárias (mas deve haver uma distribuição alvo e um distribuição proposta, utilizada para geras uma nova reamostragem, n ficou claro como isso funciona :( ).
+  * Bom com distribuições arbitrárias (mas deve haver uma distribuição alvo e uma distribuição proposta, utilizada para geras uma nova reamostragem, n ficou claro como isso funciona :( ).
   * Usa multiplas amostras para representar distribuiçôes arbitrárias; as amostras tem peso (onde é levado em consideração as diferenças entre a distribuição proposta e a alvo, tbm n ficou claro) de acordo com a verosemelhança da observação feita.
-  * Deve haver um modelo de movimentação.
+  * Deve haver um modelo de movimentação(distribuição proposta).
   * Cada particula(amostra) representa uma hipotetica pose do robô.
   * Assume que o robô inicialmente esta numa pose aleatóra e a medida que se movimenta(passo de predição) e vai fazendo observações do ambiente(reamostragem, passo de correção), as particulas tendem a se agrupar, assim melhorando a estimativa de onde o robô está.
+  * Etapas do Particle Filters SLAM:
+    1. Realiza-se a amostragem das particulas de acordo com o modelo proposto: x_t[j] = p(x_t|...);
+    2. Pesa a importancia das amostras: w_t[j] = target(x_t[j])/ proposta(x_t[j]);
+    3. Reamostragem: Representa a amostra i com proabilidade w_t[i] e repete j vezes;
   * Localização de Monte Carlo(MCL).
-  * Otima tecnica para ser utilizada nos dias atuais para robôs móveis.
+  * Otima tecnica para ser utilizada nos dias atuais para robôs móveis para low-dimensional spaces.
+  * feature-based SLAM 
+   + sample = x = (x1:t, m_1,x, m_1,y, ..., m_M,x,m_M,y); o numero de elementos representa a dimensão do problema.   
+   * Rao-Blackwillization 
+   + Como cada amostra indica que ela sabe aonde o robo está a posição dos landmarks podem se calculasd individualmente, e cada particula calcula um min EKF:
+      P(x_x0:t, m_1:M | z_1:t, u1:t) = P(x_0:t| z_1:t, u_1:t) * produtorio_i=1 ate M(P(m_i| x_0:t, z:t))
+                                                  Î                                            Î
+                                   particle filter parecido com o MCL                        2d EKFs
+   + Cada amostra é um caminho hipotético, pose inicial = (0,0,0);
+   + Não há necessidade de manter poses passadas, pois nessa tecnica só interessa a prox pose;
+
+ * FastSLAM
+    + Cada landmarl é representado por um 2x2 EKF
+    + Cada particula é mantem M EKFs individuais:
+      particula1 = [(x,y,0), Landmark1,..., LandmarkM]
+    + Etapas:
+       1.Cada particula extende o seu caminho extarindo uma amostra da nova pose do robo
+       2.O peso das particulas(Q: matrix de covariancia das medições(leva em consideração a inceteza do proprio landmark e da observação ); z' observação esperada):
+         w[k] = |2*pi*Q|^-1/2 * exp{-1/2*(z_t - z'[k])^T * Q^-1*(z_t - z'[k])}
+       3. Atualiza o belief dos landmarks observados(EKF update)
+       4. Faz a reamostragem
+   
