@@ -294,17 +294,23 @@ rotação no eixo y
   * Bom com distribuições arbitrárias (mas deve haver uma distribuição alvo e uma distribuição proposta, utilizada para geras uma nova reamostragem, n ficou claro como isso funciona :( ).
   * Usa multiplas amostras para representar distribuiçôes arbitrárias; as amostras tem peso (onde é levado em consideração as diferenças entre a distribuição proposta e a alvo, tbm n ficou claro) de acordo com a verosemelhança da observação feita.
   * Deve haver um modelo de movimentação(distribuição proposta).
+  
   * Cada particula(amostra) representa uma hipotetica pose do robô.
+  
   * Assume que o robô inicialmente esta numa pose aleatóra e a medida que se movimenta(passo de predição) e vai fazendo observações do ambiente(reamostragem, passo de correção), as particulas tendem a se agrupar, assim melhorando a estimativa de onde o robô está.
+  
   * Etapas do Particle Filters SLAM:
     1. Realiza-se a amostragem das particulas de acordo com o modelo proposto: x_t[j] = p(x_t|...);
     2. Pesa a importancia das amostras: w_t[j] = target(x_t[j])/ proposta(x_t[j]);
     3. Reamostragem: Representa a amostra i com proabilidade w_t[i] e repete j vezes;
+  
   * Localização de Monte Carlo(MCL) = particle filter.
+  
   * Otima tecnica para ser utilizada nos dias atuais para robôs móveis para low-dimensional spaces.
-  * feature-based SLAM 
+  
+  * feature-based SLAM  
    + sample = x = (x1:t, m_1,x, m_1,y, ..., m_M,x,m_M,y); o numero de elementos representa a dimensão do problema.   
-   * Rao-Blackwillization 
+  * Rao-Blackwillization 
    + Modela o caminho do robô por amostragem e calcula/localiza os landmarks dada as poses do robô;
    + Como cada amostra indica que ela sabe aonde o robo está a posição dos landmarks podem se calculasd individualmente, e cada particula calcula um min EKF:
       P(x_x0:t, m_1:M | z_1:t, u1:t) = P(x_0:t| z_1:t, u_1:t) * produtorio_i=1 ate M(P(m_i| x_0:t, z:t))
@@ -328,6 +334,7 @@ rotação no eixo y
     + Distribuição alvo: p(x_1:t | z_1:t, u_1:t)
     + Distribuição proposta: p(x_1:t | z_1:t-1, u_1:t); não leva em consideração a ultima observação, apenas utiliza a odometria
     + w[k] = integral(p(z_t|x_t[k], m_j) * p(m_j|x_1:t-1[k], z_1:t-1)dm_j); faz uma magica pq a primeira parte é igual a o calculo da covariancia do EKF e a segunda parte e a s soma d noise; oq resulta na equação de peso ali em cima.
+  
   * Problema da Associação de Dados; Qual observação pertence a qual landmark?
     + As associações dependem das poses do robô;
     + Seleciona o landmark com o mais provavel "match";
@@ -355,3 +362,11 @@ rotação no eixo y
        4. itera.
      + Com a linearização passada podemos corrigir X, executando as minimizações no incremento de deltax;
        e_i(x+deltax) = e_i(x) = Jacobiano_i * deltax
+
+   * Graph-based(pq do nome): cada pose do robo é ligado por arestas formando um grafo, tambem cria-se arestas com poses ja "visitadas" pelo robô, atraves desses relacionamentos e da odometria do robô é possivel fazer a localização do robô(por ex: num caminho do robô essas arestas podem indicar o quanto ele esta distante de uma certa pose).
+   
+   * Cada pose do robo representa um nodo do grafo;
+   
+   * Cada aresta representa algum relacionamento espacial entre os nodos.
+   
+   * Constroi-se um grafo e encontra um configuração de nodos que minimiza o erro introduzido pelos relacionamento.
