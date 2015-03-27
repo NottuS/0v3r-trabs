@@ -281,6 +281,8 @@ rotação no eixo y
    +  
 
 - Particle Filters SLAM
+  * Ele scala muito bem para um grande numero de landmark, é robusto quanto a ambiguidade na associação de dados.
+  * Utiliza o filtro de particula para representar a distribuição de probalildade da posição do robô;
   * Bom com distribuições arbitrárias (mas deve haver uma distribuição alvo e uma distribuição proposta, utilizada para geras uma nova reamostragem, n ficou claro como isso funciona :( ).
   * Usa multiplas amostras para representar distribuiçôes arbitrárias; as amostras tem peso (onde é levado em consideração as diferenças entre a distribuição proposta e a alvo, tbm n ficou claro) de acordo com a verosemelhança da observação feita.
   * Deve haver um modelo de movimentação(distribuição proposta).
@@ -290,11 +292,12 @@ rotação no eixo y
     1. Realiza-se a amostragem das particulas de acordo com o modelo proposto: x_t[j] = p(x_t|...);
     2. Pesa a importancia das amostras: w_t[j] = target(x_t[j])/ proposta(x_t[j]);
     3. Reamostragem: Representa a amostra i com proabilidade w_t[i] e repete j vezes;
-  * Localização de Monte Carlo(MCL).
+  * Localização de Monte Carlo(MCL) = particle filter.
   * Otima tecnica para ser utilizada nos dias atuais para robôs móveis para low-dimensional spaces.
   * feature-based SLAM 
    + sample = x = (x1:t, m_1,x, m_1,y, ..., m_M,x,m_M,y); o numero de elementos representa a dimensão do problema.   
    * Rao-Blackwillization 
+   + Modela o caminho do robô por amostragem e calcula/localiza os landmarks dada as poses do robô;
    + Como cada amostra indica que ela sabe aonde o robo está a posição dos landmarks podem se calculasd individualmente, e cada particula calcula um min EKF:
       P(x_x0:t, m_1:M | z_1:t, u1:t) = P(x_0:t| z_1:t, u_1:t) * produtorio_i=1 ate M(P(m_i| x_0:t, z:t))
                                                   Î                                            Î
@@ -304,8 +307,9 @@ rotação no eixo y
 
  * FastSLAM
     + Cada landmarl é representado por um 2x2 EKF
-    + Cada particula é mantem M EKFs individuais:
+    + Cada particula mantem M EKFs individuais:
       particula1 = [(x,y,0), Landmark1,..., LandmarkM]
+    + Ou seja cada particula tem seu mapa
     + Etapas:
        1.Cada particula extende o seu caminho extarindo uma amostra da nova pose do robo
        2.O peso das particulas(Q: matrix de covariancia das medições(leva em consideração a inceteza do proprio landmark e da observação ); z' observação esperada):
@@ -313,3 +317,20 @@ rotação no eixo y
        3. Atualiza o belief dos landmarks observados(EKF update)
        4. Faz a reamostragem
    
+    + Distribuição alvo: p(x_1:t | z_1:t, u_1:t)
+    + Distribuição proposta: p(x_1:t | z_1:t-1, u_1:t); não leva em consideração a ultima observação, apenas utiliza a odometria
+    + w[k] = integral(p(z_t|x_t[k], m_j) * p(m_j|x_1:t-1[k], z_1:t-1)dm_j); faz uma magica pq a primeira parte é igual a o calculo da covariancia do EKF e a segunda parte e a s soma d noise; oq resulta na equação de peso ali em cima.
+  * Problema da Associação de Dados; Qual observação pertence a qual landmark?
+    + As associações dependem das poses do robô;
+    + Seleciona o landmark com o mais provavel "match";
+    + Se o landmark observado tem baixa probabilidade de associação(a partir de um certo limiar), adciona-o como um novo landmark;
+    + FastSLAM é melhor que o EKFSLAM para fazer associação de landmarks, pois é muito simples fazer associalções de dados, ja que cada amostra tem seu proprio belief, cada amostra tem sua propria associação de dados, ou seja ao inves de fazer uma so complexa associação de dados, no FastSLAM há M associações simples;
+    + Pode-se fazer um esquema de arvore/busca binária para associação de landmarks (complexidade diminui de ONM para ONlogM).
+    + Há a possibilidade de os landmarks serem compartilhados entre as particulas diminuindo a utilização de memória.
+    + Reamostragem seletiva: Reamostragemn é necessaria para conseguir convergencia.
+      * Reamostragem é arriscado, pois amostras importantes podem se perder.
+      * Reamostragem so faz sentido se os pesos das particulas diferem significativamente.
+ 
+ 
+- GRID Maps SLAM
+ * 
