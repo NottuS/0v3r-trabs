@@ -77,7 +77,8 @@ GPU - CUDA
 Robotica - SLAM
 
 -Coordenada Homogeneas para distancia euclidiana; sistema de coordenadas utilizadas em projeção geometrica.
- * 3d - 2d; para um ponto X
+* Um espaço N-dimensional pode ser representado em N+1 dimensão, 4d para modelar o espaço 3d 
+* 3d - 2d; para um ponto X
  
 X = matrix u = u/w -> u/w = x
            v   v/w    v/w   y
@@ -365,8 +366,10 @@ rotação no eixo y
 
    * Graph-based(pq do nome): cada pose do robo é ligado por arestas formando um grafo, tambem cria-se arestas com poses ja "visitadas" pelo robô, atraves desses relacionamentos e da odometria do robô é possivel fazer a localização do robô(por ex: num caminho do robô essas arestas podem indicar o quanto ele esta distante de uma certa pose).
    
-   * Cada pose do robo representa um nodo do grafo;
+   * Cada pose do robo com dados de observações feitas naquela pose, representam um nodo do grafo;
    
    * Cada aresta representa algum relacionamento espacial entre os nodos.
    
-   * Constroi-se um grafo e encontra um configuração de nodos que minimiza o erro introduzido pelos relacionamento.
+   * Constroi-se um grafo e encontra um configuração de nodos que minimiza o erro introduzido pelas medições, assim gerando um mapa mais preciso corrigindo os nodos
+   * O grafo consiste de n nodos x = x_1:n, onde cada x_i e uma transformação 2d ou 3d. Essas transformações podem ser expressa utilizando coordenada homogeneas.
+   * Uma aresta é criada quando o robô move de x_i para x_i+1, onde essa aresta corresponde a informação da odometria. Quando o robô faz uma observação na mesma parte do ambiente de x_i e de x_j, uma aresta tambem é criada entre esses nodos.
