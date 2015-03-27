@@ -338,7 +338,20 @@ rotação no eixo y
     + Reamostragem seletiva: Reamostragemn é necessaria para conseguir convergencia.
       * Reamostragem é arriscado, pois amostras importantes podem se perder.
       * Reamostragem so faz sentido se os pesos das particulas diferem significativamente.
- 
- 
-- GRID Maps SLAM
- * 
+      * Não faz remaostragem se a probabilidade se aproxima da distribuição alvo.
+      * Particulas com peso com um certo limiar são eliminadas.
+  
+- Graph-based SLAM 
+  * Least Squares Approach
+    + Abordagem utilizada para resolver sistemas sobredeterminados(sobredeterminados = Normalmente aplica-se a definição sobre o resultado de um evento (ou o resultado pode ser o próprio evento) subordinado a muitos outros, ou consequência destes. Desta forma, não há condições de se avaliar o início e o fim do evento, já que ele depende da interação com outros processos).
+    + Minimizar a soma dos quadrados do erros nas equações.
+    + Objetivo estimar o estado X que melhor explica as observações Z_1:n, que minimiza o erro dado todas as observações.
+    + O erro e_i é a diferença entre o estado predito e o observado : e_i(X) = z_i - f_i(X).
+    + Assume-se que as funções do erro são suaves na vizinhansa, então pode-se fazer linearizações locais iterativas.
+    + Etapas da linearização:
+       1. Calcula a primeira derivada do quadrado da função de erro.
+       2. Iguala a zero e resolve o sistema linear.
+       3. Obtem o novo estado do sistema.
+       4. itera.
+     + Com a linearização passada podemos corrigir X, executando as minimizações no incremento de deltax;
+       e_i(x+deltax) = e_i(x) = Jacobiano_i * deltax
