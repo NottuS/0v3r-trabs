@@ -61,7 +61,15 @@ GPU - CUDA
 - L2 e global memory são compartilhados entre SMs.
  * Acessar a mem em pos multiplas de 32, e de maneira unificada onde tds as threads acessem pos "seguidas" 
  * Evitar acessar a memória de forma desalinhada, permutada ou q so algumas threads carreguem dados; o hardware serializa o acesso nesses casos.
-
+ * pitched memory: Trabalha com a memoria alinhada, ou seja, quando aloca-se memoria e a quantidade de bytes não é multipla de 128, ele aloca o numero + prox multiplo de 128;
+     size_t pitch;
+     float* myArray;
+     cudaMallocPitch(&myArray,&pitch,100,100);
+   O pitch é esse valor que foi excedido, e ele deve ser levado em consideração para acesso e copias de memoria; 
+            float next_column_element = myArray[(j+1)*pitch+i];
+            cudaMemcpy2D(host_memory,100*sizeof(float)/*destination pitch*/,myArray,pitch,
+            100*sizeof(float)/*width*/,100/*heigth*/,cudaMemcpyDeviceToHost);
+    PROBLEMA: MAX DE MEM ALOCAVEL COM ISSO: 2GB  
 - Evitar mover sempre dados entre cpu e gpu(leva muito tempo).
 - gprof: ferramente pra analisar desempenho; gcc -O2 -g -pg myprog.c gprof ./a.out > profile.txt
 
