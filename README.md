@@ -75,6 +75,7 @@ GPU - CUDA
 
 -------------------------------------------------------------------------------------------------------------------
 Robotica - SLAM
+- Robotica é a ciência que compreende e manipula o mundo fisíco atraves de um dispositivo controlado pro um computador(Probabilistics robotics)
 
 -Coordenada Homogeneas para distancia euclidiana; sistema de coordenadas utilizadas em projeção geometrica.
 * Um espaço N-dimensional pode ser representado em N+1 dimensão, 4d para modelar o espaço 3d 
@@ -360,10 +361,10 @@ rotação no eixo y
        1. Calcula a primeira derivada do quadrado da função de erro.
        2. Iguala a zero e resolve o sistema linear.
        3. Obtem o novo estado do sistema.
-       4. itera.
+       4. itera esse procedimento até convergir.
      + Com a linearização passada podemos corrigir X, executando as minimizações no incremento de deltax;
-       e_i(x+deltax) = e_i(x) = Jacobiano_i * deltax
-
+       e_ij(x+deltax) = e_ij(x) = J_ij * deltax
+       J_ij = jacobiano = derivada e_ij(x)/ derivada em x
    * Graph-based(pq do nome): cada pose do robo é ligado por arestas formando um grafo, tambem cria-se arestas com poses ja "visitadas" pelo robô, atraves desses relacionamentos e da odometria do robô é possivel fazer a localização do robô(por ex: num caminho do robô essas arestas podem indicar o quanto ele esta distante de uma certa pose).
    
    * Cada pose do robo com dados de observações feitas naquela pose, representam um nodo do grafo;
@@ -373,3 +374,29 @@ rotação no eixo y
    * Constroi-se um grafo e encontra um configuração de nodos que minimiza o erro introduzido pelas medições, assim gerando um mapa mais preciso corrigindo os nodos
    * O grafo consiste de n nodos x = x_1:n, onde cada x_i e uma transformação 2d ou 3d. Essas transformações podem ser expressa utilizando coordenada homogeneas.
    * Uma aresta é criada quando o robô move de x_i para x_i+1, onde essa aresta corresponde a informação da odometria. Quando o robô faz uma observação na mesma parte do ambiente de x_i e de x_j, uma aresta tambem é criada entre esses nodos.
+  * Calcular o vetor coefficiente b e a matrix H:
+      b^T = somatorio_ij(b_ij)^T = somatorio_ij (e_ij)^T * Omega_ij * J_ij
+      H = somatorio_ij(H_ij) = somatorio_ij (J_ij)^T * Omega_ij * J_ij
+    + o jacobiano resultara em um matrix onde exceto as colunas x_i e x_j serão zeradas.
+    + A estrutura esparsa de J_ij resultará em uma estrutura esparsa de H.
+    + Essa estrutura reflete a matriz de adjacencia do grafo.
+  * Construir o sistema linear:
+   1. Computar o erro e_ij = t2v((Zij)^-1 * ((X_i)^-1 * X_j));
+   2. Computar os blocos de jacobianos:
+        A_ij = derivada e(x_i, x_j)/ derivada em x_i
+        B_ij = derivada e(x_i, x_j)/ derivada em x_j
+   3. Atualizar o vetor coefficiente:
+       (b_i)^T += (e_ij)^T * Omega_ij * A_ij
+       (b_j)^T += (e_ij)^T * Omega_ij * B_ij
+   4. Atualiza o sistema de matrix
+       H_ii += (A_ij)^T * Omega_ij * A_ij
+       H_ij += (A_ij)^T * Omega_ij * B_ij
+       H_ji += (B_ij)^T * Omega_ij * A_ij
+       H_jj += (B_ij)^T * Omega_ij * B_ij
+* Algoritmo:
+    while(!converged) {
+       (H,b) = buildLinearSystem(x);
+       deltax = solveSparse(Hdeltax = -b)
+       x = x + deltax
+    }
+    return x;
