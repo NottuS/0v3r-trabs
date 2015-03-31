@@ -374,7 +374,7 @@ rotação no eixo y
    * Constroi-se um grafo e encontra um configuração de nodos que minimiza o erro introduzido pelas medições, assim gerando um mapa mais preciso corrigindo os nodos
    * O grafo consiste de n nodos x = x_1:n, onde cada x_i e uma transformação 2d ou 3d. Essas transformações podem ser expressa utilizando coordenada homogeneas.
    * Uma aresta é criada quando o robô move de x_i para x_i+1, onde essa aresta corresponde a informação da odometria. Quando o robô faz uma observação na mesma parte do ambiente de x_i e de x_j, uma aresta tambem é criada entre esses nodos.
-  * Calcular o vetor coefficiente b e a matrix H:
+  * Calcular o vetor coefficiente b e a matrix H, onde Omega é a matrix de informação(observações):
       b^T = somatorio_ij(b_ij)^T = somatorio_ij (e_ij)^T * Omega_ij * J_ij
       H = somatorio_ij(H_ij) = somatorio_ij (J_ij)^T * Omega_ij * J_ij
     + o jacobiano resultara em um matrix onde exceto as colunas x_i e x_j serão zeradas.
@@ -400,3 +400,22 @@ rotação no eixo y
        x = x + deltax
     }
     return x;
+* O sistema pode n haver resultado, para reslver isso pode-se adcionar algum tipo de restrição.
+
+* Com o tempo a matriz de covariancia pode ficar enorme, ficando dificil o calculo em tempo real, por isso é interessante fazer buscas locais no grafo, ou seja, delimitar a area onde robo possa estar ao inves de buscar em todo o grafo, assim corrigindo apenas aqla area local.
+
+* Hierarquico pose-graph:
+    + O grafo e divido em grupos dependendo da conectividade dos nodos;
+    + Um nodo passa a representar o grupo(Alto nivel);
+    + Se o houver incosistencias a correção é propaganda para os niveis menores;
+    + As aresta entre os nodos de alto nive podem ser representadas pelas distancia entre os nodos de alto nivel;
+
+* Graph-Slam com landmarks
+   + Nodos podem ser poses do ou a posiçao de um landmark;
+   + Arestas podem ser informaçoes do odometria ou a informação de observação do landmarl
+   + A minimização otimiza a localização dos landmarks e das poses do robo
+      x_i = robot
+      x_j = landmark
+      teta_i = orientação do robo
+      z'_ij(x_i, x_j) = atan((x_j - t_i)*y/((x_j - t_i)*x) - teta_i
+     e_ij = atan((x_j - t_i)*y/((x_j - t_i)*x) - teta_i - z_j
