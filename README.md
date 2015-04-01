@@ -72,7 +72,8 @@ GPU - CUDA
     PROBLEMA: MAX DE MEM ALOCAVEL COM ISSO: 2GB  
 - Evitar mover sempre dados entre cpu e gpu(leva muito tempo).
 - gprof: ferramente pra analisar desempenho; gcc -O2 -g -pg myprog.c gprof ./a.out > profile.txt
-
+- Error Correcting Code (ECC)|: Detecta e corrigi se há um erro em um bit unico da memoria; diminui o desempenho e ocupa cerca de 12% da memoria;
+-  Single-Error Correct Double-Error Detect (SECDED) ECC: Detecta e corrigi erros em mult-bits da memoria.
 -------------------------------------------------------------------------------------------------------------------
 Robotica - SLAM
 - Robotica é a ciência que compreende e manipula o mundo fisíco atraves de um dispositivo controlado pro um computador(Probabilistics robotics)
@@ -312,7 +313,7 @@ rotação no eixo y
   
   * feature-based SLAM  
    + sample = x = (x1:t, m_1,x, m_1,y, ..., m_M,x,m_M,y); o numero de elementos representa a dimensão do problema.   
-  * Rao-Blackwillization 
+  * Rao-Blackwillization -> mapeamento
    + Modela o caminho do robô por amostragem e calcula/localiza os landmarks dada as poses do robô;
    + Como cada amostra indica que ela sabe aonde o robo está a posição dos landmarks podem se calculasd individualmente, e cada particula calcula um min EKF:
       P(x_x0:t, m_1:M | z_1:t, u1:t) = P(x_0:t| z_1:t, u_1:t) * produtorio_i=1 ate M(P(m_i| x_0:t, z:t))
@@ -350,7 +351,7 @@ rotação no eixo y
       * Não faz remaostragem se a probabilidade se aproxima da distribuição alvo.
       * Particulas com peso com um certo limiar são eliminadas.
   
-- Graph-based SLAM 
+- Graph-based SLAM -> Mais utilizado hoje
   * Least Squares Approach
     + Abordagem utilizada para resolver sistemas sobredeterminados(sobredeterminados = Normalmente aplica-se a definição sobre o resultado de um evento (ou o resultado pode ser o próprio evento) subordinado a muitos outros, ou consequência destes. Desta forma, não há condições de se avaliar o início e o fim do evento, já que ele depende da interação com outros processos).
     + Minimizar a soma dos quadrados do erros nas equações.
