@@ -74,6 +74,11 @@ GPU - CUDA
 - gprof: ferramente pra analisar desempenho; gcc -O2 -g -pg myprog.c gprof ./a.out > profile.txt
 - Error Correcting Code (ECC)|: Detecta e corrigi se há um erro em um bit unico da memoria; diminui o desempenho e ocupa cerca de 12% da memoria;
 -  Single-Error Correct Double-Error Detect (SECDED) ECC: Detecta e corrigi erros em mult-bits da memoria.
+-  Regular trafego de memoria
+    * Determinar um numero maximo de registradores(-maxrregcount) por thread ou o numero de minimo de threads(_launch_bounds__); pode diminuir a ocupação e a eficiencia da execução, mas tambem pode diminuir o numero de acessos a local memory;
+    * Tentar utilizar non-caching loads para mem global;
+    * Aumentar o tamanho da memoria local;
+    * Profile counters: l1_local_load_hit, l1_local_load_miss, l1_local_store_hit, l1_store_load_miss; incremente em 1 para cada transação de 128 bytes;
 -------------------------------------------------------------------------------------------------------------------
 Robotica - SLAM
 - Robotica é a ciência que compreende e manipula o mundo fisíco atraves de um dispositivo controlado pro um computador(Probabilistics robotics)
