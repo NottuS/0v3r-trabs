@@ -1,4 +1,5 @@
 #include"matrix.h"
+#include <stdio.h>
 
 void sMatMul(float *C, const float *A, const float *B,
 		unsigned int hA, unsigned int wA, unsigned int wB)
@@ -29,6 +30,6 @@ void cublasMatMul(cublasHandle_t &handle, float *C,
 	// Do the actual multiplication
 	// matrix - matrix multiplication : C = alf*A*B + bet*C
 	// A -mxk matrix , B -kxn matrix , C -mxn matrix ;
-	cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
-			m, n, k, alpha, A, m, B, k, beta, C, m);
+	CUBLAS_CHECK_RETURN(cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+			m, n, k, alpha, A, m, B, k, beta, C, m));
 }

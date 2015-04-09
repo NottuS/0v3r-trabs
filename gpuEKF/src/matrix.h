@@ -15,10 +15,10 @@
 #include <thrust/device_vector.h>
 
 #define CUBLAS_CHECK_RETURN(value) {											\
-	cudaError_t _m_cudaStat = value;										\
-	if (_m_cudaStat != cudaSuccess) {										\
+	cublasStatus_t stat = value;										\
+	if (stat != CUBLAS_STATUS_SUCCESS) {										\
 		fprintf(stderr, "Error %s at line %d in file %s\n",					\
-				cudaGetErrorString(_m_cudaStat), __LINE__, __FILE__);		\
+				stat, __LINE__, __FILE__);		\
 		/*exit(1);*/															\
 	}}
 

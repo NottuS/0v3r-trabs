@@ -4,6 +4,9 @@
 #include<curand.h>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
+#include <thrust/copy.h>
+#include <thrust/fill.h>
+#include <thrust/sequence.h>
 
 #define BLOCK_SIZE 16
 #define BLOCK_START_SIZE 256//usually the a good number of a block size
