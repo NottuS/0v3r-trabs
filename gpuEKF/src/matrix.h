@@ -11,6 +11,7 @@
 #include"gpuUtils.h"
 #include<curand.h>
 #include<cublas_v2.h>
+#include<cublasXt.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <iostream>
@@ -22,13 +23,26 @@
 				stat, __LINE__, __FILE__);		\
 		/*exit(1);*/															\
 	}}
+void print_matrix(const float *A, int nr_rows_A, int nr_cols_A);
 
 void sMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
-
-void pMatMul();
-
+void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
 void cublasMatMul(cublasHandle_t &handle, float *C, const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n);
 
-void print_matrix(const float *A, int nr_rows_A, int nr_cols_A);
+void sMatTranspose(const float *A, int nr_rows_A, int nr_cols_A);
+void pMatTranspose(const float *A, int nr_rows_A, int nr_cols_A);
+void cublasMatTranspose(cublasHandle_t &handle, const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+
+void sMatSum(const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+void pMatSum(const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+void cublasMatSum(cublasHandle_t &handle, const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+
+void pMatSub(const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+void pMatSub(const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+void cublasMatSub(cublasHandle_t &handle, const float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+
+void sInvMat(const float *A, int nr_rows_A, int nr_cols_A);
+void pInvMat(const float *A, int nr_rows_A, int nr_cols_A);
+void cublasInvMat(cublasHandle_t &handle, const float *A, int nr_rows_A, int nr_cols_A);
 
 #endif /* MATRIX_H_ */

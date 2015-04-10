@@ -59,9 +59,10 @@ int main(int argc, char** argv) {
 	cublasMatMul(handle, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),
 			thrust::raw_pointer_cast(&d_B[0]),	nr_rows_A, nr_cols_A, nr_cols_B);
 	end = clock();
-
 	printf("seq Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 	//thrust::copy(d_C.begin(), d_C.end(), C.begin());
+	// deallocate any capacity which may currently be associated with vec
+	//vec.shrink_to_fit();
 	//print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_C, nr_cols_C);
 	cublasDestroy(handle);
 }
