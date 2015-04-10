@@ -26,7 +26,7 @@
 /**
  * Host function that prepares data array and passes it to the CUDA kernel.
  */
-int main(void) {
+int main(int argc, char** argv) {
 	cublasHandle_t handle;
 	CUBLAS_CHECK_RETURN(cublasCreate(&handle));
 
@@ -53,22 +53,15 @@ int main(void) {
 			thrust::raw_pointer_cast(&B[0]), nr_rows_A, nr_cols_A, nr_cols_B);
 	clock_t end = clock();
 	printf("seq Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
+	//print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_C, nr_cols_C);
 
 	start = clock();
-	cublasMatMul(handle, thrust::raw_pointer_cast(&d_A[0]),
-			thrust::raw_pointer_cast(&d_B[0]), thrust::raw_pointer_cast(&d_C[0]),
-			nr_rows_A, nr_cols_A, nr_cols_B);
+	cublasMatMul(handle, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),
+			thrust::raw_pointer_cast(&d_B[0]),	nr_rows_A, nr_cols_A, nr_cols_B);
 	end = clock();
-	printf("p Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 
-	int i;
-
-	for (i = 0; i < d_C.size(); ++i) {
-		printf("h = %f\n", C[i]);
-	}
-
-	//thrust::copy(d_C.begin(), d_C.end(),C.begin());
-
-	thrust::copy(d_C.begin(), d_C.end(), std::ostream_iterator<int>(std::cout, "\n"));
+	printf("seq Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
+	//thrust::copy(d_C.begin(), d_C.end(), C.begin());
+	//print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_C, nr_cols_C);
 	cublasDestroy(handle);
 }
