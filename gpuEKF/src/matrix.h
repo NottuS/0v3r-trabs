@@ -16,6 +16,8 @@
 #include <thrust/device_vector.h>
 #include <iostream>
 
+#define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
+
 #define CUBLAS_CHECK_RETURN(value) {											\
 	cublasStatus_t stat = value;										\
 	if (stat != CUBLAS_STATUS_SUCCESS) {										\
@@ -23,10 +25,12 @@
 				stat, __LINE__, __FILE__);		\
 		/*exit(1);*/															\
 	}}
+
 void print_matrix(const float *A, int nr_rows_A, int nr_cols_A);
 
 void sMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
 void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
+//BLAS uses internally column-major order storage (Fortran order) and not the typical row-major storage used in C or C++ for multidimensional arrays.
 void cublasMatMul(cublasHandle_t &handle, float *C, const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n);
 
 void sMatTranspose(const float *A, int nr_rows_A, int nr_cols_A);
