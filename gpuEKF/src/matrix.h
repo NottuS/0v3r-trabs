@@ -14,7 +14,9 @@
 #include<cublasXt.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
+#include <thrust/fill.h>
 #include <iostream>
+#include<math.h>
 
 #define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
 
