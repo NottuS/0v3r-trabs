@@ -55,13 +55,13 @@ __global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned 
 	int stride = 1;
 
 	if (row < nr_rows_A && col < nr_cols_B) {
-		//TODO Check if all ther work is done, and the indexs
+		//TODO Check if all their work is done, and the indexs
 		for (int i = 0; i < nr_rows_A/(BLOCK_START_SIZE); ++i)
 		{
 			tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
-			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[row * nr_rows_A + i * BLOCK_START_SIZE + threadIdx.x];
-
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];
 			__syncthreads();
+
 			for (int j = 0; j < BLOCK_START_SIZE; ++j)
 				Cvalue += tempB[j] * tempA[j];
 			stride++;
