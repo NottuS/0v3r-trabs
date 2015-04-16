@@ -47,14 +47,34 @@ __global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned 
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-	if (row < nr_rows_A && col < nr_cols_A) {
-		C[row*nr_cols_A + col] = A[row*nr_cols_A + col] + B[row*nr_cols_A + col];
+
+	__shared__ float tempA[BLOCK_START_SIZE];
+	__shared__ float tempB[BLOCK_START_SIZE];
+
+	float Cvalue = 0;
+	int stride = 1;
+
+	if (row < nr_rows_A && col < nr_cols_B) {
+		//TODO Check if all ther work is done, and the indexs
+		for (int i = 0; i < nr_rows_A/(BLOCK_START_SIZE); ++i)
+		{
+			tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[row * nr_rows_A + i * BLOCK_START_SIZE + threadIdx.x];
+
+			__syncthreads();
+			for (int j = 0; j < BLOCK_START_SIZE; ++j)
+				Cvalue += tempB[j] * tempA[j];
+			stride++;
+			__syncthreads();
+		}
+		C[row * nr_cols_A + col] = Cvalue;
+		
 	}
 }
 
 void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB){
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
-	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_A) / dimBlock.y));
+	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_B) / dimBlock.y));
 
 	//cudaSetDeviceFlags(cudaDeviceLmemResizeToMax);
 	kernelMatMul<<<dimGrid, dimBlock>>>(C,A,B,nr_rows_A, nr_cols_A);

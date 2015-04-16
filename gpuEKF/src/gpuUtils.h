@@ -9,7 +9,7 @@
 #include <thrust/sequence.h>
 
 #define BLOCK_SIZE 16
-#define BLOCK_START_SIZE 256//usually the a good number of a block size
+#define BLOCK_START_SIZE (BLOCK_SIZE * BLOCK_SIZE)//= 256 usually the a good number of a block size
 #define PADDING 32
 
 #define CUDA_CHECK_RETURN(value) {											\
