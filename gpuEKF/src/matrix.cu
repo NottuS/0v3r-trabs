@@ -43,8 +43,21 @@ void sMatMul(float *C, const float *A, const float *B,
 		}
 }
 
-void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB){
+__global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
+	if (row < nr_rows_A && col < nr_cols_A) {
+		C[row*nr_cols_A + col] = A[row*nr_cols_A + col] + B[row*nr_cols_A + col];
+	}
+}
+
+void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB){
+	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
+	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_A) / dimBlock.y));
+
+	//cudaSetDeviceFlags(cudaDeviceLmemResizeToMax);
+	kernelMatMul<<<dimGrid, dimBlock>>>(C,A,B,nr_rows_A, nr_cols_A);
 }
 
 void cublasMatMul(cublasHandle_t &handle, float *C,
