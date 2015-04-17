@@ -1,6 +1,8 @@
 #include"matrix.h"
 #include <stdio.h>
 
+using namespace Eigen;
+
 //Print matrix A(nr_rows_A, nr_cols_A) storage in column-major format
 void print_matrix(const float *A, int nr_rows_A, int nr_cols_A) {
 
@@ -47,24 +49,25 @@ __global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned 
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-
-	__shared__ float tempA[BLOCK_START_SIZE];
-	__shared__ float tempB[BLOCK_START_SIZE];
+	__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
+	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];
 
 	float Cvalue = 0;
-	int stride = 1;
 
 	if (row < nr_rows_A && col < nr_cols_B) {
 		//TODO Check if all their work is done, and the indexs
-		for (int i = 0; i < nr_rows_A/(BLOCK_START_SIZE); ++i)
+		for (int i = 0; i < ceil(float(nr_rows_A)/(BLOCK_SIZE)); ++i)
 		{
-			tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
-			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];
+			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
+			tempA[threadIdx.y][threadIdx.x] = A[threadIdx.y * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
+			tempB[threadIdx.y][threadIdx.x] = B[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_B + threadIdx.x];
 			__syncthreads();
 
-			for (int j = 0; j < BLOCK_START_SIZE; ++j)
-				Cvalue += tempB[j] * tempA[j];
-			stride++;
+			#pragma unroll
+			for (int j = 0; j < BLOCK_SIZE; ++j)
+				Cvalue += tempA[threadIdx.y][j] * tempB[j][threadIdx.x];
+
 			__syncthreads();
 		}
 		C[row * nr_cols_A + col] = Cvalue;
@@ -72,12 +75,12 @@ __global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned 
 	}
 }
 
-void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB){
+void pMatMul(float *C, const float *A, const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
 	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_B) / dimBlock.y));
 
 	//cudaSetDeviceFlags(cudaDeviceLmemResizeToMax);
-	kernelMatMul<<<dimGrid, dimBlock>>>(C,A,B,nr_rows_A, nr_cols_A);
+	kernelMatMul<<<dimGrid, dimBlock>>>(C,A,B,nr_rows_A, nr_cols_A, nr_cols_B);
 }
 
 void cublasMatMul(cublasHandle_t &handle, float *C,
@@ -214,26 +217,20 @@ void cublasMatTranspose(cublasHandle_t &handle, float *C, const float *A, const 
 			A, nr_rows_A, beta, B, nr_rows_A, C, nr_rows_A));
 }
 
-void sInvMat(const float *A, int nr_rows_A, int nr_cols_A){
-
-}
-void pInvMat(const float *A, int nr_rows_A, int nr_cols_A){
-
-}
-
 void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	int i,j,k;
 	float sum;
 	for(i = 0; i < nr_rows_A; i++) {
 		for (j = 0; j < i; ++j) {
 			if(i == j) {
+				//TODO AKI EH K SUA MULA
 				for(j = 1; i - 2; j++){
 						sum += L[i*nr_cols_A + j] * L[i*nr_cols_A + j];
 				}
 				L[i*nr_cols_A + i] = sqrt(A[i*nr_cols_A + i] - sum);
 				sum = 0;
 			} else {
-				for(j = 0; k - 2; j++){
+				for(j = 0; i - 2; j++){
 					sum += L[k*nr_cols_A +j] * L[i*nr_cols_A + j];
 				}
 				L[i*nr_cols_A + k] = (A[i*nr_cols_A + k] - sum) / L[k*nr_cols_A + k];
@@ -241,6 +238,25 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 			}
 		}
 	}
+}
+
+void sMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
+	thrust::device_vector<float> I(nr_rows_A * nr_cols_A);
+	thrust::host_vector<float> L(nr_rows_A * nr_cols_A);
+	thrust::fill(I.begin(), I.end(), 0);
+	cudaDeviceSynchronize();
+	createIdentity(thrust::raw_pointer_cast(&I[0]), nr_rows_A);
+	cudaDeviceSynchronize();
+
+	//get L from A = LL^T
+	/*choleskyDecomp(A, thrust::raw_pointer_cast(&L[0]), nr_rows_A, nr_cols_A);
+*/
+	MatrixXd m(2,5);
+	std::cout << m.cols() << std::endl;
+
+}
+void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
+
 }
 
 void cublasMatInverse(cublasHandle_t &handle, const float *A, int nr_rows_A, int nr_cols_A, float *result){
@@ -253,7 +269,7 @@ void cublasMatInverse(cublasHandle_t &handle, const float *A, int nr_rows_A, int
 	thrust::host_vector<float> L(nr_rows_A * nr_cols_A);
 	thrust::fill(I.begin(), I.end(), 0);
 	cudaDeviceSynchronize();
-	createIdentity(thrust::raw_pointer_cast(&I[0]), nr_cols_A);
+	createIdentity(thrust::raw_pointer_cast(&I[0]), nr_rows_A);
 	cudaDeviceSynchronize();
 
 	//get L from A = LL^T

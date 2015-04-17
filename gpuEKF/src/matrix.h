@@ -17,6 +17,7 @@
 #include <thrust/fill.h>
 #include <iostream>
 #include<math.h>
+#include <Eigen/Dense>
 
 #define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
 
@@ -47,8 +48,8 @@ void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_col
 void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void cublasMatSub(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 
-void sMatInverse(const float *A, int nr_rows_A, int nr_cols_A);
-void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A);
+void sMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado);
+void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado);
 void cublasMatInverse(cublasHandle_t &handle, const float *A, int nr_rows_A, int nr_cols_A, float *result);
 
 #endif /* MATRIX_H_ */

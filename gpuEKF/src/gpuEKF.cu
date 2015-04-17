@@ -74,7 +74,8 @@ int main(int argc, char** argv) {
 					thrust::raw_pointer_cast(&B[0]), nr_rows_A, nr_cols_A);
 			break;
 		case INV:
-
+			sMatInverse(thrust::raw_pointer_cast(&A[0]),
+					nr_rows_A, nr_cols_A, thrust::raw_pointer_cast(&C[0]));
 			break;
 		default:
 			break;
