@@ -17,7 +17,11 @@
 #include <thrust/fill.h>
 #include <iostream>
 #include<math.h>
-#include <Eigen/Dense>
+#include <eigen/Eigen/Dense>
+#include <eigen/Eigen/Core>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_matrix.h>
 
 #define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
 
@@ -48,7 +52,7 @@ void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_col
 void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void cublasMatSub(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 
-void sMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado);
+void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado);
 void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado);
 void cublasMatInverse(cublasHandle_t &handle, const float *A, int nr_rows_A, int nr_cols_A, float *result);
 

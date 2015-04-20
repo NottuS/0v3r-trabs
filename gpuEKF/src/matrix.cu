@@ -66,7 +66,7 @@ __global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned 
 
 			#pragma unroll
 			for (int j = 0; j < BLOCK_SIZE; ++j)
-				Cvalue += tempA[threadIdx.y][j] * tempB[j][threadIdx.x];
+				Cvalue += 1*tempA[threadIdx.y][j] * tempB[j][threadIdx.x] + 0*C[row * nr_cols_A + col] ;
 
 			__syncthreads();
 		}
@@ -98,11 +98,10 @@ void cublasMatMul(cublasHandle_t &handle, float *C,
 }
 
 void sMatSum(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A){
-	for(int i = 0; i < nr_rows_A; i++){
-		for (int j = 0; j < nr_cols_A; ++j) {
-			C[i*nr_cols_A + j] = A[i*nr_cols_A + j] + B[i*nr_cols_A + j];
-		}
+	for(int i = 0; i < nr_rows_A * nr_cols_A; i++){
+		C[i] = A[i] + B[i];
 	}
+
 }
 
 __global__ void kernelMatSum(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A){
@@ -134,10 +133,8 @@ void cublasMatSum(cublasHandle_t &handle, float *C, const float *A, const float 
 }
 
 void sMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A){
-	for(int i = 0; i < nr_rows_A; i++){
-		for (int j = 0; j < nr_cols_A; ++j) {
-			C[i*nr_cols_A + j] = A[i*nr_cols_A + j] - B[i*nr_cols_A + j];
-		}
+	for(int i = 0; i < nr_rows_A * nr_cols_A; i++){
+		C[i] = A[i] - B[i];
 	}
 }
 
@@ -240,19 +237,21 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	}
 }
 
-void sMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
-	thrust::device_vector<float> I(nr_rows_A * nr_cols_A);
+void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
+	/*thrust::device_vector<float> I(nr_rows_A * nr_cols_A);
 	thrust::host_vector<float> L(nr_rows_A * nr_cols_A);
 	thrust::fill(I.begin(), I.end(), 0);
 	cudaDeviceSynchronize();
 	createIdentity(thrust::raw_pointer_cast(&I[0]), nr_rows_A);
-	cudaDeviceSynchronize();
+	cudaDeviceSynchronize();*/
 
 	//get L from A = LL^T
 	/*choleskyDecomp(A, thrust::raw_pointer_cast(&L[0]), nr_rows_A, nr_cols_A);
 */
-	MatrixXd m(2,5);
-	std::cout << m.cols() << std::endl;
+	gsl_matrix_float_view gA = gsl_matrix_float_view_array(A, nr_rows_A, nr_cols_A);
+	//gsl_matrix_float *gA = gsl_matrix_float_alloc (nr_rows_A, nr_cols_A);
+	gsl_linalg_cholesky_decomp((gsl_matrix *)&gA.matrix);
+	gsl_linalg_cholesky_invert((gsl_matrix *)&gA.matrix);
 
 }
 void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
