@@ -22,6 +22,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
+#include "cholesky_single.h"
 
 #define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
 

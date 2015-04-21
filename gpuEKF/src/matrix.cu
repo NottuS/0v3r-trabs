@@ -250,8 +250,8 @@ void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 */
 	gsl_matrix_float_view gA = gsl_matrix_float_view_array(A, nr_rows_A, nr_cols_A);
 	//gsl_matrix_float *gA = gsl_matrix_float_alloc (nr_rows_A, nr_cols_A);
-	gsl_linalg_cholesky_decomp((gsl_matrix *)&gA.matrix);
-	gsl_linalg_cholesky_invert((gsl_matrix *)&gA.matrix);
+	gsl_linalg_float_cholesky_decomp(gA.matrix);
+	gsl_linalg_float_cholesky_invert(gA.matrix);
 
 }
 void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
