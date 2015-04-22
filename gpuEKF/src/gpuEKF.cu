@@ -1,11 +1,15 @@
 /**
- * Copyright 1993-2012 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
+* Implement a parallel and a sequencial version of the EKF for SLAM.
+* EKF(mean_t-1, covariance_t-1, control_t, observation_t)
+* 
+* 	mean'_t = g(control_t, mean_t-1)
+* 	covariance'_t = Jacobian(g()) * covariance_t-1 * Jacobian(g())^T + OdometryError_t
+* 
+* 	KalmanGain = covariance'_t * Jacobian(h(observation_t)) * 
+* 		(Jacobian(h(observation_t)) * covariance'_t * Jacobian(h(observation_t)) + ObservatioError_t)^-1
+* 	mean_t = mean'_t + KalmanGain * (observation_t - h(observation_t))
+* 	covariance_t = (I - KalmanGain* Jacobian(h(observation_t))) * covariance'_t
+* 	return mean_t, covariance_t
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +34,90 @@ void sumComp(cublasHandle_t handle, thrust::host_vector<float>A, thrust::host_ve
 		thrust::device_vector<float>d_C, int nr_rows_A, int nr_cols_A){
 
 }
+
+float *odometryError(float *control, int dim){
+		
+}
+
+float *observationError(float *observation, int dim) {
+	
+}
+
+float *jacobianG(int dim){
+		
+}
+
+float *jacobianH(int dim){
+		
+}
+
+float *moveUpadate(float *mean, float *control){
+	int x = 0*3 + 0;
+	int y = 1*3 + 1;
+	int teta = 2*3 + 2;
+	
+	mean[x] = mean[x] + control[0] * cos(mean[teta] + control[2]/2);
+	mean[y] = mean[y] + control[1] * sin(mean[teta] + control[2]/2);
+	mean[teta] = media[teta] + control[2];
+	
+	return mean;
+}
+
+bool lanmarkExist(float *observation) {
+	return true;
+}
+
+void addLandmark(float *mean, float *covariance, int *dim){
+	
+}
+
+void EKF(int dim, float *mean, float *covariance, const float *control, const float *observation){
+	//mean'_t = g(control_t, mean_t-1)
+	float *mean = moveUpadate(mean, control);
+	float *G = jacobianG(dim);
+	
+	//Update step
+	float *partial = malloc(sizeof(float) * dim * dim);
+	sMatMul(partial, G, covariance, dim, dim, dim);
+	
+	//vai dar bosta esse transpose tem q trocar o g
+	sMatTranspose(G, G, dim, dim);
+	sMatMul(covariance, partial, G, dim, dim, dim);
+	sMatSum(covariance, covariance, odometryError(control, dim));
+
+	//Matching and compute h(observation_t)
+	if(!lanmarkExist(observation)){
+		addLandmark(mean, covariance, &dim);
+		partial = (float *) realloc(partial, sizeof(float) * dim * dim);
+	}
+	//compute h(observation_t)
+	
+	//Correction/update step
+	float *kalmanGain = malloc(sizeof(float) * dim * dim);
+	float H = jacobianH(dim);
+	float H_t = malloc(sizeof(float) * dim * dim);
+	
+	sMatTranspose(H_t, H, dim, dim);
+	sMatMul(partial, H_t, covariance);
+	sMatMul(kalmanGain, H, partial);
+	sMatSum(kalmanGain, kalmanGain, observationError(observation));
+	//check this probabily wrong
+	sMatMul(kalmanGain, Partial, kalmanGain);
+	
+	//missing compute mean
+	
+	sMatMul(partial, kalmanGain, H);
+	//criar um special sub
+	//sMatSub(partial, identity, partial);
+	//check this probabily wrong
+	sMatMul(covariance, partial, covariance);
+}
+
+void parallelEKF(float *mean, float *covariance){
+	
+}
+
+
 
 int main(int argc, char** argv) {
 	cublasHandle_t handle;
