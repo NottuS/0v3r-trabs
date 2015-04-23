@@ -24,6 +24,9 @@
 #include <gsl/gsl_matrix.h>
 #include "cholesky_single.h"
 
+#define TRASN 1
+#define NOT_TRASN 0
+
 #define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
 
 #define CUBLAS_CHECK_RETURN(value) {											\
@@ -35,14 +38,16 @@
 	}}
 
 void print_matrix(const float *A, int nr_rows_A, int nr_cols_A);
+void sCreateIdentity(float *I, int nr_rows_I);
+void createIdentity(float *I, int nr_rows_I);
 
-void sMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
-void pMatMul(float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
+void sMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
+void pMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B, unsigned int hA, unsigned int wA, unsigned int wB);
 //BLAS uses internally column-major order storage (Fortran order) and not the typical row-major storage used in C or C++ for multidimensional arrays.
-void cublasMatMul(cublasHandle_t &handle, float *C, const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n);
+void cublasMatMul(cublasHandle_t &handle, int trans_1, int trans_2, float *C, const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n);
 
-void sMatTranspose(float *C, const float *A, int nr_rows_A, int nr_cols_A);
-void pMatTranspose(float *C, const float *A, int nr_rows_A, int nr_cols_A);
+void sMatTranspose(int trans_1, int trans_2, float *C, const float *A, int nr_rows_A, int nr_cols_A);
+void pMatTranspose(int trans_1, int trans_2, float *C, const float *A, int nr_rows_A, int nr_cols_A);
 void cublasMatTranspose(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 
 void sMatSum(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);

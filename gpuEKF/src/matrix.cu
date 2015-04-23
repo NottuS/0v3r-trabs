@@ -30,7 +30,13 @@ void createIdentity(float *I, int nr_rows_I){
 	kernelCreateIdentity<<<dimGrid,dimBlock>>>(I, nr_rows_I);
 }
 
-void sMatMul(float *C, const float *A, const float *B,
+void sCreateIdentity(float *I, int nr_rows_I){
+	for(int i = 0; i < nr_rows_I; i++){
+		I[i*nr_rows_I + i] = 1;
+	}
+}
+
+void sMatMul(int trans_1, int trans_2,float *C, const float *A, const float *B,
 		unsigned int hA, unsigned int wA, unsigned int wB)
 {
 	for (unsigned int i = 0; i < hA; ++i)
@@ -45,7 +51,8 @@ void sMatMul(float *C, const float *A, const float *B,
 		}
 }
 
-__global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
+__global__ void kernelMatMul(int trans_1, int trans_2, float *C, const float *A,
+		const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -75,15 +82,16 @@ __global__ void kernelMatMul(float *C, const float *A, const float *B, unsigned 
 	}
 }
 
-void pMatMul(float *C, const float *A, const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
+void pMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B,
+		unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
 	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_B) / dimBlock.y));
 
 	//cudaSetDeviceFlags(cudaDeviceLmemResizeToMax);
-	kernelMatMul<<<dimGrid, dimBlock>>>(C,A,B,nr_rows_A, nr_cols_A, nr_cols_B);
+	kernelMatMul<<<dimGrid, dimBlock>>>(trans_1, trans_2, C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
 }
 
-void cublasMatMul(cublasHandle_t &handle, float *C,
+void cublasMatMul(cublasHandle_t &handle, int trans_1, int trans_2, float *C,
 		const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n){
 	const float alf = 1;
 	const float bet = 0;
@@ -93,7 +101,7 @@ void cublasMatMul(cublasHandle_t &handle, float *C,
 	// Do the actual multiplication
 	// matrix - matrix multiplication : C = alf*A*B + bet*C
 	// A -mxk matrix , B -kxn matrix , C -mxn matrix ;
-	CUBLAS_CHECK_RETURN(cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+	CUBLAS_CHECK_RETURN(cublasSgemm(handle, trans_1, trans_2,
 			m, n, k, alpha, A, m, B, k, beta, C, m));
 }
 

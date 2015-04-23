@@ -35,20 +35,28 @@ void sumComp(cublasHandle_t handle, thrust::host_vector<float>A, thrust::host_ve
 
 }
 
+//TODO
 float *odometryError(float *control, int dim){
 		
 }
 
+//TODO
 float *observationError(float *observation, int dim) {
 	
 }
 
-float *jacobianG(int dim){
-		
+//TODO
+float *jacobianG(float *control, int dim){
+	float G = malloc(sizeof(float) * dim * dim);
+
+	return G;
 }
 
-float *jacobianH(int dim){
-		
+//TODO
+float *jacobianH(float *observed, float *observation, int dim){
+	float H = malloc(sizeof(float) * dim * dim);
+
+	return H;
 }
 
 float *moveUpadate(float *mean, float *control){
@@ -58,66 +66,108 @@ float *moveUpadate(float *mean, float *control){
 	
 	mean[x] = mean[x] + control[0] * cos(mean[teta] + control[2]/2);
 	mean[y] = mean[y] + control[1] * sin(mean[teta] + control[2]/2);
-	mean[teta] = media[teta] + control[2];
+	mean[teta] = mean[teta] + control[2];
 	
 	return mean;
 }
 
+//TODO
+float *getObserved(float observation){
+	float *observed =  malloc(sizeof(float) * 3 * dim);
+
+	return observed;
+}
+
+//TODO
+float *getExpected(float observation){
+	float *expected =  malloc(sizeof(float) * 3 * dim);
+
+	return expected;
+}
+
+//TODO
 bool lanmarkExist(float *observation) {
 	return true;
 }
 
+//TODO
 void addLandmark(float *mean, float *covariance, int *dim){
 	
 }
 
 void EKF(int dim, float *mean, float *covariance, const float *control, const float *observation){
-	//mean'_t = g(control_t, mean_t-1)
-	float *mean = moveUpadate(mean, control);
-	float *G = jacobianG(dim);
-	
-	//Update step
-	float *partial = malloc(sizeof(float) * dim * dim);
-	sMatMul(partial, G, covariance, dim, dim, dim);
-	
-	//vai dar bosta esse transpose tem q trocar o g
-	sMatTranspose(G, G, dim, dim);
-	sMatMul(covariance, partial, G, dim, dim, dim);
-	sMatSum(covariance, covariance, odometryError(control, dim));
+	//******Update step******
+	//u_t = g(control_t, mean_t-1)
+	moveUpadate(mean, control);
 
-	//Matching and compute h(observation_t)
+	float *partial = malloc(sizeof(float) * dim * dim);
+	float *G = jacobianG(control, dim);
+	float *temp;
+	//G * E_t-1
+	sMatMul(NOT_TRASN, NOT_TRASN, partial, G, covariance, dim, dim, dim);
+	//G * E_t-1 * G^T
+	sMatMul(NOT_TRASN, TRANS, covariance, partial, G, dim, dim, dim);
+	temp = odometryError(control, dim);
+	//E = G * E_t-1 * G^T + OdometryError_t
+	sMatSum(covariance, covariance, temp);
+	free(G);
+	free(temp);
+
+
+	////******Matching and compute h(observation_t)******
 	if(!lanmarkExist(observation)){
 		addLandmark(mean, covariance, &dim);
 		partial = (float *) realloc(partial, sizeof(float) * dim * dim);
 	}
-	//compute h(observation_t)
+	float *observed = getObserved(observation);
 	
-	//Correction/update step
+
+	//******Correction/Update step******
 	float *kalmanGain = malloc(sizeof(float) * dim * dim);
-	float H = jacobianH(dim);
-	float H_t = malloc(sizeof(float) * dim * dim);
+	float *H = jacobianH(observed, observation, dim);
+	//E * H^T
+	sMatMul(NOT_TRASN, TRANS, partial, H, covariance);
+	//H * E * H^T
+	sMatMul(NOT_TRASN, NOT_TRASN, kalmanGain, H, partial);
+	//(H * E * H^T + observationError)
+	temp = observationError(observation);
+	sMatSum(temp, kalmanGain, temp);
+	//K = E * H^T * (H * E * H^T + observationError)
+	sMatMul(NOT_TRASN, NOT_TRASN, kalmanGain, partial, temp);
 	
-	sMatTranspose(H_t, H, dim, dim);
-	sMatMul(partial, H_t, covariance);
-	sMatMul(kalmanGain, H, partial);
-	sMatSum(kalmanGain, kalmanGain, observationError(observation));
-	//check this probabily wrong
-	sMatMul(kalmanGain, Partial, kalmanGain);
-	
-	//missing compute mean
-	
-	sMatMul(partial, kalmanGain, H);
-	//criar um special sub
-	//sMatSub(partial, identity, partial);
-	//check this probabily wrong
-	sMatMul(covariance, partial, covariance);
+	//z - h(u)
+	float *expected = getExpected(observation);
+	sMatSub(observed, expected, observed);
+	//K(z - h(u))
+	sMatMul(expected, kalmanGain, observed);
+	free(observed);
+	//u = u + K(z - h(u))
+	sMatSum(mean, kalmanGain, expected);
+	free(expected);
+
+	//K * H
+	sMatMul(NOT_TRASN, NOT_TRASN, partial, kalmanGain, H);
+	//(I - K * H)
+	//temp = Identity matrix
+	memset(temp, 0, sizeof(float));
+	sCreateIdentity(I, dim);
+	//THIS can be improved...
+	sMatSub(partial, I, partial);
+	free(kalmanGain);
+	free(H);
+
+	//E = (I - K * H) * E
+	sMatMul(NOT_TRASN, NOT_TRASN, temp, partial, covariance);
+	free(covariance);
+	covariance = temp;
+	free(temp);
+	free(partial);
 }
 
+//TODO
 void parallelEKF(float *mean, float *covariance){
 	
 }
-
-
 
 int main(int argc, char** argv) {
 	cublasHandle_t handle;
