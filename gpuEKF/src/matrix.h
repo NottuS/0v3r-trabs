@@ -17,15 +17,15 @@
 #include <thrust/fill.h>
 #include <iostream>
 #include<math.h>
-#include <eigen/Eigen/Dense>
-#include <eigen/Eigen/Core>
+/*#include <eigen/Eigen/Dense>
+#include <eigen/Eigen/Core>*/
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
 #include "cholesky_single.h"
 
-#define TRASN 1
-#define NOT_TRASN 0
+#define TRANSP 1
+#define NOT_TRANSP 0
 
 #define IDX2C (i, j, ld) ((( j )*( ld ))+( i ))
 
@@ -46,15 +46,15 @@ void pMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B,
 //BLAS uses internally column-major order storage (Fortran order) and not the typical row-major storage used in C or C++ for multidimensional arrays.
 void cublasMatMul(cublasHandle_t &handle, int trans_1, int trans_2, float *C, const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n);
 
-void sMatTranspose(int trans_1, int trans_2, float *C, const float *A, int nr_rows_A, int nr_cols_A);
-void pMatTranspose(int trans_1, int trans_2, float *C, const float *A, int nr_rows_A, int nr_cols_A);
+void sMatTranspose(float *C, const float *A, int nr_rows_A, int nr_cols_A);
+void pMatTranspose(float *C, const float *A, int nr_rows_A, int nr_cols_A);
 void cublasMatTranspose(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 
 void sMatSum(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void pMatSum(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void cublasMatSum(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 
-void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
+void sMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void cublasMatSub(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 

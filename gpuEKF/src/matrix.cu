@@ -1,7 +1,7 @@
 #include"matrix.h"
 #include <stdio.h>
 
-using namespace Eigen;
+//using namespace Eigen;
 
 //Print matrix A(nr_rows_A, nr_cols_A) storage in column-major format
 void print_matrix(const float *A, int nr_rows_A, int nr_cols_A) {
@@ -36,7 +36,8 @@ void sCreateIdentity(float *I, int nr_rows_I){
 	}
 }
 
-void sMatMul(int trans_1, int trans_2,float *C, const float *A, const float *B,
+//TODO allow transpose on multiplication
+void sMatMul(int transp_1, int transp_2,float *C, const float *A, const float *B,
 		unsigned int hA, unsigned int wA, unsigned int wB)
 {
 	for (unsigned int i = 0; i < hA; ++i)
@@ -51,7 +52,7 @@ void sMatMul(int trans_1, int trans_2,float *C, const float *A, const float *B,
 		}
 }
 
-__global__ void kernelMatMul(int trans_1, int trans_2, float *C, const float *A,
+__global__ void kernelMatMul(int transp_1, int transp_2, float *C, const float *A,
 		const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
@@ -82,6 +83,7 @@ __global__ void kernelMatMul(int trans_1, int trans_2, float *C, const float *A,
 	}
 }
 
+//TODO allow transpose on multiplication
 void pMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B,
 		unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
@@ -91,7 +93,7 @@ void pMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B,
 	kernelMatMul<<<dimGrid, dimBlock>>>(trans_1, trans_2, C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
 }
 
-void cublasMatMul(cublasHandle_t &handle, int trans_1, int trans_2, float *C,
+void cublasMatMul(cublasHandle_t &handle, int transp_1, int transp_2, float *C,
 		const float *A, const float *B, unsigned int m, unsigned int k, unsigned int n){
 	const float alf = 1;
 	const float bet = 0;
@@ -101,7 +103,7 @@ void cublasMatMul(cublasHandle_t &handle, int trans_1, int trans_2, float *C,
 	// Do the actual multiplication
 	// matrix - matrix multiplication : C = alf*A*B + bet*C
 	// A -mxk matrix , B -kxn matrix , C -mxn matrix ;
-	CUBLAS_CHECK_RETURN(cublasSgemm(handle, trans_1, trans_2,
+	CUBLAS_CHECK_RETURN(cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
 			m, n, k, alpha, A, m, B, k, beta, C, m));
 }
 
@@ -258,14 +260,16 @@ void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 */
 	gsl_matrix_float_view gA = gsl_matrix_float_view_array(A, nr_rows_A, nr_cols_A);
 	//gsl_matrix_float *gA = gsl_matrix_float_alloc (nr_rows_A, nr_cols_A);
-	gsl_linalg_float_cholesky_decomp(gA.matrix);
-	gsl_linalg_float_cholesky_invert(gA.matrix);
-
+	gsl_linalg_float_cholesky_decomp(&gA.matrix);
+	gsl_linalg_float_cholesky_invert(&gA.matrix);
 }
+
+//TODO
 void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 
 }
 
+//TODO correct this one
 void cublasMatInverse(cublasHandle_t &handle, const float *A, int nr_rows_A, int nr_cols_A, float *result){
 
 	const float alf = 1;

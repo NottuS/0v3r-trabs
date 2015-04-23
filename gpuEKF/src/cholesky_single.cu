@@ -76,11 +76,11 @@ int gsl_linalg_float_cholesky_decomp (gsl_matrix_float * A)
       if (M > 1)
         {
           float A_10 = gsl_matrix_float_get (A, 1, 0);
-          double A_11 = gsl_matrix_float_get (A, 1, 1);
+          float A_11 = gsl_matrix_float_get (A, 1, 1);
           
-          double L_10 = A_10 / L_00;
-          double diag = A_11 - L_10 * L_10;
-          double L_11 = quiet_sqrt(diag);
+          float L_10 = A_10 / L_00;
+          float diag = A_11 - L_10 * L_10;
+          float L_11 = quiet_float_sqrt(diag);
           
           if (diag <= 0)
             {
@@ -120,10 +120,10 @@ int gsl_linalg_float_cholesky_decomp (gsl_matrix_float * A)
             gsl_vector_float_view ck = gsl_matrix_float_row (A, k);
             gsl_vector_float_view dk = gsl_vector_float_subvector (&ck.vector, 0, k);
             
-            double sum = gsl_blas_snrm2 (&dk.vector);
-            double diag = A_kk - sum * sum;
+            float sum = gsl_blas_snrm2 (&dk.vector);
+            float diag = A_kk - sum * sum;
 
-            double L_kk = quiet_sqrt(diag);
+            float L_kk = quiet_float_sqrt(diag);
             
             if (diag <= 0)
               {
@@ -303,7 +303,7 @@ int gsl_linalg_float_cholesky_invert(gsl_matrix_float * LLT)
           for (i = 0; i < j; i++)
             {
               float A_ij = gsl_matrix_float_get (LLT, i, j);
-              gsl_matrix_set (LLT, j, i, A_ij);
+              gsl_matrix_float_set (LLT, j, i, A_ij);
             }
         } 
 
