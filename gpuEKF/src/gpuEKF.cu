@@ -33,7 +33,7 @@
 #define MEAN_X (0*3 + 0)
 #define MEAN_Y (1*3 + 1)
 #define MEAN_TETA (2*3 + 2)
-#define CONTROL_X 0
+#define CONTROL_X 0 //Robot motion in the x axis
 #define CONTROL_Y 1
 #define CONTROL_TETA 2
 #define FOCAL_LENGTH 0
@@ -43,6 +43,7 @@
 #define CAM_Y 4
 #define CAM_Z 5
 #define L_EXISTS 6
+#define LM_IND //landmark index related to the mean vector
 
 void comp(int argc, char** argv){
 	cublasHandle_t handle;
@@ -165,7 +166,12 @@ void comp(int argc, char** argv){
 
 //TODO
 float *odometryError(const float *control, int dim){
-	float *error = (float *) malloc(sizeof(float) * dim * dim);
+	float *error = (float *) calloc(dim * dim, sizeof(float));
+
+	srand(time(NULL));
+	error[0] = rand() * 0.2;
+	error[dim + 1] = rand() * 0.2;
+	error[2*dim + 2] = rand() * 0.2;
 
 	return error;
 }
@@ -204,17 +210,17 @@ float *jacobianH(float *observed, const float *observation, int dim){
 }
 
 //TODO
-float *getObserved(const float *observation, int dim){
-	float *observed = (float *) calloc(3 * dim, sizeof(float));
+float *getExpected(const float *observation, int dim){
+	float *expected = (float *) calloc(3 * dim, sizeof(float));
 
-	return observed;
+	return expected;
 }
 
 //TODO
-float *getExpected(const float *observation, int dim){
-	float *expected = (float *) malloc(sizeof(float) * 3 * dim);
+float *getObservation(const float *observation, int dim){
+	float *observed = (float *) malloc(sizeof(float) * 3 * dim);
 
-	return expected;
+	return observed;
 }
 
 //TODO
@@ -230,7 +236,7 @@ void addLandmark(float *mean, float *covariance, const float *observation, int *
 	mean = (float *) realloc(mean, 3 * (*dim) * sizeof(float));
 	covariance = (float *) realloc(covariance, sizeof(float) * (*dim) * (*dim));
 
-	//Set the position(x,y) of the landmark in relation to
+	//Set the position(x,y) of the landmark in relation to the robot
 	mean[(*dim - 1)*3] = mean[MEAN_X] + observation[FOCAL_LENGTH] *
 			observation[K_X] * (observation[CAM_X]/observation[CAM_Z]);
 	mean[(*dim - 1) * 3 + 1] = mean[MEAN_Y] + observation[FOCAL_LENGTH] *
@@ -263,7 +269,7 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 		addLandmark(mean, covariance, observation, &dim);
 		partial = (float *) realloc(partial, sizeof(float) * dim * dim);
 	}
-	float *observed = (float *) getObserved(observation, dim);
+	float *expected = (float *) getExpected(observation, dim);
 	
 
 	//******Correction/Update step******
