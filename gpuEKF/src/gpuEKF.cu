@@ -37,7 +37,7 @@
 #define CONTROL_Y 1
 #define CONTROL_TETA 2
 #define FOCAL_LENGTH 0
-#define K_X 1 //is the number of pixels per unit length(k_x, k_y)
+#define K_X 1//is the number of pixels per unit length(k_x, k_y)
 #define K_Y 2
 #define CAM_X 3
 #define CAM_Y 4
@@ -225,14 +225,15 @@ bool landmarkExist(const float *observation) {
 }
 
 //TODO
-void addLandmark(float *mean, float *covariance, float *observation, int *dim){
+void addLandmark(float *mean, float *covariance, const float *observation, int *dim){
 	*dim = *dim + 2;
-	mean = (float *) realloc(mean, sizeof(float) * dim);
-	covariance = (float *) realloc(covariance, sizeof(float) * dim * dim);
-	
-	mean[dim - 2] = mean[MEAN_X] + observation[FOCAL_LENGTH] *
+	mean = (float *) realloc(mean, 3 * (*dim) * sizeof(float));
+	covariance = (float *) realloc(covariance, sizeof(float) * (*dim) * (*dim));
+
+	//Set the position(x,y) of the landmark in relation to
+	mean[(*dim - 1)*3] = mean[MEAN_X] + observation[FOCAL_LENGTH] *
 			observation[K_X] * (observation[CAM_X]/observation[CAM_Z]);
-	mean[dim - 1] = mean[MEAN_Y] + observation[FOCAL_LENGTH] *
+	mean[(*dim - 1) * 3 + 1] = mean[MEAN_Y] + observation[FOCAL_LENGTH] *
 			observation[K_Y] * (observation[CAM_Y]/observation[CAM_Z]);
 }
 
@@ -242,7 +243,7 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 	float teta = mean[MEAN_TETA];
 	moveUpadate(mean, control);
 
-	//TODO this block can be improved look the slides of stachness
+	//TODO this block can be improved look the slides of stachness, and G is sparse
 	float *partial = (float *)malloc(sizeof(float) * dim * dim);
 	float *G = jacobianG(teta, control, dim);
 	float *temp;
@@ -266,6 +267,7 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 	
 
 	//******Correction/Update step******
+	//H is sparse, so this block can be improved...
 	float *kalmanGain = (float *) malloc(sizeof(float) * dim * dim);
 	float *H = jacobianH(observed, observation, dim);
 	//E * H^T
