@@ -22,28 +22,13 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 
-#include"matrix.h"
+#include "matrix.h"
+#include "EKF.h"
 
 #define TRANS 0
 #define MUL 1
 #define SUM 2
 #define INV 3
-
-//Important Index
-#define MEAN_X (0*3 + 0)
-#define MEAN_Y (1*3 + 1)
-#define MEAN_TETA (2*3 + 2)
-#define CONTROL_X 0 //Robot motion in the x axis
-#define CONTROL_Y 1
-#define CONTROL_TETA 2
-#define FOCAL_LENGTH 0
-#define K_X 1//is the number of pixels per unit length(k_x, k_y)
-#define K_Y 2
-#define CAM_X 3
-#define CAM_Y 4
-#define CAM_Z 5
-#define L_EXISTS 6
-#define LM_IND //landmark index related to the mean vector
 
 void comp(int argc, char** argv){
 	cublasHandle_t handle;
@@ -162,160 +147,6 @@ void comp(int argc, char** argv){
 	/*multComp(handle, A, B, C, d_A, d_B, d_C, nr_rows_A, nr_cols_A);
 	sumComp(handle, A, B, C, d_A, d_B, d_C, nr_rows_A, nr_cols_A);*/
 	cublasDestroy(handle);
-}
-
-//TODO
-float *odometryError(const float *control, int dim){
-	float *error = (float *) calloc(dim * dim, sizeof(float));
-
-	srand(time(NULL));
-	error[0] = rand() * 0.2;
-	error[dim + 1] = rand() * 0.2;
-	error[2*dim + 2] = rand() * 0.2;
-
-	return error;
-}
-
-float *moveUpadate(float *mean, const float *control){
-	mean[MEAN_X] = mean[MEAN_X] + control[CONTROL_X] * cos(mean[MEAN_TETA] + control[CONTROL_TETA]/2);
-	mean[MEAN_Y] = mean[MEAN_Y] + control[CONTROL_Y] * sin(mean[MEAN_TETA] + control[CONTROL_TETA]/2);
-	mean[MEAN_TETA] = mean[MEAN_TETA] + control[CONTROL_TETA];
-	
-	return mean;
-}
-
-//TODO check if right
-float *jacobianG(float teta, const float *control, int dim){
-	float *G = (float *) calloc(dim * dim, sizeof(float));
-
-	sCreateIdentity(G, dim);
-	G[2] = sin(teta + control[CONTROL_TETA]/2);
-	G[dim + 2] = cos(teta + control[CONTROL_TETA]/2);
-
-	return G;
-}
-
-//TODO
-float *observationError(const float *observation, int dim) {
-	float *error = (float *) malloc(sizeof(float) * dim * dim);
-
-	return error;
-}
-
-//TODO
-float *jacobianH(float *observed, const float *observation, int dim){
-	float *H = (float *) malloc(sizeof(float) * dim * dim);
-
-	return H;
-}
-
-//TODO
-float *getExpected(const float *observation, int dim){
-	float *expected = (float *) calloc(3 * dim, sizeof(float));
-
-	return expected;
-}
-
-//TODO
-float *getObservation(const float *observation, int dim){
-	float *observed = (float *) malloc(sizeof(float) * 3 * dim);
-
-	return observed;
-}
-
-//TODO
-bool landmarkExist(const float *observation) {
-	if(observation[L_EXISTS] < 0)
-		return false;
-	return true;
-}
-
-//TODO
-void addLandmark(float *mean, float *covariance, const float *observation, int *dim){
-	*dim = *dim + 2;
-	mean = (float *) realloc(mean, 3 * (*dim) * sizeof(float));
-	covariance = (float *) realloc(covariance, sizeof(float) * (*dim) * (*dim));
-
-	//Set the position(x,y) of the landmark in relation to the robot
-	mean[(*dim - 1)*3] = mean[MEAN_X] + observation[FOCAL_LENGTH] *
-			observation[K_X] * (observation[CAM_X]/observation[CAM_Z]);
-	mean[(*dim - 1) * 3 + 1] = mean[MEAN_Y] + observation[FOCAL_LENGTH] *
-			observation[K_Y] * (observation[CAM_Y]/observation[CAM_Z]);
-}
-
-void EKF(int dim, float *mean, float *covariance, const float *control, const float *observation){
-	//******Update step******
-	//u_t = g(control_t, mean_t-1)
-	float teta = mean[MEAN_TETA];
-	moveUpadate(mean, control);
-
-	//TODO this block can be improved look the slides of stachness, and G is sparse
-	float *partial = (float *)malloc(sizeof(float) * dim * dim);
-	float *G = jacobianG(teta, control, dim);
-	float *temp;
-	//G * E_t-1
-	sMatMul(NOT_TRANSP, NOT_TRANSP, partial, G, covariance, dim, dim, dim);
-	//G * E_t-1 * G^T
-	sMatMul(NOT_TRANSP, TRANSP, covariance, partial, G, dim, dim, dim);
-	temp = odometryError(control, dim);
-	//E = G * E_t-1 * G^T + OdometryError_t
-	sMatSum(covariance, covariance, temp, dim, dim);
-	free(G);
-	free(temp);
-
-
-	////******Matching and compute h(observation_t)******
-	if(!landmarkExist(observation)){
-		addLandmark(mean, covariance, observation, &dim);
-		partial = (float *) realloc(partial, sizeof(float) * dim * dim);
-	}
-	float *expected = (float *) getExpected(observation, dim);
-	
-
-	//******Correction/Update step******
-	//H is sparse, so this block can be improved...
-	float *kalmanGain = (float *) malloc(sizeof(float) * dim * dim);
-	float *H = jacobianH(observed, observation, dim);
-	//E * H^T
-	sMatMul(NOT_TRANSP, TRANSP, partial, H, covariance, dim, dim, dim);
-	//H * E * H^T
-	sMatMul(NOT_TRANSP, NOT_TRANSP, kalmanGain, H, partial, dim, dim, dim);
-	//(H * E * H^T + observationError)
-	temp = observationError(observation, dim);
-	sMatSum(temp, kalmanGain, temp, dim, dim);
-	//(H * E * H^T + observationError)^-1
-	//check this, probabily wrong
-	sMatInverse(temp, dim, dim, temp);
-	//K = E * H^T * (H * E * H^T + observationError)^-1
-	sMatMul(NOT_TRANSP, NOT_TRANSP, kalmanGain, partial, temp, dim, dim, dim);
-	
-	//z - h(u)
-	float *expected = getExpected(observation, dim);
-	sMatSub(observed, expected, observed, dim, 3);
-	//K(z - h(u))
-	sMatMul(NOT_TRANSP, NOT_TRANSP, expected, kalmanGain, observed, dim, dim, 3);
-	free(observed);
-	//u = u + K(z - h(u))
-	sMatSum(mean, mean, expected, dim, 3);
-	free(expected);
-
-	//K * H
-	sMatMul(NOT_TRANSP, NOT_TRANSP, partial, kalmanGain, H, dim, dim, dim);
-	//(I - K * H)
-	//temp = Identity matrix
-	memset(temp, 0, sizeof(float));
-	sCreateIdentity(temp, dim);
-	//THIS can be improved...
-	sMatSub(partial, temp, partial, dim, dim);
-	free(kalmanGain);
-	free(H);
-
-	//E = (I - K * H) * E
-	sMatMul(NOT_TRANSP, NOT_TRANSP, temp, partial, covariance, dim, dim, dim);
-	free(covariance);
-	covariance = temp;
-	free(temp);
-	free(partial);
 }
 
 //TODO
