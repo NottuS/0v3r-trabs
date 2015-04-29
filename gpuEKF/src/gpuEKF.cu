@@ -76,6 +76,18 @@ void comp(int argc, char** argv){
 			sMatInverse(thrust::raw_pointer_cast(&A[0]),
 					nr_rows_A, nr_cols_A, thrust::raw_pointer_cast(&C[0]));
 			break;
+		case 8:
+			{sMatTranspose(thrust::raw_pointer_cast(&C[0]),
+								thrust::raw_pointer_cast(&B[0]), nr_rows_A, nr_cols_A);
+			thrust::host_vector<float>T(nr_rows_C * nr_cols_C);
+			sMatMul(NOT_TRANSP, NOT_TRANSP, thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&A[0]), thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A, nr_cols_B);
+			print_matrix(thrust::raw_pointer_cast(&T[0]), nr_rows_A, nr_cols_A);
+			sMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&C[0]), thrust::raw_pointer_cast(&A[0]),thrust::raw_pointer_cast(&B[0]), nr_rows_A, nr_cols_A, nr_cols_B);
+			print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
+			pMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),thrust::raw_pointer_cast(&d_B[0]), nr_rows_A, nr_cols_A, nr_cols_B);
+			thrust::copy(d_C.begin(), d_C.end(), C.begin());
+			print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
+			break;}
 		default:
 			break;
 	}
@@ -122,7 +134,7 @@ void comp(int argc, char** argv){
 					thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A);
 			break;
 		case MUL:
-			pMatMul(NOT_TRANSP, NOT_TRANSP, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),
+			pMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),
 					thrust::raw_pointer_cast(&d_B[0]),	nr_rows_A, nr_cols_A, nr_cols_A);
 			break;
 		case SUM:
@@ -144,6 +156,8 @@ void comp(int argc, char** argv){
 	if(argc < 4 || atoi(argv[3]) != 0){
 		print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
 	}
+
+
 	/*multComp(handle, A, B, C, d_A, d_B, d_C, nr_rows_A, nr_cols_A);
 	sumComp(handle, A, B, C, d_A, d_B, d_C, nr_rows_A, nr_cols_A);*/
 	cublasDestroy(handle);

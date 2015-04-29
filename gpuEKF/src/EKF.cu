@@ -117,6 +117,8 @@ void addLandmark(float *mean, float *covariance, const float *observation, int *
 			observation[K_Y] * (observation[CAM_Y]/observation[CAM_Z]);
 }
 
+
+//TODO take care on mul transpose, the lenghs of the matrix must be swaped
 void EKF(int dim, float *mean, float *covariance, const float *control, const float *observation){
 	//******Update step******
 	//u_t = g(control_t, mean_t-1)
@@ -129,6 +131,7 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 	float *temp;
 	//G * E_t-1
 	sMatMul(NOT_TRANSP, NOT_TRANSP, partial, G, covariance, dim, dim, dim);
+	//TODO take care on mul transpose, the lenghs of the matrix must be swaped
 	//G * E_t-1 * G^T
 	sMatMul(NOT_TRANSP, TRANSP, covariance, partial, G, dim, dim, dim);
 	temp = odometryError(control, dim);
@@ -147,7 +150,7 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 	//******Correction/Update step******
 	//H is sparse, so this block can be improved...
 	float *kalmanGain = (float *) malloc(sizeof(float) * dim * dim);
-	float *H = jacobianH(expected, observation, dim);
+	float *H = jacobianH(mean, observation, dim);
 	//E * H^T
 	sMatMul(NOT_TRANSP, TRANSP, partial, H, covariance, dim, dim, dim);
 	//H * E * H^T
@@ -162,8 +165,8 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 	sMatMul(NOT_TRANSP, NOT_TRANSP, kalmanGain, partial, temp, dim, dim, dim);
 
 	//z - h(u)
-	float *expected = (float *) getExpected(observation, dim);
-	float temp2 =  (float *) malloc(sizeof(float) * dim);
+	float *expected = (float *) getExpected(mean, observation, dim);
+	float *temp2 =  (float *) malloc(sizeof(float) * dim);
 	//K(z - h(u))
 	sMatMul(NOT_TRANSP, NOT_TRANSP, temp2, kalmanGain, expected, dim, dim, 1);
 	//u = u + K(z - h(u))

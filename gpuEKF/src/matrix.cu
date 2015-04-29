@@ -44,15 +44,23 @@ void sMatMul(int transp_1, int transp_2,float *C, const float *A, const float *B
 		for (unsigned int j = 0; j < wB; ++j) {
 			double sum = 0;
 			for (unsigned int k = 0; k < wA; ++k) {
-				double a = A[i * wA + k];
-				double b = B[k * wB + j];
+				double a;
+				double b;
+				if(! transp_1)
+					a = A[i * wA + k];
+				else
+					a = A[k * wA + i];
+				if(! transp_2)
+					b = B[k * wB + j];
+				else
+					b = B[j * wB + k];
 				sum += a * b;
 			}
 			C[i * wB + j] = (float)sum;
 		}
 }
 
-__global__ void kernelMatMul(int transp_1, int transp_2, float *C, const float *A,
+__global__ void kernelMatMul(float *C, const float *A,
 		const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
@@ -83,14 +91,81 @@ __global__ void kernelMatMul(int transp_1, int transp_2, float *C, const float *
 	}
 }
 
+__global__ void transp1kernelMatMul(float *C, const float *A,
+		const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
+	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];
+
+	float Cvalue = 0;
+
+	if (row < nr_rows_A && col < nr_cols_B) {
+		//TODO Check if all their work is done, and the indexs
+		for (int i = 0; i < ceil(float(nr_rows_A)/(BLOCK_SIZE)); ++i)
+		{
+			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
+			tempA[threadIdx.y][threadIdx.x] = A[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_A + threadIdx.x];
+			tempB[threadIdx.y][threadIdx.x] = B[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_B + threadIdx.x];
+			__syncthreads();
+
+			#pragma unroll
+			for (int j = 0; j < BLOCK_SIZE; ++j)
+				Cvalue += 1*tempA[j][threadIdx.y] * tempB[j][threadIdx.x] + 0*C[row * nr_cols_A + col] ;
+
+			__syncthreads();
+		}
+		C[row * nr_cols_A + col] = Cvalue;
+
+	}
+}
+
+__global__ void transp2kernelMatMul(float *C, const float *A,
+		const float *B, unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
+	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];
+
+	float Cvalue = 0;
+
+	if (row < nr_rows_A && col < nr_cols_B) {
+		//TODO Check if all their work is done, and the indexs
+		for (int i = 0; i < ceil(float(nr_rows_A)/(BLOCK_SIZE)); ++i)
+		{
+			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
+			tempA[threadIdx.y][threadIdx.x] = A[threadIdx.y * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
+			tempB[threadIdx.y][threadIdx.x] = B[threadIdx.y * nr_cols_B + BLOCK_SIZE * i + threadIdx.x];
+			__syncthreads();
+
+			#pragma unroll
+			for (int j = 0; j < BLOCK_SIZE; ++j)
+				Cvalue += 1*tempA[threadIdx.y][j] * tempB[threadIdx.x][j] + 0*C[row * nr_cols_A + col] ;
+
+			__syncthreads();
+		}
+		C[row * nr_cols_A + col] = Cvalue;
+
+	}
+}
+
 //TODO allow transpose on multiplication
-void pMatMul(int trans_1, int trans_2, float *C, const float *A, const float *B,
+void pMatMul(int transp_1, int transp_2, float *C, const float *A, const float *B,
 		unsigned int nr_rows_A, unsigned int nr_cols_A, unsigned int nr_cols_B){
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
 	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_B) / dimBlock.y));
 
 	//cudaSetDeviceFlags(cudaDeviceLmemResizeToMax);
-	kernelMatMul<<<dimGrid, dimBlock>>>(trans_1, trans_2, C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
+	if(transp_1)
+		transp1kernelMatMul<<<dimGrid, dimBlock>>>(C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
+	else if(transp_2)
+		transp2kernelMatMul<<<dimGrid, dimBlock>>>(C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
+	else
+		kernelMatMul<<<dimGrid, dimBlock>>>(C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
 }
 
 void cublasMatMul(cublasHandle_t &handle, int transp_1, int transp_2, float *C,
