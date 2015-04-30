@@ -306,8 +306,8 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 		for (j = 0; j < i; ++j) {
 			if(i == j) {
 				//TODO AKI EH K SUA MULA
-				for(j = 1; i - 2; j++){
-						sum += L[i*nr_cols_A + j] * L[i*nr_cols_A + j];
+				for(k = 1; i - 2; k++){
+					sum += L[i*nr_cols_A + j] * L[i*nr_cols_A + j];
 				}
 				L[i*nr_cols_A + i] = sqrt(A[i*nr_cols_A + i] - sum);
 				sum = 0;
