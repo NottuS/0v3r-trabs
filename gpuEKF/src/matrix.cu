@@ -303,20 +303,20 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	int i,j,k;
 	float sum;
 	for(i = 0; i < nr_rows_A; i++) {
-		for (j = 0; j < i; ++j) {
+		for (j = 0; j <= i; ++j) {
 			if(i == j) {
-				//TODO AKI EH K SUA MULA
-				for(k = 1; i - 2; k++){
-					sum += L[i*nr_cols_A + j] * L[i*nr_cols_A + j];
+				sum = 0;
+				for(k = 0; k < i - 1; k++){
+					sum += L[i*nr_cols_A + k] * L[i*nr_cols_A + k];
 				}
 				L[i*nr_cols_A + i] = sqrt(A[i*nr_cols_A + i] - sum);
-				sum = 0;
+
 			} else {
-				for(j = 0; i - 2; j++){
-					sum += L[k*nr_cols_A +j] * L[i*nr_cols_A + j];
-				}
-				L[i*nr_cols_A + k] = (A[i*nr_cols_A + k] - sum) / L[k*nr_cols_A + k];
 				sum = 0;
+				for(k = 0; k < j - 1; k++){
+					sum += L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
+				}
+				L[i*nr_cols_A + j] = (A[i*nr_cols_A + j] - sum) / L[j*nr_cols_A + j];
 			}
 		}
 	}

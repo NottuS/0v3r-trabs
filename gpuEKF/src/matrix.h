@@ -58,6 +58,7 @@ void sMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_col
 void pMatSub(float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 void cublasMatSub(cublasHandle_t &handle, float *C, const float *A, const float *B, int nr_rows_A, int nr_cols_A);
 
+void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A);
 void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado);
 void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado);
 void cublasMatInverse(cublasHandle_t &handle, const float *A, int nr_rows_A, int nr_cols_A, float *result);
