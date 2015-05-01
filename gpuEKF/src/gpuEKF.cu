@@ -78,11 +78,13 @@ void comp(int argc, char** argv){
 			break;
 		default:
 			thrust::host_vector<float>T(A.begin(), A.begin() + A.size());
-			gsl_matrix_float_view gA = gsl_matrix_float_view_array(thrust::raw_pointer_cast(&A[0]), nr_rows_A, nr_cols_A);
-			gsl_linalg_float_cholesky_decomp(&gA.matrix);
-			print_matrix(thrust::raw_pointer_cast(&A[0]), nr_rows_A, nr_cols_A);
+			sMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&A[0]), thrust::raw_pointer_cast(&A[0]), nr_rows_A, nr_cols_A, nr_cols_B);
 			choleskyDecomp(thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
 			print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
+			gsl_matrix_float_view gA = gsl_matrix_float_view_array(thrust::raw_pointer_cast(&T[0]), nr_rows_A, nr_cols_A);
+			gsl_linalg_float_cholesky_decomp(&gA.matrix);
+			print_matrix(thrust::raw_pointer_cast(&T[0]), nr_rows_A, nr_cols_A);
+
 			break;
 	}
 	clock_t end = clock();

@@ -8,7 +8,7 @@ void print_matrix(const float *A, int nr_rows_A, int nr_cols_A) {
 
     for(int i = 0; i < nr_rows_A; ++i){
         for(int j = 0; j < nr_cols_A; ++j){
-            std::cout << A[j * nr_rows_A + i] << " ";
+            std::cout << A[i * nr_rows_A + j] << " ";
         }
         std::cout << std::endl;
     }
@@ -299,28 +299,7 @@ void cublasMatTranspose(cublasHandle_t &handle, float *C, const float *A, const 
 			A, nr_rows_A, beta, B, nr_rows_A, C, nr_rows_A));
 }
 
-void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
-	int i,j,k;
-	float sum;
-	for(i = 0; i < nr_rows_A; i++) {
-		for (j = 0; j <= i; ++j) {
-			if(i == j) {
-				sum = 0;
-				for(k = 0; k < i - 1; k++){
-					sum += L[i*nr_cols_A + k] * L[i*nr_cols_A + k];
-				}
-				L[i*nr_cols_A + i] = sqrt(A[i*nr_cols_A + i] - sum);
 
-			} else {
-				sum = 0;
-				for(k = 0; k < j - 1; k++){
-					sum += L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
-				}
-				L[i*nr_cols_A + j] = (A[i*nr_cols_A + j] - sum) / L[j*nr_cols_A + j];
-			}
-		}
-	}
-}
 
 void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 	/*thrust::device_vector<float> I(nr_rows_A * nr_cols_A);
@@ -339,9 +318,44 @@ void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 	gsl_linalg_float_cholesky_invert(&gA.matrix);
 }
 
-//TODO
-void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *resultado){
+void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
+	int i,j,k;
+	float sum;
+	for(i = 0; i < nr_rows_A; i++) {
+		for (j = 0; j <= i; ++j) {
+			if(i == j) {
+				sum = 0;
+				for(k = 0; k < i; k++){
+					sum += L[i*nr_cols_A + k] * L[i*nr_cols_A + k];
+				}
+				L[i*nr_cols_A + i] = sqrt(A[i*nr_cols_A + i] - sum);
+			} else {
+				sum = 0;
+				for(k = 0; k < j; k++){
+					sum += L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
+				}
+				L[i*nr_cols_A + j] = (A[i*nr_cols_A + j] - sum) / L[j*nr_cols_A + j];
+			}
+		}
+	}
+}
 
+__global__ void choleskyDecompKernel(const float *A, float *L, int nr_rows_A, int nr_cols_A){
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	__shared__ float temp[BLOCK_SIZE][BLOCK_SIZE+1];
+
+	if (row < nr_rows_A && col < nr_cols_A) {
+
+	}
+}
+
+
+//TODO
+void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *result){
+	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
+	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_A) / dimBlock.y));
 }
 
 //TODO correct this one
