@@ -323,31 +323,41 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	float sum;
 	for(i = 0; i < nr_rows_A; i++) {
 		for (j = 0; j <= i; ++j) {
+			sum = 0;
+			for(k = 0; k < j; k++) {
+				sum += L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
+			}
+			sum -= A[i*nr_cols_A + j];
 			if(i == j) {
-				sum = 0;
-				for(k = 0; k < i; k++){
-					sum += L[i*nr_cols_A + k] * L[i*nr_cols_A + k];
-				}
-				L[i*nr_cols_A + i] = sqrt(A[i*nr_cols_A + i] - sum);
+				L[i*nr_cols_A + j] = sqrt(sum);
 			} else {
-				sum = 0;
-				for(k = 0; k < j; k++){
-					sum += L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
-				}
-				L[i*nr_cols_A + j] = (A[i*nr_cols_A + j] - sum) / L[j*nr_cols_A + j];
+				L[i*nr_cols_A + j] = sum / L[j*nr_cols_A + j];
 			}
 		}
 	}
 }
 
-__global__ void choleskyDecompKernel(const float *A, float *L, int nr_rows_A, int nr_cols_A){
-	int row = blockIdx.y * blockDim.y + threadIdx.y;
-	int col = blockIdx.x * blockDim.x + threadIdx.x;
-
-	__shared__ float temp[BLOCK_SIZE][BLOCK_SIZE+1];
-
-	if (row < nr_rows_A && col < nr_cols_A) {
-
+__global__ void choleskyDecompKernel(int ind, const float *A, float *L, float diagonal, int nr_rows_A, int nr_cols_A){
+	/*int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;*/
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	__shared__ float temp[BLOCK_START_SIZE];
+	
+	if (row < nr_rows_A) {
+		int x = threadIdx.x, y = threadIdx.y, problem = blockIdx.x;
+		//temp[x] = -A[row + ind];
+		for(int i = 0; i < ind; i++){
+			L[row + ind] += L[row + i] * L[ ind * nr_cols_A + i];
+		}
+		//run Gauss-Jordan in shared memory (see next slide)
+		#pragma unroll
+		for( int i = 0; i < BLOCK_SIZE; i++ ) {
+			if( y == i ) temp[y][x] /= temp[i][i];
+			__syncthreads( );
+			if( y != i ) temp[y][x] -= temp[y][i]*temp[i][x];
+		}
+		//copy result to global memory
+		L[32*32*problem+32*y+x] = temp[y][x];
 	}
 }
 
