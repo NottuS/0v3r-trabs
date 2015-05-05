@@ -315,7 +315,7 @@ void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 	gsl_matrix_float_view gA = gsl_matrix_float_view_array(A, nr_rows_A, nr_cols_A);
 	//gsl_matrix_float *gA = gsl_matrix_float_alloc (nr_rows_A, nr_cols_A);
 	gsl_linalg_float_cholesky_decomp(&gA.matrix);
-	gsl_linalg_float_cholesky_invert(&gA.matrix);
+	//gsl_linalg_float_cholesky_invert(&gA.matrix);
 }
 
 void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
@@ -340,20 +340,27 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, float *d
 	/*int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;*/
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	__shared__ float temp[BLOCK_START_SIZE];
+
 	float sum = A[row * nr_cols_A + ind];
-	__shared__ float temp1[BLOCK_START_SIZE];
-	__shared__ float temp2[BLOCK_START_SIZE];
-
-
+	
 	if (row < nr_rows_A) {
 		int x = threadIdx.x, y = threadIdx.y, problem = blockIdx.x;
-		temp1[x] = L[row + i];
-		temp2[x] = L[ind * nr_cols_A + x];
-		__syncthreads( );
-		for(int i = 0; i < ind; i++){
-			//sum -= L[row + i] * L[ ind * nr_cols_A + i];
-			sum -= temp1[i] * temp2[i];
+
+		for (int k = 0; k < ceil(ind/BLOCK_START_SIZE); ++k) {
+			temp[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
 			__syncthreads( );
+			if((k+1)*BLOCK_START_SIZE < ind) {
+				#pragma unroll
+				for(int i = 0; i < BLOCK_START_SIZE; i++){
+					sum -= L[row * nr_cols_A + i] * temp[i];
+				}
+			} else {
+				for(int i = 0; i < ind % BLOCK_START_SIZE; i++){
+					sum -= L[row * nr_cols_A + i] * temp[i];
+				}
+			}
 		}
 
 		//check : L must be updated after this...
@@ -362,24 +369,20 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, float *d
 		} else {
 			L[row * nr_cols_A + ind] = sum / diagonal[row];
 		}
-
-		//run Gauss-Jordan in shared memory (see next slide)
-		#pragma unroll
-		for( int i = 0; i < BLOCK_SIZE; i++ ) {
-			if( y == i ) temp[y][x] /= temp[i][i];
-
-			if( y != i ) temp[y][x] -= temp[y][i]*temp[i][x];
-		}
-		//copy result to global memory
-		L[32*32*problem+32*y+x] = temp[y][x];
 	}
 }
 
 
 //TODO
-void pMatInverse(const float *A, int nr_rows_A, int nr_cols_A, float *result){
-	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
-	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_A) / dimBlock.y));
+void pMatInverse(const float *A, float *L, int nr_rows_A, int nr_cols_A){
+	dim3 dimBlock(BLOCK_START_SIZE);
+	float *diagonal = (float *) malloc(sizeof(float) * nr_rows_A);
+	
+	for(int i = 0; i < nr_rows_A; i++){
+		dim3 dimGrid(ceil(float(nr_rows_A - i) / dimBlock.x));
+		choleskyDecompKernel<<<dimGrid, dimBlock>>>(i, A, L, diagonal, nr_rows_A, nr_cols_A);
+		CUDA_CHECK_RETURN(cudaDeviceSynchronize());
+	}
 }
 
 //TODO correct this one

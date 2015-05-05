@@ -46,17 +46,21 @@ void comp(int argc, char** argv){
 	}
 
 	thrust::device_vector<float> d_A(nr_rows_A * nr_cols_A),
-			d_B(nr_rows_B * nr_cols_B), d_C(nr_rows_C * nr_cols_C);
+			d_B(nr_rows_B * nr_cols_B), d_C(nr_rows_C * nr_cols_C), d_T(nr_rows_C * nr_cols_C);
 
 	// Fill the arrays A and B on GPU with random numbers
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A);
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_B[0]), nr_rows_B, nr_cols_B);
+	//GPU_fill_rand(thrust::raw_pointer_cast(&d_T[0]), nr_rows_B, nr_cols_B);
+	pMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_A[0]), thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A, nr_cols_A);
 	//thrust::device_vector<int> vec(d_A, d_A + n);
-
+	cudaDeviceSynchronize();
+	
 	thrust::host_vector<float>A(d_A.begin(), d_A.begin() + d_A.size());
 	thrust::host_vector<float>B(d_B.begin(), d_B.begin() + d_B.size());
+	thrust::host_vector<float>T(d_T.begin(), d_T.begin() + d_T.size());
 	thrust::host_vector<float>C(nr_rows_C * nr_cols_C);
-
+	sMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&A[0]), thrust::raw_pointer_cast(&A[0]), nr_rows_A, nr_cols_A, nr_cols_A);
 
 	clock_t start = clock();
 	switch (operation) {
@@ -73,8 +77,9 @@ void comp(int argc, char** argv){
 					thrust::raw_pointer_cast(&B[0]), nr_rows_A, nr_cols_A);
 			break;
 		case INV:
-			sMatInverse(thrust::raw_pointer_cast(&A[0]),
-					nr_rows_A, nr_cols_A, thrust::raw_pointer_cast(&C[0]));
+			/*sMatInverse(thrust::raw_pointer_cast(&A[0]),
+					nr_rows_A, nr_cols_A, thrust::raw_pointer_cast(&C[0]));*/
+			choleskyDecomp(thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&A[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
 			thrust::host_vector<float>T(A.begin(), A.begin() + A.size());
@@ -138,7 +143,7 @@ void comp(int argc, char** argv){
 					thrust::raw_pointer_cast(&d_B[0]), nr_rows_A, nr_cols_A);
 			break;
 		case INV:
-
+				pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
 			break;
