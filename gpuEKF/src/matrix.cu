@@ -323,11 +323,10 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	float sum;
 	for(i = 0; i < nr_rows_A; i++) {
 		for (j = 0; j <= i; ++j) {
-			sum = 0;
+			sum = A[i*nr_cols_A + j];
 			for(k = 0; k < j; k++) {
-				sum += L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
+				sum -= L[i*nr_cols_A +k] * L[j*nr_cols_A + k];
 			}
-			sum -= A[i*nr_cols_A + j];
 			if(i == j) {
 				L[i*nr_cols_A + j] = sqrt(sum);
 			} else {
@@ -337,23 +336,38 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	}
 }
 
-__global__ void choleskyDecompKernel(int ind, const float *A, float *L, float diagonal, int nr_rows_A, int nr_cols_A){
+__global__ void choleskyDecompKernel(int ind, const float *A, float *L, float *diagonal, int nr_rows_A, int nr_cols_A){
 	/*int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;*/
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	__shared__ float temp[BLOCK_START_SIZE];
-	
+	float sum = A[row * nr_cols_A + ind];
+	__shared__ float temp1[BLOCK_START_SIZE];
+	__shared__ float temp2[BLOCK_START_SIZE];
+
+
 	if (row < nr_rows_A) {
 		int x = threadIdx.x, y = threadIdx.y, problem = blockIdx.x;
-		//temp[x] = -A[row + ind];
+		temp1[x] = L[row + i];
+		temp2[x] = L[ind * nr_cols_A + x];
+		__syncthreads( );
 		for(int i = 0; i < ind; i++){
-			L[row + ind] += L[row + i] * L[ ind * nr_cols_A + i];
+			//sum -= L[row + i] * L[ ind * nr_cols_A + i];
+			sum -= temp1[i] * temp2[i];
+			__syncthreads( );
 		}
+
+		//check : L must be updated after this...
+		if( row == ind ){
+			diagonal[row] = L[row * nr_cols_A + ind] = sqrt(sum);
+		} else {
+			L[row * nr_cols_A + ind] = sum / diagonal[row];
+		}
+
 		//run Gauss-Jordan in shared memory (see next slide)
 		#pragma unroll
 		for( int i = 0; i < BLOCK_SIZE; i++ ) {
 			if( y == i ) temp[y][x] /= temp[i][i];
-			__syncthreads( );
+
 			if( y != i ) temp[y][x] -= temp[y][i]*temp[i][x];
 		}
 		//copy result to global memory
