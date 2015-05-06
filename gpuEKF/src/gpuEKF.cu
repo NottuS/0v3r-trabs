@@ -79,7 +79,7 @@ void comp(int argc, char** argv){
 		case INV:
 			/*sMatInverse(thrust::raw_pointer_cast(&A[0]),
 					nr_rows_A, nr_cols_A, thrust::raw_pointer_cast(&C[0]));*/
-			choleskyDecomp(thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&A[0]), nr_rows_A, nr_cols_A);
+			choleskyDecomp(thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
 			thrust::host_vector<float>T(A.begin(), A.begin() + A.size());
