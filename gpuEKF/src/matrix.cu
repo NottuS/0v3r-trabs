@@ -346,41 +346,46 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 	if (row < nr_rows_A) {
 		int x = threadIdx.x;
 		float sum = A[row * nr_cols_A + ind];
-		/*for (int k = 0; k < ceilf(ind/BLOCK_START_SIZE); ++k) {
+		for (int k = 0; k < ceilf((ind + 0.0)/BLOCK_START_SIZE); ++k) {
 			temp[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
 			__syncthreads( );
 			if((k+1)*BLOCK_START_SIZE >= ind) {
 				#pragma unroll
 				for(int i = 0; i < BLOCK_START_SIZE; i++){
-					sum -= L[row * nr_cols_A + i] * temp[i];
+					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp[i];
 				}
 			} else {
 				for(int i = 0; i < ind % BLOCK_START_SIZE; i++){
-					sum -= L[row * nr_cols_A + i] * temp[i];
+					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp[i];
 				}
 			}
-		}*/
-
-		//check : L must be updated after this...
-		if( row == ind ){
-			L[row * nr_cols_A + ind] = sqrtf(sum);
-		} else {
-			if( row < ind )
-				L[row * nr_cols_A + ind] = 0;
-			else
-				L[row * nr_cols_A + ind] = sum / L[ind * nr_cols_A + ind];
 		}
+
+		if( row == ind )
+			sum = sqrtf(sum);
+		L[row * nr_cols_A + ind] = sum;
 	}
 }
 
-
+__global__ void updateCholesky(int ind, float *L, int nr_rows_A, int nr_cols_A){
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	if (row < nr_rows_A && row != ind ) {
+		if( row < ind )
+			L[row * nr_cols_A + ind] = 0;
+		else
+			L[row * nr_cols_A + ind] /=  L[ind * nr_cols_A + ind];
+	}
+}
 //TODO
 void pMatInverse(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	dim3 dimBlock(BLOCK_START_SIZE);
 	
-	for(int i = 0; i < 1; i++){
+	for(int i = 0; i < nr_rows_A; i++){
 		dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x));
 		choleskyDecompKernel<<<dimGrid, dimBlock>>>(i, A, L, nr_rows_A, nr_cols_A);
+		CUDA_CHECK_RETURN(cudaDeviceSynchronize());
+		updateCholesky<<<dimGrid, dimBlock>>>(i, L, nr_rows_A, nr_cols_A);
 		CUDA_CHECK_RETURN(cudaDeviceSynchronize());
 	}
 }
