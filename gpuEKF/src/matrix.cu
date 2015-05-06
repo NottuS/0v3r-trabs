@@ -349,7 +349,7 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 		for (int k = 0; k < ceilf((ind + 0.0)/BLOCK_START_SIZE); ++k) {
 			temp[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
 			__syncthreads( );
-			if((k+1)*BLOCK_START_SIZE >= ind) {
+			if((k+1)*BLOCK_START_SIZE <= ind) {
 				#pragma unroll
 				for(int i = 0; i < BLOCK_START_SIZE; i++){
 					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp[i];
