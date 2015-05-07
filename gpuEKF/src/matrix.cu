@@ -314,7 +314,7 @@ void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
 */
 	gsl_matrix_float_view gA = gsl_matrix_float_view_array(A, nr_rows_A, nr_cols_A);
 	//gsl_matrix_float *gA = gsl_matrix_float_alloc (nr_rows_A, nr_cols_A);
-	gsl_linalg_float_cholesky_decomp(&gA.matrix);
+	//gsl_linalg_float_cholesky_decomp(&gA.matrix);
 	//gsl_linalg_float_cholesky_invert(&gA.matrix);
 }
 
@@ -331,6 +331,24 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 				L[i*nr_cols_A + j] = sqrt(sum);
 			} else {
 				L[i*nr_cols_A + j] = sum / L[j*nr_cols_A + j];
+			}
+		}
+	}
+}
+
+__global__ void choleskyDecompKernel2(int ind, const float *A, float *L, int nr_rows_A, int nr_cols_A){
+	/*int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;*/
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	__shared__ float temp[BLOCK_START_SIZE];
+
+	if (row < nr_rows_A) {
+		int x = threadIdx.x;
+		
+		for(int i = 1; i < nr_rows_A; i++){
+			for(int j = i; j < nr_rows_A; j++){
+				
 			}
 		}
 	}

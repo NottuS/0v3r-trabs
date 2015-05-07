@@ -93,7 +93,7 @@ void comp(int argc, char** argv){
 			break;
 	}
 	clock_t end = clock();
-	printf("seq Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
+	printf("seq took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 	if(argc < 4 || atoi(argv[3]) != 0){
 		print_matrix(thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
 	}
@@ -119,7 +119,7 @@ void comp(int argc, char** argv){
 	}
 
 	end = clock();
-	printf("par Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
+	printf("par took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 	thrust::copy(d_C.begin(), d_C.end(), C.begin());
 	// deallocate any capacity which may currently be associated with vec
 	//vec.shrink_to_fit();
@@ -135,7 +135,7 @@ void comp(int argc, char** argv){
 					thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A);
 			break;
 		case MUL:
-			pMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),
+			pMatMul(NOT_TRANSP, NOT_TRANSP, thrust::raw_pointer_cast(&d_C[0]), thrust::raw_pointer_cast(&d_A[0]),
 					thrust::raw_pointer_cast(&d_B[0]),	nr_rows_A, nr_cols_A, nr_cols_A);
 			break;
 		case SUM:
@@ -150,7 +150,7 @@ void comp(int argc, char** argv){
 	}
 
 	end = clock();
-	printf("My par Mul took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
+	printf("My par took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 	thrust::copy(d_C.begin(), d_C.end(), C.begin());
 	// deallocate any capacity which may currently be associated with vec
 	//vec.shrink_to_fit();
