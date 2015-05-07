@@ -2,13 +2,13 @@ BUILD = ./build
 SRCS =  $(wildcard src/*.cu)
 OBJS = $(addprefix $(BUILD)/,$(notdir $(SRCS:.cu=.o)))
 NVCC = /usr/local/cuda/bin/nvcc
-CUDACOMP =
+CUDACOMP = -gencode arch=compute_11,code=compute_11 -gencode arch=compute_20,code=compute_20 -gencode arch=compute_30,code=compute_30 -gencode arch=compute_11,code=sm_11 -gencode arch=compute_20,code=sm_21 -gencode arch=compute_30,code=sm_30
 LIBS = -lcublas -lcurand -lgsl -lgslcblas -lm
 INCLUDES = -I/usr/local/include/gsl
 #-G : Generate debug-able device code
 #-g : Generate debug-able code
 #-O : Generate optimized code
-NVCCFLAGS = --ptxas-options=-v -G -g -O0 $(CUDACOMP) -c 
+NVCCFLAGS = -G -g -O0 $(CUDACOMP) -c 
 
 EXEC = gpuekf
 vpath %.cu ./src
@@ -20,12 +20,12 @@ $(BUILD):
 	@mkdir -p $(BUILD)    
     
 $(BUILD)/$(EXEC): $(OBJS) 
-	$(NVCC) --cudart static --relocatable-device-code=false -link -o $@ $^
+	$(NVCC) --cudart static -link -o $@ $^ $(LIBS)
 
 $(BUILD)/%.o: src/%.cu
 	@echo 'Building file: $<'
 	@echo 'Invoking: NVCC Compiler'
-	$(NVCC) $(INCLUDES) -c $< -o $@ $(LIBS)
+	$(NVCC) $(INCLUDES) $(NVCCFLAGS) $< -o $@
 	@echo 'Finished building: $<'
 	@echo ' '
 
