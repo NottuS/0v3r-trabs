@@ -16,12 +16,12 @@
 #include <stdlib.h>
 #include <ctime>
 #include <iostream>
-#include<math.h>
+#include <math.h>
 
 #include<cublas_v2.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
-#include <cusolverDn.h>
+//#include <cusolverDn.h>
 
 #include "matrix.h"
 #include "EKF.h"
@@ -45,7 +45,7 @@ void comp(int argc, char** argv){
 		nr_rows_A = nr_cols_A = nr_rows_B = nr_cols_B = nr_rows_C = nr_cols_C = atoi(argv[1]);
 		operation = atoi(argv[2]);
 	}
-
+	
 	thrust::device_vector<float> d_A(nr_rows_A * nr_cols_A),
 			d_B(nr_rows_B * nr_cols_B), d_C(nr_rows_C * nr_cols_C), d_T(nr_rows_C * nr_cols_C);
 
@@ -53,7 +53,7 @@ void comp(int argc, char** argv){
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A);
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_B[0]), nr_rows_B, nr_cols_B);
 	//GPU_fill_rand(thrust::raw_pointer_cast(&d_T[0]), nr_rows_B, nr_cols_B);
-	cublasMatMul(handle, NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_A[0]), thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A, nr_cols_A);
+	pMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_A[0]), thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A, nr_cols_A);
 	//thrust::device_vector<int> vec(d_A, d_A + n);
 	cudaDeviceSynchronize();
 	
@@ -144,10 +144,10 @@ void comp(int argc, char** argv){
 					thrust::raw_pointer_cast(&d_B[0]), nr_rows_A, nr_cols_A);
 			break;
 		case INV:
-				pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
+			pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
-			cudaEvent_t start, stop;
+			/*cudaEvent_t start, stop;
 			    cudaEventCreate(&start);
 			    cudaEventCreate(&stop);
 			    cudaEventRecord(start, 0);
@@ -169,7 +169,7 @@ void comp(int argc, char** argv){
 			cudaMemcpy(&d, devInfo, sizeof(int), cudaMemcpyDeviceToHost);
 			printf("Tempo total : %f \n, %d", elapsedTime/1000, d);
 			cudaEventDestroy(start);
-			cudaEventDestroy(stop);
+			cudaEventDestroy(stop);*/
 			
 			break;
 	}

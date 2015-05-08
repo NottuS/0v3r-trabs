@@ -178,7 +178,7 @@ void cublasMatMul(cublasHandle_t &handle, int transp_1, int transp_2, float *C,
 	// Do the actual multiplication
 	// matrix - matrix multiplication : C = alf*A*B + bet*C
 	// A -mxk matrix , B -kxn matrix , C -mxn matrix ;
-	CUBLAS_CHECK_RETURN(cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+	CUBLAS_CHECK_RETURN(cublasSgemm(handle, (cublasOperation_t)transp_1, (cublasOperation_t)transp_2,
 			m, n, k, alpha, A, m, B, k, beta, C, m));
 }
 
