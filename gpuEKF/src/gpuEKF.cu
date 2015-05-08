@@ -21,6 +21,7 @@
 #include<cublas_v2.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
+#include <cusolverDn.h>
 
 #include "matrix.h"
 #include "EKF.h"
@@ -146,6 +147,14 @@ void comp(int argc, char** argv){
 				pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
+		    cusolverDnHandle_t solver_handle;
+		    cusolverDnCreate(&solver_handle);
+		    int *devInfo; cudaMalloc(&devInfo, sizeof(int));
+		    int work_size = 0;
+		    cusolverDnSpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_LOWER, nr_rows_A, thrust::raw_pointer_cast(&d_T[0]), nr_rows_A, &work_size);
+		    float *work; cudaMalloc(&work, work_size * sizeof(float));
+		    cusolverDnSpotrf(solver_handle, CUBLAS_FILL_MODE_LOWER, nr_rows_A, thrust::raw_pointer_cast(&d_T[0]), nr_rows_A, work, work_size, devInfo);
+
 			break;
 	}
 
