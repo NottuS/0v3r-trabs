@@ -147,14 +147,30 @@ void comp(int argc, char** argv){
 				pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
+			cudaEvent_t start, stop;
+			    cudaEventCreate(&start);
+			    cudaEventCreate(&stop);
+			    cudaEventRecord(start, 0);
 		    cusolverDnHandle_t solver_handle;
 		    cusolverDnCreate(&solver_handle);
 		    int *devInfo; cudaMalloc(&devInfo, sizeof(int));
 		    int work_size = 0;
-		    cusolverDnSpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_LOWER, nr_rows_A, thrust::raw_pointer_cast(&d_T[0]), nr_rows_A, &work_size);
+		    if(CUSOLVER_STATUS_SUCCESS != cusolverDnSpotrf_bufferSize(solver_handle, CUBLAS_FILL_MODE_LOWER, nr_rows_A, thrust::raw_pointer_cast(&d_T[0]), nr_rows_A, &work_size))
+		    	printf("erro on cusolver 1");
 		    float *work; cudaMalloc(&work, work_size * sizeof(float));
-		    cusolverDnSpotrf(solver_handle, CUBLAS_FILL_MODE_LOWER, nr_rows_A, thrust::raw_pointer_cast(&d_T[0]), nr_rows_A, work, work_size, devInfo);
+		    if(CUSOLVER_STATUS_SUCCESS != cusolverDnSpotrf(solver_handle, CUBLAS_FILL_MODE_LOWER, nr_rows_A, thrust::raw_pointer_cast(&d_T[0]), nr_rows_A, work, work_size, devInfo))
+		    	printf("erro on cusolver 2");
+		    cudaEventRecord(stop, 0);
+		    cudaEventSynchronize(stop);
 
+			float elapsedTime;
+			cudaEventElapsedTime( &elapsedTime, start, stop );
+			int d;
+			cudaMemcpy(devInfo, &d, sizeof(int), cudaMemcpyDeviceToHost);
+			printf("Tempo total : %f \n", elapsedTime/1000);
+			cudaEventDestroy(start);
+			cudaEventDestroy(stop);
+			
 			break;
 	}
 

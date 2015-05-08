@@ -3,7 +3,7 @@ SRCS =  $(wildcard src/*.cu)
 OBJS = $(addprefix $(BUILD)/,$(notdir $(SRCS:.cu=.o)))
 NVCC = /usr/local/cuda/bin/nvcc
 CUDACOMP = -gencode arch=compute_11,code=compute_11 -gencode arch=compute_20,code=compute_20 -gencode arch=compute_30,code=compute_30 -gencode arch=compute_11,code=sm_11 -gencode arch=compute_20,code=sm_21 -gencode arch=compute_30,code=sm_30
-LIBS = -lcublas -lcurand -lgsl -lgslcblas -lm
+LIBS = -lcublas -lcurand -lcusolver -lgsl -lgslcblas -lm
 INCLUDES = -I/usr/local/include/gsl
 #-G : Generate debug-able device code
 #-g : Generate debug-able code
