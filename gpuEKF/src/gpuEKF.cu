@@ -53,7 +53,7 @@ void comp(int argc, char** argv){
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A);
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_B[0]), nr_rows_B, nr_cols_B);
 	//GPU_fill_rand(thrust::raw_pointer_cast(&d_T[0]), nr_rows_B, nr_cols_B);
-	pMatMul(NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_A[0]), thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A, nr_cols_A);
+	cublasMatMul(handle, NOT_TRANSP, TRANSP, thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_A[0]), thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A, nr_cols_A);
 	//thrust::device_vector<int> vec(d_A, d_A + n);
 	cudaDeviceSynchronize();
 	
@@ -166,8 +166,8 @@ void comp(int argc, char** argv){
 			float elapsedTime;
 			cudaEventElapsedTime( &elapsedTime, start, stop );
 			int d;
-			cudaMemcpy(devInfo, &d, sizeof(int), cudaMemcpyDeviceToHost);
-			printf("Tempo total : %f \n", elapsedTime/1000);
+			cudaMemcpy(&d, devInfo, sizeof(int), cudaMemcpyDeviceToHost);
+			printf("Tempo total : %f \n, %d", elapsedTime/1000, d);
 			cudaEventDestroy(start);
 			cudaEventDestroy(stop);
 			
