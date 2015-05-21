@@ -359,22 +359,26 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 	int col = blockIdx.x * blockDim.x + threadIdx.x;*/
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	
-	__shared__ float temp[BLOCK_START_SIZE];
-
+	__shared__ float temp1[BLOCK_START_SIZE];
+	__shared__ float temp2[BLOCK_START_SIZE]
+	
 	if (row < nr_rows_A) {
 		int x = threadIdx.x;
 		float sum = A[row * nr_cols_A + ind];
 		for (int k = 0; k < ceilf((ind + 0.0)/BLOCK_START_SIZE); ++k) {
-			temp[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
+			temp1[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
+			temp2[x] = L[row * nr_cols_A + BLOCK_START_SIZE * k + x];
 			__syncthreads( );
 			if((k+1)*BLOCK_START_SIZE <= ind) {
 				#pragma unroll
 				for(int i = 0; i < BLOCK_START_SIZE; i++){
-					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp[i];
+					//sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp1[i];
+					sum -= temp2[i] * temp1[i];
 				}
 			} else {
 				for(int i = 0; i < ind % BLOCK_START_SIZE; i++){
-					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp[i];
+					//sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp1[i];
+					sum -= temp2[i] * temp1[i];
 				}
 			}
 		}
