@@ -76,13 +76,13 @@ __global__ void kernelMatMul(float *C, const float *A,
 		{
 			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
 			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
-			tempA[threadIdx.y][threadIdx.x] = A[threadIdx.y * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
-			tempB[threadIdx.y][threadIdx.x] = B[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_B + threadIdx.x];
+			tempA[threadIdx.y][threadIdx.x] = A[row * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
+			tempB[threadIdx.y][threadIdx.x] = B[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_B + col];
 			__syncthreads();
 
 			#pragma unroll
 			for (int j = 0; j < BLOCK_SIZE; ++j)
-				Cvalue += 1*tempA[threadIdx.y][j] * tempB[j][threadIdx.x] + 0*C[row * nr_cols_A + col] ;
+				Cvalue += tempA[threadIdx.y][j] * tempB[j][threadIdx.x];
 
 			__syncthreads();
 		}
@@ -107,13 +107,13 @@ __global__ void transp1kernelMatMul(float *C, const float *A,
 		{
 			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
 			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
-			tempA[threadIdx.y][threadIdx.x] = A[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_A + threadIdx.x];
-			tempB[threadIdx.y][threadIdx.x] = B[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_B + threadIdx.x];
+			tempA[threadIdx.y][threadIdx.x] = A[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_A + col];
+			tempB[threadIdx.y][threadIdx.x] = B[(BLOCK_SIZE * i + threadIdx.y) * nr_cols_B + col];
 			__syncthreads();
 
 			#pragma unroll
 			for (int j = 0; j < BLOCK_SIZE; ++j)
-				Cvalue += 1*tempA[j][threadIdx.y] * tempB[j][threadIdx.x] + 0*C[row * nr_cols_A + col] ;
+				Cvalue += tempA[j][threadIdx.y] * tempB[j][threadIdx.x];
 
 			__syncthreads();
 		}
@@ -138,13 +138,13 @@ __global__ void transp2kernelMatMul(float *C, const float *A,
 		{
 			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
 			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
-			tempA[threadIdx.y][threadIdx.x] = A[threadIdx.y * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
-			tempB[threadIdx.y][threadIdx.x] = B[threadIdx.y * nr_cols_B + BLOCK_SIZE * i + threadIdx.x];
+			tempA[threadIdx.y][threadIdx.x] = A[row * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
+			tempB[threadIdx.y][threadIdx.x] = B[row * nr_cols_B + BLOCK_SIZE * i + threadIdx.x];
 			__syncthreads();
 
 			#pragma unroll
 			for (int j = 0; j < BLOCK_SIZE; ++j)
-				Cvalue += 1*tempA[threadIdx.y][j] * tempB[threadIdx.x][j] + 0*C[row * nr_cols_A + col] ;
+				Cvalue += tempA[threadIdx.y][j] * tempB[threadIdx.x][j] ;
 
 			__syncthreads();
 		}
@@ -166,6 +166,10 @@ void pMatMul(int transp_1, int transp_2, float *C, const float *A, const float *
 		transp2kernelMatMul<<<dimGrid, dimBlock>>>(C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
 	else
 		kernelMatMul<<<dimGrid, dimBlock>>>(C, A, B, nr_rows_A, nr_cols_A, nr_cols_B);
+	cudaError_t e = cudaGetLastError();
+	if (e != cudaSuccess){
+		printf("%s \n", cudaGetErrorString(e));
+	}
 }
 
 void cublasMatMul(cublasHandle_t &handle, int transp_1, int transp_2, float *C,
@@ -337,20 +341,36 @@ void choleskyDecomp(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 }
 
 __global__ void choleskyDecompKernel2(int ind, const float *A, float *L, int nr_rows_A, int nr_cols_A){
-	/*int row = blockIdx.y * blockDim.y + threadIdx.y;
-	int col = blockIdx.x * blockDim.x + threadIdx.x;*/
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	
-	__shared__ float temp[BLOCK_START_SIZE];
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-	if (row < nr_rows_A) {
-		int x = threadIdx.x;
-		
-		for(int i = 1; i < nr_rows_A; i++){
-			for(int j = i; j < nr_rows_A; j++){
-				
+	__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
+	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];
+
+	if (row < nr_rows_A && col < ind) {
+		//TODO Check if all their work is done, and the indexs
+		float sum = A[row * nr_cols_A + ind];
+
+		for (int i = 0; i < ceil(float(ind)/(BLOCK_SIZE)); ++i) {
+
+			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
+			tempA[threadIdx.y][threadIdx.x] = A[ind * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
+			tempB[threadIdx.y][threadIdx.x] = A[row * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
+			__syncthreads();
+			if(ind > (i + 1) * BLOCK_SIZE){
+				for (int j = 0; j < BLOCK_SIZE ; ++j)
+					sum -= tempA[threadIdx.y][j] * tempB[threadIdx.y][j];
+			} else {
+				for (int j = 0; j < ind % BLOCK_SIZE ; ++j)
+					sum -= tempA[threadIdx.y][j] * tempB[threadIdx.y][j];
 			}
+			__syncthreads();
 		}
+
+		if( row == ind )
+			sum = sqrtf(sum);
+		L[row * nr_cols_A + ind] = sum;
 	}
 }
 
@@ -360,27 +380,51 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	__shared__ float temp1[BLOCK_START_SIZE];
-	__shared__ float temp2[BLOCK_START_SIZE]
+	//__shared__ float temp2[BLOCK_START_SIZE];
 	
 	if (row < nr_rows_A) {
 		int x = threadIdx.x;
 		float sum = A[row * nr_cols_A + ind];
 		for (int k = 0; k < ceilf((ind + 0.0)/BLOCK_START_SIZE); ++k) {
 			temp1[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
-			temp2[x] = L[row * nr_cols_A + BLOCK_START_SIZE * k + x];
+			//temp2[x] = L[row * nr_cols_A + BLOCK_START_SIZE * k + 0];
+
 			__syncthreads( );
 			if((k+1)*BLOCK_START_SIZE <= ind) {
 				#pragma unroll
-				for(int i = 0; i < BLOCK_START_SIZE; i++){
+				for(int i = 0; i < BLOCK_START_SIZE/8; i += 8){
+					float a,b,c,d, a1, b1, c1, d1;
+					a = L[row * nr_cols_A + k * BLOCK_START_SIZE + i];
+					b = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 1];
+					c = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 2];
+					d = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 3];
+					a1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 4];
+					b1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 5];
+					c1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 6];
+					d1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 7];
 					//sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp1[i];
-					sum -= temp2[i] * temp1[i];
+					//sum -= temp2[i] * temp1[i];
+					sum -= a * temp1[i] + b * temp1[i+1] + c * temp1[i+2] + d * temp1[i+3] +
+							a1 * temp1[i+4] + b1 * temp1[i+5] + c1 * temp1[i+6] + d1 * temp1[i+7];
 				}
 			} else {
-				for(int i = 0; i < ind % BLOCK_START_SIZE; i++){
+				for(int i = 0; i < ind % BLOCK_START_SIZE/8; i += 8){
+					float a,b,c,d, a1, b1, c1, d1;
+					a = L[row * nr_cols_A + k * BLOCK_START_SIZE + i];
+					b = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 1];
+					c = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 2];
+					d = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 3];
+					a1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 4];
+					b1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 5];
+					c1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 6];
+					d1 = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 7];
 					//sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp1[i];
-					sum -= temp2[i] * temp1[i];
+					//sum -= temp2[i] * temp1[i];
+					sum -= a * temp1[i] + b * temp1[i+1] + c * temp1[i+2] + d * temp1[i+3] +
+							a1 * temp1[i+4] + b1 * temp1[i+5] + c1 * temp1[i+6] + d1 * temp1[i+7];
 				}
 			}
+			__syncthreads();
 		}
 
 		if( row == ind )
@@ -399,12 +443,15 @@ __global__ void updateCholesky(int ind, float *L, int nr_rows_A, int nr_cols_A){
 			L[row * nr_cols_A + ind] /=  L[ind * nr_cols_A + ind];
 	}
 }
+
 //TODO
 void pMatInverse(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	dim3 dimBlock(BLOCK_START_SIZE);
-	
+	dim3 dimBlock2(BLOCK_SIZE, BLOCK_SIZE);
+	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x));
+	dim3 dimGrid2(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_A) / dimBlock.y));
+
 	for(int i = 0; i < nr_rows_A; i++){
-		dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x));
 		choleskyDecompKernel<<<dimGrid, dimBlock>>>(i, A, L, nr_rows_A, nr_cols_A);
 		CUDA_CHECK_RETURN(cudaDeviceSynchronize());
 		updateCholesky<<<dimGrid, dimBlock>>>(i, L, nr_rows_A, nr_cols_A);

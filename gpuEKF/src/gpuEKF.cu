@@ -48,6 +48,7 @@ void comp(int argc, char** argv){
 	
 	thrust::device_vector<float> d_A(nr_rows_A * nr_cols_A),
 			d_B(nr_rows_B * nr_cols_B), d_C(nr_rows_C * nr_cols_C), d_T(nr_rows_C * nr_cols_C);
+	 thrust::fill(d_C.begin(), d_C.end(), 0);
 
 	// Fill the arrays A and B on GPU with random numbers
 	GPU_fill_rand(thrust::raw_pointer_cast(&d_A[0]), nr_rows_A, nr_cols_A);
