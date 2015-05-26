@@ -347,14 +347,19 @@ __global__ void choleskyDecompKernel2(int ind, const float *A, float *L, int nr_
 	__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
 	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];
 
-	if (row < nr_rows_A && col < ind) {
+	if (row < nr_rows_A && col < BLOCK_SIZE) {
 		//TODO Check if all their work is done, and the indexs
 		float sum = A[row * nr_cols_A + ind];
+			for(int i = col; i < ind; i += BLOCK_SIZE){
+				sum -= L[ind * nr_cols_A + i] * L[row * nr_cols_A + i];
+			}
 
-		for (int i = 0; i < ceil(float(ind)/(BLOCK_SIZE)); ++i) {
+
+
+		/*for (int i = 0; i < ceil(float(ind)/(BLOCK_SIZE)); ++i) {
 
 			/*tempA[threadIdx.y*BLOCK_SIZE + threadIdx.x] = A[row * nr_col_A + i * BLOCK_START_SIZE + threadIdx.x];
-			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];*/
+			tempB[threadIdx.y*BLOCK_SIZE + threadIdx.x] = B[(i * BLOCK_START_SIZE + threadIdx.x)* nr_cols_B *  + row];
 			tempA[threadIdx.y][threadIdx.x] = A[ind * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
 			tempB[threadIdx.y][threadIdx.x] = A[row * nr_cols_A + BLOCK_SIZE * i + threadIdx.x];
 			__syncthreads();
@@ -366,11 +371,15 @@ __global__ void choleskyDecompKernel2(int ind, const float *A, float *L, int nr_
 					sum -= tempA[threadIdx.y][j] * tempB[threadIdx.y][j];
 			}
 			__syncthreads();
-		}
-
-		if( row == ind )
+		}*/
+		L[row * nr_cols_A + col] = sum;
+		__syncthreads();
+		if( row == ind ){
+			for(int i = 0; i < BLOCK_SIZE; i++){
+				sum -= L[row * nr_cols_A + i];
+			}
 			sum = sqrtf(sum);
-		L[row * nr_cols_A + ind] = sum;
+		}
 	}
 }
 
@@ -392,7 +401,7 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 			__syncthreads( );
 			if((k+1)*BLOCK_START_SIZE <= ind) {
 				#pragma unroll
-				for(int i = 0; i < BLOCK_START_SIZE/8; i += 8){
+				for(int i = 0; i < BLOCK_START_SIZE; i += 8){
 					float a,b,c,d, a1, b1, c1, d1;
 					a = L[row * nr_cols_A + k * BLOCK_START_SIZE + i];
 					b = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 1];
@@ -408,7 +417,7 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 							a1 * temp1[i+4] + b1 * temp1[i+5] + c1 * temp1[i+6] + d1 * temp1[i+7];
 				}
 			} else {
-				for(int i = 0; i < ind % BLOCK_START_SIZE/8; i += 8){
+				for(int i = 0; i < ind % BLOCK_START_SIZE; i += 8){
 					float a,b,c,d, a1, b1, c1, d1;
 					a = L[row * nr_cols_A + k * BLOCK_START_SIZE + i];
 					b = L[row * nr_cols_A + k * BLOCK_START_SIZE + i + 1];
@@ -427,6 +436,38 @@ __global__ void choleskyDecompKernel(int ind, const float *A, float *L, int nr_r
 			__syncthreads();
 		}
 
+		if( row == ind )
+			sum = sqrtf(sum);
+		L[row * nr_cols_A + ind] = sum;
+	}
+}
+
+__global__ void oldCD(int ind, const float *A, float *L, int nr_rows_A, int nr_cols_A){
+	int row = blockIdx.x * blockDim.x + threadIdx.x;
+
+	__shared__ float temp1[BLOCK_START_SIZE];
+	//__shared__ float temp2[BLOCK_START_SIZE];
+
+	if (row < nr_rows_A) {
+		int x = threadIdx.x;
+		float sum = A[row * nr_cols_A + ind];
+		for (int k = 0; k < ceilf((ind + 0.0)/BLOCK_START_SIZE); ++k) {
+			temp1[x] = L[ind * nr_cols_A + BLOCK_START_SIZE * k + x];
+						//temp2[x] = L[row * nr_cols_A + BLOCK_START_SIZE * k + 0];
+
+			__syncthreads( );
+			if((k+1)*BLOCK_START_SIZE <= ind) {
+				#pragma unroll
+				for(int i = 0; i < BLOCK_START_SIZE; i++){
+					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp1[i];
+				}
+			} else {
+				for(int i = 0; i < ind % BLOCK_START_SIZE; i++){
+					sum -= L[row * nr_cols_A + k * BLOCK_START_SIZE + i] * temp1[i];
+				}
+			}
+			__syncthreads();
+		}
 		if( row == ind )
 			sum = sqrtf(sum);
 		L[row * nr_cols_A + ind] = sum;
@@ -449,7 +490,7 @@ void pMatInverse(const float *A, float *L, int nr_rows_A, int nr_cols_A){
 	dim3 dimBlock(BLOCK_START_SIZE);
 	dim3 dimBlock2(BLOCK_SIZE, BLOCK_SIZE);
 	dim3 dimGrid(ceil(float(nr_rows_A) / dimBlock.x));
-	dim3 dimGrid2(ceil(float(nr_rows_A) / dimBlock.x), ceil(float(nr_cols_A) / dimBlock.y));
+	dim3 dimGrid2(ceil(float(nr_rows_A) / dimBlock.y), BLOCK_SIZE);
 
 	for(int i = 0; i < nr_rows_A; i++){
 		choleskyDecompKernel<<<dimGrid, dimBlock>>>(i, A, L, nr_rows_A, nr_cols_A);
