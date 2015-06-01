@@ -12,11 +12,39 @@ void fowardSubst(float *L, float *I, float *res,float n){
 
 	for(int i = 0; i < n; i++){
 		for(int j = 0; j < n; j++){
-			float sum = L[j*n+i];
+			float sum = I[j*n+i];
 			for(int k = 0; k < j; k++){
 				sum -= L[j*n + k]*res[k*n+i];
 			}
 			res[j*n + i] = sum/L[j*n+j];
+		}
+	}
+}
+
+__global__ void fowardSubstKernel(float *L, float *I, float *res,float n){
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (col < n) {
+		for(int j = 0; j < n; j++){
+			float sum = I[j*n+col];
+			for(int k = 0; k < j; k++){
+				sum -= L[j*n + k]*res[k*n+col];
+			}
+			res[j*n + col] = sum/L[j*n+j];
+		}
+	}
+}
+
+__global__ void  backSubstkernel(float *L, float *I, float *res,float n){
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (col < n) {
+		for(int j = n-1; j >= 0; j--){
+			float sum = L[j*n+col];
+			for(int k = n - 1; k > j; k--){
+				sum -= L[j*n + k]*res[k*n+col];
+			}
+			res[j*n + col] = sum/L[j*n+j];
 		}
 	}
 }
