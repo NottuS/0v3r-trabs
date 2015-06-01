@@ -8,7 +8,32 @@
 
 #define BLOCk 32
 
-void choleskyDecomp(const float *A, float *L, int n, int nr_cols_A){
+void fowardSubst(float *L, float *I, float *res,float n){
+
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n; j++){
+			float sum = L[j*n+i];
+			for(int k = 0; k < j; k++){
+				sum -= L[j*n + k]*res[k*n+i];
+			}
+			res[j*n + i] = sum/L[j*n+j];
+		}
+	}
+}
+
+void backSubst(float *L, float *I, float *res,float n){
+	for(int i = 0; i < n; i++){
+		for(int j = n-1; j >= 0; j--){
+			float sum = L[j*n+i];
+			for(int k = n - 1; k > j; k--){
+				sum -= L[j*n + k]*res[k*n+i];
+			}
+			res[j*n + i] = sum/L[j*n+j];
+		}
+	}
+}
+
+void choleskyDecomp(const float *A, float *L, int n){
 	int i,j,k;
 	float sum;
 	for(i = 0; i < n; i++) {
@@ -61,5 +86,9 @@ void invert( int n) {
 		A[i*n+i] += 2*sqrt((float)n);
 	}
 
+	choleskyDecomp(h_A, h_L, n);
+	fowardSubst(h_L, I, res,n);
+	trasnpose(h_L,n);
+	backSubst(h_L, res, I, n);
 
 }
