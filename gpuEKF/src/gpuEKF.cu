@@ -24,6 +24,7 @@
 //#include <cusolverDn.h>
 
 #include "matrix.h"
+#include "Inverse.h"
 #include "EKF.h"
 
 #define TRANS 0
@@ -81,7 +82,7 @@ void comp(int argc, char** argv){
 		case INV:
 			/*sMatInverse(thrust::raw_pointer_cast(&A[0]),
 					nr_rows_A, nr_cols_A, thrust::raw_pointer_cast(&C[0]));*/
-			choleskyDecomp(thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
+			//choleskyDecomp(thrust::raw_pointer_cast(&T[0]), thrust::raw_pointer_cast(&C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
 			/*thrust::host_vector<float>T(A.begin(), A.begin() + A.size());
@@ -145,7 +146,7 @@ void comp(int argc, char** argv){
 					thrust::raw_pointer_cast(&d_B[0]), nr_rows_A, nr_cols_A);
 			break;
 		case INV:
-			pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
+			//pMatInverse(thrust::raw_pointer_cast(&d_T[0]), thrust::raw_pointer_cast(&d_C[0]), nr_rows_A, nr_cols_A);
 			break;
 		default:
 			/*cudaEvent_t start, stop;
@@ -196,5 +197,6 @@ void parallelEKF(float *mean, float *covariance){
 }
 
 int main(int argc, char** argv) {
-	comp(argc, argv);
+	//comp(argc, argv);
+	testInvert(atoi(argv[1]));
 }
