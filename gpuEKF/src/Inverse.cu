@@ -265,7 +265,29 @@ void pMatInverse(float *A, float *L, float *I, int n){
 	}
 }*/
 
+void sInvert(float *A, float *L, int n){
+	thrust::host_vector<float>h_I(n*n);
+	float *I = thrust::raw_pointer_cast(&h_I[0]);
+	
+	thrust::fill(h_I.begin(), h_I.end(), 0);
+	for(int i = 0; i < n; i++)
+		I[i *n +i] = 1;
+	choleskyDecomp(L, A, n);
+	fowardSubst(A, L, I, n);
+	sMatTranspose(I, L, n, n);
+	backSubst(L, I, A,  n);
+}
 
+void pInverse(float *A, float *L, int n){
+	thrust::host_vector<float>h_I(n*n);
+	float *I = thrust::raw_pointer_cast(&h_I[0]);
+	createIdentity(I, n);
+	choleskyDecomp(L, A, n);
+	//print_matrix(L, n, n);
+	fowardSubst(A, L, I, n);
+	sMatTranspose(I, L, n, n);
+	backSubst(L, I, A,  n);
+}
 
 void testInvert( int n) {
 	thrust::device_vector<float> d_A(n * n);
