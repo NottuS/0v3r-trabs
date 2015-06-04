@@ -274,6 +274,7 @@ void testInvert( int n) {
 	thrust::host_vector<float>h_A(n * n);
 	thrust::host_vector<float>h_L(n * n);
 	thrust::host_vector<float>h_I(n*n);
+	thrust::host_vector<float>b_A(n*n);
 
 	float *A = thrust::raw_pointer_cast(&h_A[0]);
 	float *I = thrust::raw_pointer_cast(&h_I[0]);
@@ -295,24 +296,34 @@ void testInvert( int n) {
 	thrust::fill(h_I.begin(), h_I.end(), 0);
 	for(int i = 0; i < n; i++)
 		I[i *n +i] = 1;
-
+	thrust::copy(h_A.begin(), h_A.end(), b_A.begin());
 	thrust::copy(h_A.begin(), h_A.end(), d_A.begin());
 	thrust::copy(h_I.begin(), h_I.end(), d_I.begin());
 
-	clock_t start = clock();
+	/*clock_t start = clock();
 	choleskyDecomp(L, A, n);
 	//print_matrix(L, n, n);
 	fowardSubst(A, L, I, n);
 	sMatTranspose(I, L, n, n);
 	backSubst(L, I, A,  n);
 	clock_t end = clock();
-	printf("seq took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
+	printf("seq took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);*/
 	//print_matrix(L, n, n);
+
+	//print_matrix(L, n, n);
+
+
+	thrust::copy(b_A.begin(), b_A.end(), h_A.begin());
+	clock_t start = clock();
+	sMatInverse(A, n,n , L);
+	clock_t end = clock();
+	//print_matrix(A, n, n);
+	printf("seq2 took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 
 	start = clock();
 	pMatInverse(dA, dL, dI, n);
 	end = clock();
 	printf("par took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 	thrust::copy(d_L.begin(), d_L.end(), h_A.begin());
-	//print_matrix(A, n, n);
+
 }

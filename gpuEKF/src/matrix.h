@@ -22,7 +22,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
-//#include "cholesky_single.h"
+#include "cholesky_single.h"
 
 #define TRANSP 1
 #define NOT_TRANSP 0
