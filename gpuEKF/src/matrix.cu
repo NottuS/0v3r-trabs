@@ -305,7 +305,7 @@ void cublasMatTranspose(cublasHandle_t &handle, float *C, const float *A, const 
 
 
 
-void sMatInverse(float *A, int nr_rows_A, int nr_cols_A, float *resultado){
+void sMatInverse(float *A, int nr_rows_A, int nr_cols_A){
 	/*thrust::device_vector<float> I(nr_rows_A * nr_cols_A);
 	thrust::host_vector<float> L(nr_rows_A * nr_cols_A);
 	thrust::fill(I.begin(), I.end(), 0);

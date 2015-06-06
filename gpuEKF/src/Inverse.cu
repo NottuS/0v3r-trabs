@@ -5,6 +5,7 @@
 #include <thrust/device_vector.h>
 #include "matrix.h"
 #include <math.h>
+#include "gpuUtils.h"
 #include "Inverse.h"
 
 void fowardSubst(float *res, float *L, float *I, int n){
@@ -21,6 +22,20 @@ void fowardSubst(float *res, float *L, float *I, int n){
 }
 
 __global__ void fowardSubstKernel(float *res, float *L, float *I, int n){
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (col < n) {
+		for(int j = 0; j < n; j++){
+			float sum = I[j*n+col];
+			for(int k = 0; k < j; k++){
+				sum -= L[j*n + k]*res[k*n+col];
+			}
+			res[j*n + col] = sum/L[j*n+j];
+		}
+	}
+}
+
+__global__ void fowardSubstKernel2(float *res, float *L, float *I, int n){
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (col < n) {
@@ -82,8 +97,8 @@ __global__ void choleskyDecompKernel2(int ind, const float *A, float *L, int n){
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-	__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
-	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];
+	/*__shared__ float tempA[BLOCK_SIZE][BLOCK_SIZE];
+	__shared__ float tempB[BLOCK_SIZE][BLOCK_SIZE];*/
 
 	if (row < n && col < BLOCK_SIZE) {
 		//TODO Check if all their work is done, and the indexs
@@ -278,17 +293,6 @@ void sInvert(float *A, float *L, int n){
 	backSubst(L, I, A,  n);
 }
 
-void pInverse(float *A, float *L, int n){
-	thrust::host_vector<float>h_I(n*n);
-	float *I = thrust::raw_pointer_cast(&h_I[0]);
-	createIdentity(I, n);
-	choleskyDecomp(L, A, n);
-	//print_matrix(L, n, n);
-	fowardSubst(A, L, I, n);
-	sMatTranspose(I, L, n, n);
-	backSubst(L, I, A,  n);
-}
-
 void testInvert( int n) {
 	thrust::device_vector<float> d_A(n * n);
 	thrust::device_vector<float> d_L(n * n);
@@ -314,7 +318,6 @@ void testInvert( int n) {
 		}
 		A[i*n+i] += 2*sqrt((float)n);
 	}
-
 	thrust::fill(h_I.begin(), h_I.end(), 0);
 	for(int i = 0; i < n; i++)
 		I[i *n +i] = 1;
@@ -337,11 +340,12 @@ void testInvert( int n) {
 
 	thrust::copy(b_A.begin(), b_A.end(), h_A.begin());
 	clock_t start = clock();
-	sMatInverse(A, n,n , L);
+	sMatInverse(A, n,n);
 	clock_t end = clock();
 	//print_matrix(A, n, n);
 	printf("seq2 took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 
+	thrust::fill(d_L.begin(), d_L.end(), 0);
 	start = clock();
 	pMatInverse(dA, dL, dI, n);
 	end = clock();

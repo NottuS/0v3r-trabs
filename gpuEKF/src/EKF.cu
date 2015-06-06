@@ -160,7 +160,7 @@ void EKF(int dim, float *mean, float *covariance, const float *control, const fl
 	sMatSum(temp, kalmanGain, temp, dim, dim);
 	//(H * E * H^T + observationError)^-1
 	//check this, probabily wrong
-	sMatInverse(temp, dim, dim, temp);
+	sMatInverse(temp, dim, dim);
 	//K = E * H^T * (H * E * H^T + observationError)^-1
 	sMatMul(NOT_TRANSP, NOT_TRANSP, kalmanGain, partial, temp, dim, dim, dim);
 

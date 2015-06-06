@@ -16,7 +16,6 @@ void backSubst(float *res, float *L, float *I, int n);
 void choleskyDecomp(float *L, const float *A, int n);
 void pMatInverse(float *A, float *L, float *I, int n);
 void sInvert(float *A, float *L, int n);
-void pInvert(float *A, float *L, int n);
 void testInvert( int n);
 
 #endif /* INVERSE_H_ */
