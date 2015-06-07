@@ -1,6 +1,7 @@
 
 #include "matrix.h"
 #include "EKF.h"
+#include "Inverse.h"
 
 float *odometryError(const float *control, int dim){
 	float *error = (float *) calloc(dim * dim, sizeof(float));
@@ -116,7 +117,6 @@ void addLandmark(float *mean, float *covariance, const float *observation, int *
 	mean[*dim - 1 ] = mean[MEAN_Y] + observation[FOCAL_LENGTH] *
 			observation[K_Y] * (observation[CAM_Y]/observation[CAM_Z]);
 }
-
 
 //TODO take care on mul transpose, the lenghs of the matrix must be swaped
 void EKF(int dim, float *mean, float *covariance, const float *control, const float *observation){

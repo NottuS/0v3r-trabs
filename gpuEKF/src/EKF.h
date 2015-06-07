@@ -9,7 +9,7 @@
 #define EKF_H_
 
 
-//Important Index
+//Importants Index
 #define MEAN_X 0
 #define MEAN_Y 1
 #define MEAN_TETA 2
