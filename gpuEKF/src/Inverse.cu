@@ -377,23 +377,23 @@ void testInvert( int n) {
 	thrust::copy(h_A.begin(), h_A.end(), d_A.begin());
 	thrust::copy(h_I.begin(), h_I.end(), d_I.begin());
 
-	/*clock_t start = clock();
+	clock_t start = clock();
 	choleskyDecomp(L, A, n);
 	//print_matrix(L, n, n);
 	fowardSubst(A, L, I, n);
 	sMatTranspose(I, L, n, n);
 	backSubst(L, I, A,  n);
 	clock_t end = clock();
-	printf("seq took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);*/
+	printf("seq took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 	//print_matrix(L, n, n);
 
 	//print_matrix(L, n, n);
 
 
 	thrust::copy(b_A.begin(), b_A.end(), h_A.begin());
-	clock_t start = clock();
+	start = clock();
 	sMatInverse(A, n,n);
-	clock_t end = clock();
+	end = clock();
 	//print_matrix(A, n, n);
 	printf("seq2 took: %f seconds \n", float(end - start) / CLOCKS_PER_SEC);
 

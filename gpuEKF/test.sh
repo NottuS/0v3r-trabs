@@ -1,0 +1,14 @@
+echo 64
+build/gpuekf 64 
+echo 128
+build/gpuekf 128 
+echo 256
+build/gpuekf 256 
+echo 512
+build/gpuekf 512 
+echo 1024
+build/gpuekf 1024
+echo 2048
+build/gpuekf 2048
+echo 4096
+build/gpuekf 4096
