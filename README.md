@@ -79,6 +79,27 @@ GPU - CUDA
     * Tentar utilizar non-caching loads para mem global;
     * Aumentar o tamanho da memoria local;
     * Profile counters: l1_local_load_hit, l1_local_load_miss, l1_local_store_hit, l1_store_load_miss; incremente em 1 para cada transação de 128 bytes;
+ - The number of units constrains only the number of instructions issued each cycle. I.e. each clock cycle 32 read instructions could be issued, and 32 results could be returned.
+
+ - One instruction can read/write up to 128 bytes, so if each thread in warp reads 4 bytes and they are coalesced, then whole warp would require a single load/store instruction. If accesses are uncoalesced, then more instruction should be issued.
+
+ - Moreover, units are pipelined, meaning multiple read/store request could be executing concurrently by single unit.
+    
+- Fermi 
+ * 16 SMs
+ * 1.5 TF
+ * 6GB DDR5
+ * 768 kb L2
+ * DRAM(global): 192BG/s
+ * PCI - express 2 (8GB/s)
+ * SMs spcs:
+   * 32 CUDA cores
+   * 16 LD/ST units (load/store)
+   * 4 SFU 
+   * dual warp scheduler
+   * 64 KB L1 cache/ share mem
+   *  32k 32 bits regs
+   
 -------------------------------------------------------------------------------------------------------------------
 Robotica - SLAM
 - Robotica é a ciência que compreende e manipula o mundo fisíco atraves de um dispositivo controlado pro um computador(Probabilistics robotics)
