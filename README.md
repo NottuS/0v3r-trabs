@@ -84,7 +84,9 @@ GPU - CUDA
  - One instruction can read/write up to 128 bytes, so if each thread in warp reads 4 bytes and they are coalesced, then whole warp would require a single load/store instruction. If accesses are uncoalesced, then more instruction should be issued.
 
  - Moreover, units are pipelined, meaning multiple read/store request could be executing concurrently by single unit.
-    
+ - SFUs: The HW implementation is based on quadratic interpolation in ROM tables using fixed-point arithmetic.
+ - When you call cos(), exp, sin, log,etc... you do not use the SFU, but instead perform several FMAD instructions that implement a more precise approximation of the trascendental function.
+
 - Fermi 
  * 16 SMs
  * 1.5 TF
@@ -99,7 +101,43 @@ GPU - CUDA
    * dual warp scheduler
    * 64 KB L1 cache/ share mem
    *  32k 32 bits regs
-   
+
+-Kepler
+  * 15 SMXs
+  * 1536kb L2 (GK110)
+  * PCi Express 3 (15GB/s) 
+  * Hyper Q - 32 HW queues GPU Direct, permite que mais CPUs cores(ate 32 ao mesmo tempo) executem tarefas na GPU.
+  * Direct memcopies
+  * Dynamic parallelism ,nested kernel launches, kernels and streams can generate more streams.
+  * SMs Spcs:
+    * clock menor q a da fermi
+    * 192 CUDA cores
+    * 64 DP units(double prec)
+    * 32 load/store units
+    * 32 SFUs
+    * Quad warp scheduler, allowing four warps to be issued and executed concurrently, and two independent instructions per
+warp can be dispatched each cycle. Unlike Fermi, which did not permit double precision instructions to
+be paired with other instructions, Kepler GK110 allows double precision instructions to be paired with
+other instructions.
+    * 64kb L1/ shared mem GK110, GK210 128 kb
+
+    * 65 kb 32-bits regs GK110, 128 kb 32-bits regs GK210
+    * 48kb read-only data.
+  
+-Maxwell
+   * 16 SMM
+   * PCi Express 3 (15GB/s) 
+   * 2048 Kb L2(GM204)
+   * More active thread blocks per SMM(32)
+   * Shared memory atomics
+   * SMM spcs:
+     * 128 CUDA cores
+     * 32 load/store units
+     * 32 SFUs
+     * 96 Kb dedicated shared memory
+     * 64 kb L1/Texture cache
+     * Quad warp scheduler
+     * 65 kb 32-bits regs GK110, 
 -------------------------------------------------------------------------------------------------------------------
 Robotica - SLAM
 - Robotica é a ciência que compreende e manipula o mundo fisíco atraves de um dispositivo controlado pro um computador(Probabilistics robotics)
