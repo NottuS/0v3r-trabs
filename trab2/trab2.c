@@ -39,7 +39,7 @@ void distributeMatrix(int problemSize, int  *matrix, int *partialMatrix, rank, s
     	{
     		for (k = i; k < (i+1); ++k)
 	    	{
-	    		partialMatrix[j*PROBLEM_SIZE + k] = block[(j / BLOCKSIZE) * BLOCKSIZE + (k / BLOCKSIZE)];
+	    		partialMatrix[j*PROBLEM_SIZE + k] = block[(j % BLOCKSIZE) * BLOCKSIZE + (k % BLOCKSIZE)];
 	    	}
     	}
     	total++;
@@ -48,10 +48,10 @@ void distributeMatrix(int problemSize, int  *matrix, int *partialMatrix, rank, s
     		l = (l + BLOCKSIZE) % PROBLEM_SIZE;
     	}
 
-    	if( total = (PROBLEM_SIZE/BLOCKSIZE) * (PROBLEM_SIZE/BLOCKSIZE) ){
+    	if( total = ((PROBLEM_SIZE/BLOCKSIZE) * (PROBLEM_SIZE/BLOCKSIZE))/size ){
     		end = true;
     	}
-	}
+    }
 }
 
 void applyRules(int *block, int stride, int size, int rank, int extra){
