@@ -57,9 +57,9 @@ void distributeMatrix(int problemSize, int  *matrix, int *partialMatrix, rank, s
 void applyRules(int *write, int *read, int stride, int numProc, int rank, int extra){
 	int i, j, k, l;
 	int deadCount, liveCount;
-	for (i = 0; i < numProc; ++i)
+	for (i = 0; i < PROBLEM_SIZE + 2; ++i)
 	{
-		for (j = 0; j < numProc; j++){
+		for (j = 0; j < PROBLEM_SIZE + 2; j++){
 			deadCount = 0;
 			liveCount = 0;
 			//arrumar indices: add stride ou n
@@ -67,24 +67,25 @@ void applyRules(int *write, int *read, int stride, int numProc, int rank, int ex
 			{
 				for (l = -1; l < 2; ++l)
 				{
-					if (read[(i+extra+k) * numProc + (j+extra+l)] && k != 1 && l != 1) {
+					if (read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)] && k != 1 && l != 1) {
 						liveCount++;
 					} /*else {
 						deadCount++;
 					}*/
 				}
-			}numProc
-			if(read[(i+extra) * numProc + (j+extra)] && liveCount < 2){
-				write[(i+extra) * numProc + (j+extra)] = DEAD;
 			}
-			if (write[(i+extra) * numProc + (j+extra)]
+			if(read[(i) * (PROBLEM_SIZE + 2)+ (j)] && liveCount < 2){
+				write[(i) * numProc + (j)] = DEAD;
+			}
+			if (write[(i) * (PROBLEM_SIZE + 2) + (j)]
 				 && (liveCount == 2 || liveCount == 3)) {
-				write[(i+extra) * numProc + (j+extra)] = LIVE;
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = LIVE;
 			}
-			if(write[(i+extra) * numProc + (j+extra)] && liveCount > 3){
-				write[(i+extra) * numProc + (j+extra)] = DEAD;	
-			numProc			if(!write[(i+extra) * numProc + (j+extra)] && liveCount == 3){
-				write[(i+extra) * numProc + (j+extra)] = LIVE;
+			if(write[(i) * (PROBLEM_SIZE + 2) + (j)] && liveCount > 3){
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = DEAD;	
+			}
+			if(!write[(i) * (PROBLEM_SIZE + 2) + (j)] && liveCount == 3){
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = LIVE;
 			}
 		}
 	}
@@ -92,27 +93,54 @@ void applyRules(int *write, int *read, int stride, int numProc, int rank, int ex
 
 int main(int argc, char* argv[]){
 	int numProc, rank;
-	int i, j, k, cycles;
+	int i, j, k, l, n, cycles;
+	MPI_Comm comm;
+    int dim[2], period[2], reorder;
+    int coord[2], id;
 	MPI_Status status;
-	int matrix[2][PROBLEM_SIZE * PROBLEM_SIZE]
+	int matrix[2][(PROBLEM_SIZE+2) * (PROBLEM_SIZE+2)]
 	int block[BLOCKSIZE * BLOCKSIZE + 4 * BLOCKSIZE)];
-	int extra[4][BLOCKSIZE];
+	int extra[4][PROBLEM_SIZE];
+	int extraDiag[4];
 
-
+	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
 	/* Initialize MPI environment */
 	MPI_Init(&argc, &argv) ;
 	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
-	if (rank == 0)
-	{
-		generateMatrix(PROBLEM_SIZE, matrix);
-	}
-	
+
+
+	generateMatrix(PROBLEM_SIZE, matrix);
+	dim[0]=4; dim[1]=3;/*integer array of size 
+	ndims specifying the number of processes in each dimension*/
+    period[0]=1; period[1]=0;/*logical array of size ndims specifying 
+    whether the grid is periodic (true) or not (false) in each dimension*/
+    reorder=1;/* ranking may be reordered (true) or not (false) (logical)*/
+	MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);	
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
-		//4 x recebe e envia extra
+		//TODO
+		//4 x recebe e envia extra usar MPI_shift
+	 	
 	 	// copia extra
-
+	 	int lastLine = (PROBLEM_SIZE+2 -1) * (PROBLEM_SIZE+2);
+	 	int lastElement = (PROBLEM_SIZE+2) * (PROBLEM_SIZE+2) - 1
+		matrix[j][0] = extraDiag[0];
+		matrix[j][(PROBLEM_SIZE+2) - 1] = extraDiag[1];
+		matrix[j][lastLine] = extraDiag[2];
+		matrix[j][] = extraDiag[3];
+		//talvez esses n precisem ser copiados, pontero pra matrix no recv
+		for (n = 1; n < PROBLEM_SIZE; ++n)
+		{
+			matrix[j][n] = extra[0][n - 1];
+			matrix[j][lastLine + n] = extra[1][n - 1];
+		}
+		
+		for (n = 1; n < PROBLEM_SIZE; ++n)
+		{
+			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
+			matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1] = extra[3][n - 1];
+		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0], 0, numProc, rank, EXTRASIZE);
 		j = (j + 1) % 2;
 	}
