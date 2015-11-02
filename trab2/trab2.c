@@ -21,7 +21,7 @@ void generateMatrix(int n, int *matrix, int rank){
 	int i;
 
 	srand(time(NULL) + rank);
-	printf("%s\n", );
+	printf("%d\n", rank);
 	for (i = 0; i < n * n; ++i)	{
 		matrix[i] = rand() % 2;
 	}
