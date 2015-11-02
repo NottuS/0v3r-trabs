@@ -142,8 +142,11 @@ int main(int argc, char* argv[]){
 	cycles = 2;
 
 	sprintf(path,"~/%d-%d.out",i,rank);
-
+	printf("emoooo1");
+	fflush(stdout);
 	file = fopen(path, "w+");
+	printf("emoooo2");
+	fflush(stdout);
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
@@ -160,7 +163,7 @@ int main(int argc, char* argv[]){
 		MPI_Isend(&matrix[j][lastElement], 1, 
 			MPI_INT, direction[DOWNRIGHT], tag, MPI_COMM_WORLD, &request);
 		
-		for (n = 1; n < PROBLEM_SIZE; ++n)
+		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
 			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2)];
 			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1];
@@ -210,14 +213,15 @@ int main(int argc, char* argv[]){
 			matrix[j][lastLine + n] = extra[1][n - 1];
 		}*/
 		
-		for (n = 1; n < PROBLEM_SIZE; ++n)
+		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
 			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
 			matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1] = extra[3][n - 1];
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0], 0, 
 						numProc, rank, EXTRASIZE);
-
+		printf("emoooo3");
+	fflush(stdout);
 		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
@@ -227,6 +231,8 @@ int main(int argc, char* argv[]){
 			}
 			fprintf(file,"\n");
 		}
+		printf("emoooo4");
+	fflush(stdout);
 		j = (j + 1) % 2;
 		tag++;
 	}
