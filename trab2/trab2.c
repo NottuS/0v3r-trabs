@@ -103,7 +103,7 @@ int main(int argc, char* argv[]){
 	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
-	generateMatrix(PROBLEM_SIZE + 2, matrix[0], rank);
+	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
 	divideMatrix(numProc, dim);
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
