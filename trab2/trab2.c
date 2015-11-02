@@ -219,20 +219,24 @@ int main(int argc, char* argv[]){
 
 	for (l = 0; l < PROBLEM_SIZE; ++l)
 	{
-		if (coords[0] != 0 && coords[1] != 0 && l != 0)
+		coords[1]--;
+		if (coords[0] + 1 != 0 && coords[1] != 0 && l != 0)
 		{
-			coords[1]--;
+			
 			MPI_Cart_rank(comm, coords, &rank_dest);
 			MPI_Recv(&sendMe, 1, MPI_INT, 0,
 		 		tag, MPI_COMM_WORLD, &status);
 		}
 
-		printf("%d %d", coords[0], coords[1]+1);				
-		/*for (n = 1; n < PROBLEM_SIZE + 1; ++n)
+		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
 			printf("%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
 		}
-		printf("\n");*/
+		if (coords[1] + 1 == dim[1] - 1 && coords[0] == dim[0] - 1)
+		{
+			printf("\n");
+		}
+		
 		coords[1] += 2;
 		MPI_Cart_rank(comm, coords, &rank_dest);
 		MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD, &request);
