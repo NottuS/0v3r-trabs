@@ -7,7 +7,7 @@
 #define LIVE 1
 #define BLOCKSIZE 64
 #define EXTRASIZE 1
-#define PROBLEM_SIZE 64
+#define PROBLEM_SIZE 16
 #define UP 0
 #define UPRIGHT 1
 #define RIGHT 2
@@ -93,6 +93,9 @@ int main(int argc, char* argv[]){
 	int direction[8];
 	int *result;
 	int sendMe;
+	FILE * file;
+	char path[100];
+
 	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
 	/* Initialize MPI environment */
 	MPI_Init(&argc, &argv) ;
@@ -136,7 +139,11 @@ int main(int argc, char* argv[]){
 	coords[0] += 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
-	cycles = 1;
+	cycles = 2;
+
+	sprintf(path,"~/%d-%d.out",i,rank);
+
+	file = fopen(path, "w+");
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
@@ -210,6 +217,16 @@ int main(int argc, char* argv[]){
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0], 0, 
 						numProc, rank, EXTRASIZE);
+
+		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
+		{
+			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
+			{
+				fprintf(file, "%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
+				
+			}
+			fprintf(file,"\n");
+		}
 		j = (j + 1) % 2;
 		tag++;
 	}
@@ -217,10 +234,11 @@ int main(int argc, char* argv[]){
 	j = (j + 1) % 2;
 	MPI_Cart_coords(comm, rank, 2, coords);
 
-	for (l = 0; l < PROBLEM_SIZE; ++l)
+
+	/*for (l = 0; l < PROBLEM_SIZE; ++l)
 	{
 		coords[1]--;
-		if (coords[0] + 1 != 0 && coords[1] != 0 && l != 0)
+		if (coords[0] != 0 && coords[1] + 1 != 0 && l != 0)
 		{
 			
 			MPI_Cart_rank(comm, coords, &rank_dest);
@@ -251,7 +269,7 @@ int main(int argc, char* argv[]){
 			MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD, &request);
 		//}
 	}
-	/*if (rank == 0)
+	if (rank == 0)
 	{
 		result = (int *) malloc(sizeof(int) * (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2);
 		for (i = 0; i < dim[0]; ++i)
