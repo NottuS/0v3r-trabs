@@ -141,11 +141,11 @@ int main(int argc, char* argv[]){
 	direction[UPLEFT] = rank_dest;
 	cycles = 2;
 
-	sprintf(path,"~/%d-%d.out",i,rank);
-	printf("emoooo1");
+	sprintf(path,"/home/eholiveira/0v3r-trabs/trab2/%d-%d.out",i,rank);
+	printf("emoooo1\n");
 	fflush(stdout);
-	file = fopen(path, "w+");
-	printf("emoooo2");
+	file = fopen(path, "w");
+	printf("emoooo2\n");
 	fflush(stdout);
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
@@ -220,7 +220,7 @@ int main(int argc, char* argv[]){
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0], 0, 
 						numProc, rank, EXTRASIZE);
-		printf("emoooo3");
+		printf("emoooo3\n");
 	fflush(stdout);
 		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
 		{
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]){
 			}
 			fprintf(file,"\n");
 		}
-		printf("emoooo4");
+		printf("emoooo4\n");
 	fflush(stdout);
 		j = (j + 1) % 2;
 		tag++;
