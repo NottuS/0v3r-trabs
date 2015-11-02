@@ -17,7 +17,7 @@
 #define LEFT 6
 #define UPLEFT 7
 
-void generateMatrix(int n, int *matrix, rank){
+void generateMatrix(int n, int *matrix, int rank){
 	int i;
 
 	srand(time(NULL) + rank);
