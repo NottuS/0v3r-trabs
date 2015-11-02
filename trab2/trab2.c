@@ -87,8 +87,7 @@ int main(int argc, char* argv[]){
     int coords[2], id;
 	MPI_Status status;
 	MPI_Request request;
-	int matrix[2][(PROBLEM_SIZE+2) * (PROBLEM_SIZE+2)]
-	int block[BLOCKSIZE * BLOCKSIZE + 4 * BLOCKSIZE)];
+	int matrix[2][(PROBLEM_SIZE+2) * (PROBLEM_SIZE+2)];
 	int extra[4][PROBLEM_SIZE];
 	int extraDiag[4];
 	int direction[8];
@@ -156,7 +155,7 @@ int main(int argc, char* argv[]){
 			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_send(&matrix[j][lastElement], 1, 
-			MPI_INT, (rank + 1) % size, tag, MPI_COMM_WORLD);
+			MPI_INT, direction[DOWNRIGHT], tag, MPI_COMM_WORLD);
 		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
 			 tag, MPI_COMM_WORLD, &status);
 
