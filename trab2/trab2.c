@@ -7,7 +7,7 @@
 #define LIVE 1
 #define BLOCKSIZE 64
 #define EXTRASIZE 1
-#define PROBLEM_SIZE 8192
+#define PROBLEM_SIZE 64
 #define UP 0
 #define UPRIGHT 1
 #define RIGHT 2
@@ -136,14 +136,16 @@ int main(int argc, char* argv[]){
 	coords[0] += 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
+	cycles = 1;
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
+		printf("oo %d\n", rank);
 		MPI_Send(&matrix[j][0], 1, 
 			MPI_INT, direction[UPLEFT], tag, MPI_COMM_WORLD);
 		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
 			 tag, MPI_COMM_WORLD, &status);
-
+		printf("o2o %d\n", rank);
 		MPI_Send(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
 			MPI_INT, direction[UPRIGHT], tag, MPI_COMM_WORLD);
 		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
@@ -158,7 +160,7 @@ int main(int argc, char* argv[]){
 			MPI_INT, direction[DOWNRIGHT], tag, MPI_COMM_WORLD);
 		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
 			 tag, MPI_COMM_WORLD, &status);
-
+		printf("ooooo %d\n", rank);
 		for (n = 1; n < PROBLEM_SIZE; ++n)
 		{
 			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2)];
@@ -209,7 +211,7 @@ int main(int argc, char* argv[]){
 	
 	j = (j + 1) % 2;
 	MPI_Cart_coords(comm, rank, 2, coords);
-	
+
 	for (l = 0; l < PROBLEM_SIZE; ++l)
 	{
 		if (coords[0] != 0 && coords[1] != 0 && l != 0)
