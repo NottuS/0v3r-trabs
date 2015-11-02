@@ -207,6 +207,39 @@ int main(int argc, char* argv[]){
 		tag++;
 	}
 	
+	j = (j + 1) % 2;
+	MPI_Cart_coords(comm, rank, 2, coords);
+	
+	for (l = 0; l < PROBLEM_SIZE; ++l)
+	{
+		if (coords[0] != 0 && coords[1] != 0 && l != 0)
+		{
+			coords[1]--;
+			MPI_Cart_rank(comm, coords, &rank_dest);
+			MPI_Recv(&sendMe, 1, MPI_INT, 0,
+		 		tag, MPI_COMM_WORLD, &status);
+		}
+
+						
+		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
+		{
+			printf("%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
+		}
+		printf("\n");
+		coords[1] += 2;
+		MPI_Cart_rank(comm, coords, &rank_dest);
+		MPI_Send(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD);
+		coords[1]--;
+	}
+	if (coords[1] == dim[1] - 1)
+	{
+		if(coords[0] != dim[0] - 1){
+			coords[1]++;
+			coords[0]++;
+			MPI_Cart_rank(comm, coords, &rank_dest);
+			MPI_Send(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD);
+		}
+	}
 	/*if (rank == 0)
 	{
 		result = (int *) malloc(sizeof(int) * (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2);
