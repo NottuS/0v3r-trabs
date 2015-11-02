@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include <mpi.h>
 
 #define DEAD 0
@@ -62,6 +63,22 @@ void applyRules(int *write, int *read, int stride, int numProc, int rank, int ex
 	}
 }
 
+void divideMatrix(int n, int *dim){
+	int i = 3;
+	int cols, rows;
+
+	cols = n/2;
+	while( i < cols){
+		if(n % i == 0){
+			cols = n / i;
+			rows = i;
+		}
+		i++;
+	}
+	dim[0] = rows;
+	dim[1] = cols;
+}
+
 int main(int argc, char* argv[]){
 	int numProc, rank, tag;
 	int i, j, k, l, n, cycles;
@@ -75,6 +92,8 @@ int main(int argc, char* argv[]){
 	int extra[4][PROBLEM_SIZE];
 	int extraDiag[4];
 	int direction[8];
+	int *result;
+	int sendMe;
 	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
 	/* Initialize MPI environment */
 	MPI_Init(&argc, &argv) ;
@@ -82,9 +101,10 @@ int main(int argc, char* argv[]){
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
 	generateMatrix(PROBLEM_SIZE, matrix);
-	dim[0]=4; dim[1]=3;/*integer array of size 
+	divideMatrix(numProc, dim);
+	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
-    period[0]=1; period[1]=0;/*logical array of size ndims specifying 
+    period[0]=1; period[1]=1;/*logical array of size ndims specifying 
     whether the grid is periodic (true) or not (false) in each dimension*/
     reorder=1;/* ranking may be reordered (true) or not (false) (logical)*/
     tag = 0;
@@ -96,6 +116,7 @@ int main(int argc, char* argv[]){
 
  	//TODO acertar as dim
 	MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
+
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
 	direction[DOWN] = rank_dest;
@@ -103,8 +124,8 @@ int main(int argc, char* argv[]){
 	direction[RIGHT] = rank_source;
 	direction[LEFT] = rank_dest;
 	MPI_Cart_coords(comm, rank, 2, coords);
-	coords[0]++;
-	coords[1]++;
+	coords[0] ++;
+	coords[1] ++;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPRIGHT] = rank_dest;
 	coords[0] -= 2;
@@ -113,8 +134,8 @@ int main(int argc, char* argv[]){
 	coords[1] -= 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[DOWNLEFT] = rank_dest;
-	coords[0] += 2; 
-	PI_Cart_rank(comm, coords, &rank_dest);
+	coords[0] += 2;
+	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
@@ -187,10 +208,37 @@ int main(int argc, char* argv[]){
 		tag++;
 	}
 	
-	if (rank == 0)
+	/*if (rank == 0)
 	{
-		//gather
-	}
+		result = (int *) malloc(sizeof(int) * (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2);
+		for (i = 0; i < dim[0]; ++i)
+		{
+			for (k = 0; k < dim[1]; ++k)
+			{
+				if(k != 0 & i != 0) {
+					coords[0] = i;
+					coords[1] = k;
+					MPI_Cart_rank(comm, coords, &rank_dest);
+					MPI_send(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD);
+					MPI_Recv(&result[i * (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2)], (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2), MPI_INT, rank_dest, 
+							tag, MPI_COMM_WORLD, &status);
+				}
+			}
+		}
+
+		for (i = 0; i < PROBLEM_SIZE; ++i)
+		{
+			for (int i = 0; i < PROBLEM_SIZE ; ++i)
+			{
+			}
+		}
+
+	} else {
+		MPI_Recv(&sendMe, 1, MPI_INT, 0,
+			 tag, MPI_COMM_WORLD, &status);
+		MPI_send(&matrix[(j + 1) % 2][0], (PROBLEM_SIZE+2) * (PROBLEM_SIZE+2), 
+			MPI_INT, direction[DOWN], tag, MPI_COMM_WORLD);
+	}*/
 	MPI_Comm_free( &comm );
 	MPI_Finalize() ;
 	return 0;
