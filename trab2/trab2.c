@@ -17,10 +17,10 @@
 #define LEFT 6
 #define UPLEFT 7
 
-void generateMatrix(int n, int *matrix){
+void generateMatrix(int n, int *matrix, rank){
 	int i;
 
-	srand(time(NULL));
+	srand(time(NULL) + rank);
 	for (i = 0; i < n * n; ++i)	{
 		matrix[i] = rand() % 2;
 	}
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]){
 	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
-	generateMatrix(PROBLEM_SIZE + 2, matrix[0]);
+	generateMatrix(PROBLEM_SIZE + 2, matrix[0], rank);
 	divideMatrix(numProc, dim);
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
