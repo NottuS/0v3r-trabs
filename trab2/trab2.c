@@ -46,7 +46,8 @@ void applyRules(int *write, int *read, int stride, int numProc, int rank, int ex
 					}*/
 				}
 			}
-			if(read[(i) * (PROBLEM_SIZE + 2)+ (j)] && liveCount < 2){
+			write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;
+			if(write[(i) * (PROBLEM_SIZE + 2) + (j)] && liveCount < 2){
 				write[(i) * (PROBLEM_SIZE + 2) + (j)] = DEAD;
 			}
 			if (write[(i) * (PROBLEM_SIZE + 2) + (j)]
@@ -102,7 +103,7 @@ int main(int argc, char* argv[]){
 	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
-	generateMatrix(PROBLEM_SIZE, matrix[0]);
+	generateMatrix(PROBLEM_SIZE + 2, matrix[0]);
 	divideMatrix(numProc, dim);
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
@@ -141,15 +142,14 @@ int main(int argc, char* argv[]){
 	direction[UPLEFT] = rank_dest;
 	cycles = 2;
 
-	sprintf(path,"/home/eholiveira/0v3r-trabs/trab2/%d-%d.out",i,rank);
-	printf("emoooo1\n");
-	fflush(stdout);
-	file = fopen(path, "w");
-	printf("emoooo2\n");
-	fflush(stdout);
-
+	
+	
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
+		sprintf(path,"/home/eholiveira/0v3r-trabs/trab2/%d-%d.out",i,rank);
+	
+		file = fopen(path, "w");
+
 		MPI_Isend(&matrix[j][0], 1, 
 			MPI_INT, direction[UPLEFT], tag, MPI_COMM_WORLD, &request);
 		
@@ -220,8 +220,6 @@ int main(int argc, char* argv[]){
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0], 0, 
 						numProc, rank, EXTRASIZE);
-		printf("emoooo3\n");
-	fflush(stdout);
 		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
@@ -231,8 +229,7 @@ int main(int argc, char* argv[]){
 			}
 			fprintf(file,"\n");
 		}
-		printf("emoooo4\n");
-	fflush(stdout);
+		
 		j = (j + 1) % 2;
 		tag++;
 	}
