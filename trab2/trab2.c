@@ -143,47 +143,54 @@ int main(int argc, char* argv[]){
 		printf("oo %d\n", rank);
 		MPI_Isend(&matrix[j][0], 1, 
 			MPI_INT, direction[UPLEFT], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
-			 tag, MPI_COMM_WORLD, &status);
+		
 		printf("o2o %d\n", rank);
 		MPI_Isend(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
 			MPI_INT, direction[UPRIGHT], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
-			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_Isend(&matrix[j][lastLine], 1, 
 			MPI_INT, direction[DOWNLEFT], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, direction[DOWNLEFT],
-			 tag, MPI_COMM_WORLD, &status);
-
+		
 		MPI_Isend(&matrix[j][lastElement], 1, 
 			MPI_INT, direction[DOWNRIGHT], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
-			 tag, MPI_COMM_WORLD, &status);
-		printf("ooooo %d\n", rank);
+		
 		for (n = 1; n < PROBLEM_SIZE; ++n)
 		{
 			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2)];
 			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1];
 		}
-
 		MPI_Isend(&extra[0][0], PROBLEM_SIZE, 
 			MPI_INT, direction[LEFT], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&extra[2][0], PROBLEM_SIZE, MPI_INT, direction[LEFT],
-			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_Isend(&extra[1][0], PROBLEM_SIZE, 
 			MPI_INT, direction[RIGHT], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&extra[3][0], PROBLEM_SIZE, MPI_INT, direction[RIGHT],
-			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_Isend(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, 
 			MPI_INT, direction[UP], tag, MPI_COMM_WORLD, &request);
-		MPI_Recv(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, MPI_INT, direction[UP],
-			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_Isend(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, 
 			MPI_INT, direction[DOWN], tag, MPI_COMM_WORLD, &request);
+		printf("ooooo %d\n", rank);
+
+		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
+			 tag, MPI_COMM_WORLD, &status);
+		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
+			 tag, MPI_COMM_WORLD, &status);
+		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, direction[DOWNLEFT],
+			 tag, MPI_COMM_WORLD, &status);
+		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
+			 tag, MPI_COMM_WORLD, &status);
+				
+		MPI_Recv(&extra[2][0], PROBLEM_SIZE, MPI_INT, direction[LEFT],
+			 tag, MPI_COMM_WORLD, &status);
+
+		MPI_Recv(&extra[3][0], PROBLEM_SIZE, MPI_INT, direction[RIGHT],
+			 tag, MPI_COMM_WORLD, &status);
+
+		
+		MPI_Recv(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, MPI_INT, direction[UP],
+			 tag, MPI_COMM_WORLD, &status);
+
 		MPI_Recv(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, MPI_INT, direction[DOWN],
 			 tag, MPI_COMM_WORLD, &status);
 
