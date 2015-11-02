@@ -21,6 +21,7 @@ void generateMatrix(int n, int *matrix, int rank){
 	int i;
 
 	srand(time(NULL) + rank);
+	printf("%s\n", );
 	for (i = 0; i < n * n; ++i)	{
 		matrix[i] = rand() % 2;
 	}
@@ -100,11 +101,9 @@ int main(int argc, char* argv[]){
 	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
 	/* Initialize MPI environment */
 	MPI_Init(&argc, &argv) ;
-	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
+	
 
-	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
-	divideMatrix(numProc, dim);
+	
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
     period[0]=1; period[1]=1;/*logical array of size ndims specifying 
@@ -119,6 +118,11 @@ int main(int argc, char* argv[]){
 
  	//TODO acertar as dim
 	MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
+	MPI_Comm_size(comm, &numProc) ;
+	MPI_Comm_rank(comm, &rank) ;
+	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
+	divideMatrix(numProc, dim);
+
 
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
@@ -151,17 +155,17 @@ int main(int argc, char* argv[]){
 		file = fopen(path, "w");
 
 		MPI_Isend(&matrix[j][0], 1, 
-			MPI_INT, direction[UPLEFT], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[UPLEFT], tag, comm, &request);
 		
 
 		MPI_Isend(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
-			MPI_INT, direction[UPRIGHT], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[UPRIGHT], tag, comm, &request);
 
 		MPI_Isend(&matrix[j][lastLine], 1, 
-			MPI_INT, direction[DOWNLEFT], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[DOWNLEFT], tag, comm, &request);
 		
 		MPI_Isend(&matrix[j][lastElement], 1, 
-			MPI_INT, direction[DOWNRIGHT], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[DOWNRIGHT], tag, comm, &request);
 		
 		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
@@ -169,38 +173,38 @@ int main(int argc, char* argv[]){
 			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1];
 		}
 		MPI_Isend(&extra[0][0], PROBLEM_SIZE, 
-			MPI_INT, direction[LEFT], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[LEFT], tag, comm, &request);
 
 		MPI_Isend(&extra[1][0], PROBLEM_SIZE, 
-			MPI_INT, direction[RIGHT], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[RIGHT], tag, comm, &request);
 
 		MPI_Isend(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, 
-			MPI_INT, direction[UP], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[UP], tag, comm, &request);
 
 		MPI_Isend(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, 
-			MPI_INT, direction[DOWN], tag, MPI_COMM_WORLD, &request);
+			MPI_INT, direction[DOWN], tag, comm, &request);
 
 		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, direction[DOWNLEFT],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 				
 		MPI_Recv(&extra[2][0], PROBLEM_SIZE, MPI_INT, direction[LEFT],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 
 		MPI_Recv(&extra[3][0], PROBLEM_SIZE, MPI_INT, direction[RIGHT],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 
 		
 		MPI_Recv(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, MPI_INT, direction[UP],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 
 		MPI_Recv(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, MPI_INT, direction[DOWN],
-			 tag, MPI_COMM_WORLD, &status);
+			 tag, comm, &status);
 
 		/*matrix[j][0] = extraDiag[0];
 		matrix[j][(PROBLEM_SIZE+2) - 1] = extraDiag[1];
