@@ -99,8 +99,7 @@ int main(int argc, char* argv[]){
 	char path[100];
 
 	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
-	/* Initialize MPI environment */
-	MPI_Init(&argc, &argv) ;
+	
 	
 
 	
@@ -117,11 +116,14 @@ int main(int argc, char* argv[]){
  	int rank_dest;
 
  	//TODO acertar as dim
+ 	/* Initialize MPI environment */
+	MPI_Init(&argc, &argv) ;
+	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
+	divideMatrix(numProc, dim);
 	MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
-	MPI_Comm_size(comm, &numProc) ;
 	MPI_Comm_rank(comm, &rank) ;
 	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
-	divideMatrix(numProc, dim);
+	
 
 
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
