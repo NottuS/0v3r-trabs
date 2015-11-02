@@ -140,11 +140,10 @@ int main(int argc, char* argv[]){
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
-		printf("oo %d\n", rank);
 		MPI_Isend(&matrix[j][0], 1, 
 			MPI_INT, direction[UPLEFT], tag, MPI_COMM_WORLD, &request);
 		
-		printf("o2o %d\n", rank);
+
 		MPI_Isend(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
 			MPI_INT, direction[UPRIGHT], tag, MPI_COMM_WORLD, &request);
 
@@ -170,7 +169,6 @@ int main(int argc, char* argv[]){
 
 		MPI_Isend(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, 
 			MPI_INT, direction[DOWN], tag, MPI_COMM_WORLD, &request);
-		printf("ooooo %d\n", rank);
 
 		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
 			 tag, MPI_COMM_WORLD, &status);
@@ -229,12 +227,12 @@ int main(int argc, char* argv[]){
 		 		tag, MPI_COMM_WORLD, &status);
 		}
 
-						
-		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
+		printf("%d %d", coords[0], coords[1]+1);				
+		/*for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
 			printf("%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
 		}
-		printf("\n");
+		printf("\n");*/
 		coords[1] += 2;
 		MPI_Cart_rank(comm, coords, &rank_dest);
 		MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD, &request);
@@ -242,12 +240,12 @@ int main(int argc, char* argv[]){
 	}
 	if (coords[1] == dim[1] - 1)
 	{
-		if(coords[0] != dim[0] - 1){
+		//if(coords[0] != dim[0] - 1){
 			coords[1]++;
 			coords[0]++;
 			MPI_Cart_rank(comm, coords, &rank_dest);
 			MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD, &request);
-		}
+		//}
 	}
 	/*if (rank == 0)
 	{
