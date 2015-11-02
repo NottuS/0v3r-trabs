@@ -84,7 +84,7 @@ int main(int argc, char* argv[]){
 	int i, j, k, l, n, cycles;
 	MPI_Comm comm;
     int dim[2], period[2], reorder;
-    int coord[2], id;
+    int coords[2], id;
 	MPI_Status status;
 	MPI_Request request;
 	int matrix[2][(PROBLEM_SIZE+2) * (PROBLEM_SIZE+2)]
@@ -100,7 +100,7 @@ int main(int argc, char* argv[]){
 	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank) ;
 
-	generateMatrix(PROBLEM_SIZE, matrix);
+	generateMatrix(PROBLEM_SIZE, matrix[0]);
 	divideMatrix(numProc, dim);
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
@@ -141,23 +141,23 @@ int main(int argc, char* argv[]){
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
 		MPI_send(&matrix[j][0], 1, 
-			MPI_INT, (rank + 1) % size, tag, MPI_COMM_WORLD);
-		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, (rank - 1) < 0 ? size -1 : rank - 1,
+			MPI_INT, direction[UPLEFT], tag, MPI_COMM_WORLD);
+		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
 			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_send(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
-			MPI_INT, (rank + 1) % size, tag, MPI_COMM_WORLD);
-		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, (rank - 1) < 0 ? size -1 : rank - 1,
+			MPI_INT, direction[UPRIGHT], tag, MPI_COMM_WORLD);
+		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
 			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_send(&matrix[j][lastLine], 1, 
-			MPI_INT, (rank + 1) % size, tag, MPI_COMM_WORLD);
-		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, (rank - 1) < 0 ? size -1 : rank - 1,
+			MPI_INT, direction[DOWNLEFT], tag, MPI_COMM_WORLD);
+		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, direction[DOWNLEFT],
 			 tag, MPI_COMM_WORLD, &status);
 
 		MPI_send(&matrix[j][lastElement], 1, 
 			MPI_INT, (rank + 1) % size, tag, MPI_COMM_WORLD);
-		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, (rank - 1) < 0 ? size -1 : rank - 1,
+		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
 			 tag, MPI_COMM_WORLD, &status);
 
 		for (n = 1; n < PROBLEM_SIZE; ++n)
