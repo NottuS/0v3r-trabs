@@ -184,13 +184,13 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
+		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_INT, direction[UPRIGHT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], 1, MPI_FLOAT, direction[DOWNLEFT],
+		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], 1, MPI_INT, direction[DOWNLEFT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastElement + PROBLEM_SIZE+2 + 1], 1, MPI_FLOAT, direction[DOWNRIGHT],
+		MPI_Recv(&matrix[j][lastElement + PROBLEM_SIZE+2 + 1], 1, MPI_INT, direction[DOWNRIGHT],
 			 tag, comm, &status);
 				
 		MPI_Recv(&extra[2][0], PROBLEM_SIZE, MPI_INT, direction[LEFT],
