@@ -78,6 +78,7 @@ void divideMatrix(int n, int *dim){
 	}
 	dim[0] = rows;
 	dim[1] = cols;
+	printf("%d %d\n", rows, cols);
 }
 
 int main(int argc, char* argv[]){
