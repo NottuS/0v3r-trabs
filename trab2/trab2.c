@@ -3,8 +3,6 @@
 #include <math.h>
 #include <mpi.h>
 
-#define DEAD 0
-#define LIVE 1
 #define BLOCKSIZE 64
 #define EXTRASIZE 1
 #define PROBLEM_SIZE 16
@@ -48,13 +46,13 @@ void applyRules(int *write, int *read){
 				write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;
 			}
 			if (liveCount == 3) {
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = LIVE;
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = 1;
 			}
 			if(liveCount < 2){
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = DEAD;	
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = 0;	
 			}
 			if(liveCount > 3){
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = DEAD;
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = 0;
 			}
 		}
 	}
@@ -137,6 +135,7 @@ int main(int argc, char* argv[]){
 	coords[0] += 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
+
 	cycles = 2;
 	
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
@@ -202,7 +201,7 @@ int main(int argc, char* argv[]){
 			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
 			matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1] = extra[3][n - 1];
 		}
-		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
+		//applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
 		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
