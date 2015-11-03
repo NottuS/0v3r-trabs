@@ -21,7 +21,6 @@ void generateMatrix(int n, int *matrix, int rank){
 	int i;
 
 	srand(time(NULL) + rank);
-	printf("%d\n", rank);
 	for (i = 0; i < n * n; ++i)	{
 		matrix[i] = rand() % 2;
 	}
@@ -100,9 +99,6 @@ int main(int argc, char* argv[]){
 
 	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
 	
-	
-
-	
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
     period[0]=1; period[1]=1;/*logical array of size ndims specifying 
@@ -115,8 +111,7 @@ int main(int argc, char* argv[]){
  	int rank_source;
  	int rank_dest;
 
- 	//TODO acertar as dim
- 	/* Initialize MPI environment */
+	/* Initialize MPI environment */
 	MPI_Init(&argc, &argv) ;
 	MPI_Comm_size(MPI_COMM_WORLD, &numProc) ;
 	divideMatrix(numProc, dim);
@@ -124,8 +119,6 @@ int main(int argc, char* argv[]){
 	MPI_Comm_rank(comm, &rank) ;
 	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
 	
-
-
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
 	direction[DOWN] = rank_dest;
@@ -147,8 +140,6 @@ int main(int argc, char* argv[]){
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
 	cycles = 2;
-
-	
 	
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
@@ -208,17 +199,6 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, MPI_INT, direction[DOWN],
 			 tag, comm, &status);
 
-		/*matrix[j][0] = extraDiag[0];
-		matrix[j][(PROBLEM_SIZE+2) - 1] = extraDiag[1];
-		matrix[j][lastLine] = extraDiag[2];
-		matrix[j][lastElement] = extraDiag[3];
-		//talvez esses n precisem ser copiados, pontero pra matrix no recv
-		for (n = 1; n < PROBLEM_SIZE; ++n)
-		{
-			matrix[j][n] = extra[0][n - 1];
-			matrix[j][lastLine + n] = extra[1][n - 1];
-		}*/
-		
 		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
 			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
@@ -230,7 +210,7 @@ int main(int argc, char* argv[]){
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 			{
-				fprintf(file, "%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
+				fprintf(file, "%d ", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
 				
 			}
 			fprintf(file,"\n");
@@ -239,76 +219,7 @@ int main(int argc, char* argv[]){
 		j = (j + 1) % 2;
 		tag++;
 	}
-	
-	j = (j + 1) % 2;
-	MPI_Cart_coords(comm, rank, 2, coords);
 
-
-	/*for (l = 0; l < PROBLEM_SIZE; ++l)
-	{
-		coords[1]--;
-		if (coords[0] != 0 && coords[1] + 1 != 0 && l != 0)
-		{
-			
-			MPI_Cart_rank(comm, coords, &rank_dest);
-			MPI_Recv(&sendMe, 1, MPI_INT, 0,
-		 		tag, MPI_COMM_WORLD, &status);
-		}
-
-		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
-		{
-			printf("%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
-		}
-		if (coords[1] + 1 == dim[1] - 1 && coords[0] == dim[0] - 1)
-		{
-			printf("\n");
-		}
-		
-		coords[1] += 2;
-		MPI_Cart_rank(comm, coords, &rank_dest);
-		MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD, &request);
-		coords[1]--;
-	}
-	if (coords[1] == dim[1] - 1)
-	{
-		//if(coords[0] != dim[0] - 1){
-			coords[1]++;
-			coords[0]++;
-			MPI_Cart_rank(comm, coords, &rank_dest);
-			MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD, &request);
-		//}
-	}
-	if (rank == 0)
-	{
-		result = (int *) malloc(sizeof(int) * (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2);
-		for (i = 0; i < dim[0]; ++i)
-		{
-			for (k = 0; k < dim[1]; ++k)
-			{
-				if(k != 0 & i != 0) {
-					coords[0] = i;
-					coords[1] = k;
-					MPI_Cart_rank(comm, coords, &rank_dest);
-					MPI_Isend(&sendMe, 1, MPI_INT, rank_dest, tag, MPI_COMM_WORLD);
-					MPI_Recv(&result[i * (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2)], (PROBLEM_SIZE + 2) * (PROBLEM_SIZE + 2), MPI_INT, rank_dest, 
-							tag, MPI_COMM_WORLD, &status);
-				}
-			}
-		}
-
-		for (i = 0; i < PROBLEM_SIZE; ++i)
-		{
-			for (int i = 0; i < PROBLEM_SIZE ; ++i)
-			{
-			}
-		}
-
-	} else {
-		MPI_Recv(&sendMe, 1, MPI_INT, 0,
-			 tag, MPI_COMM_WORLD, &status);
-		MPI_Isend(&matrix[(j + 1) % 2][0], (PROBLEM_SIZE+2) * (PROBLEM_SIZE+2), 
-			MPI_INT, direction[DOWN], tag, MPI_COMM_WORLD);
-	}*/
 	MPI_Comm_free( &comm );
 	MPI_Finalize() ;
 	return 0;
