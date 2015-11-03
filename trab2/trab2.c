@@ -5,6 +5,7 @@
 
 #define EXTRASIZE 1
 #define PROBLEM_SIZE 16
+#define MATRIXSIZE PROBLEM_SIZE + 2
 #define UP 0
 #define UPRIGHT 1
 #define RIGHT 2
@@ -13,6 +14,7 @@
 #define DOWNLEFT 5
 #define LEFT 6
 #define UPLEFT 7
+
 
 void generateMatrix(int n, int *matrix, int rank){
 	int i;
@@ -35,22 +37,22 @@ void applyRules(int *read, int *write){
 				for (l = -1; l < 2; ++l)
 				{
 					if (k || l) {
-						liveCount += read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)];
+						liveCount += read[(i+k) * MATRIXSIZE + (j+l)];
 					} 
 				}
 			}
 
 			if(liveCount == 2){
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;
+				write[(i) * MATRIXSIZE + (j)] = read[(i) * MATRIXSIZE + (j)] ;
 			}
 			if (liveCount == 3) {
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = 1;
+				write[(i) * MATRIXSIZE + (j)] = 1;
 			}
 			if(liveCount < 2){
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = 0;	
+				write[(i) * MATRIXSIZE + (j)] = 0;	
 			}
 			if(liveCount > 3){
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = 0;
+				write[(i) * MATRIXSIZE + (j)] = 0;
 			}
 		}
 	}
@@ -82,7 +84,7 @@ int main(int argc, char* argv[]){
     int coords[2], id;
 	MPI_Status status;
 	MPI_Request request;
-	int matrix[2][(PROBLEM_SIZE+2) * (PROBLEM_SIZE+2)];
+	int matrix[2][MATRIXSIZE * MATRIXSIZE];
 	int extra[4][PROBLEM_SIZE];
 	int extraDiag[4];
 	int direction[8];
@@ -108,7 +110,7 @@ int main(int argc, char* argv[]){
 	divideMatrix(numProc, dim);
 	MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &comm);
 	MPI_Comm_rank(comm, &rank) ;
-	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
+	generateMatrix(MATRIXSIZE, &matrix[0][0], rank);
 	
 	MPI_Cart_shift(comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
@@ -138,7 +140,7 @@ int main(int argc, char* argv[]){
 
 	printf("me%d UPRIGHT%d DOWNRIGHT%d DOWNLEFT%d UPLEFT%d \n", rank, direction[UPRIGHT], direction[DOWNRIGHT], direction[DOWNLEFT], direction[UPLEFT]);
 	cycles = 2;
-	int lastLine = (PROBLEM_SIZE) * (PROBLEM_SIZE+2) + 1;
+	int lastLine = (PROBLEM_SIZE) * MATRIXSIZE + 1;
  	int lastElement = lastLine + PROBLEM_SIZE -1;
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
@@ -147,10 +149,10 @@ int main(int argc, char* argv[]){
 	
 		file = fopen(path, "w");
 
-		MPI_Isend(&matrix[j][PROBLEM_SIZE+2 + 1], 1, 
+		MPI_Isend(&matrix[j][MATRIXSIZE + 1], 1, 
 			MPI_INT, direction[UPLEFT], tag, comm, &request);
 		
-		MPI_Isend(&matrix[j][2*(PROBLEM_SIZE+2) - 2], 1, 
+		MPI_Isend(&matrix[j][2*MATRIXSIZE - 2], 1, 
 			MPI_INT, direction[UPRIGHT], tag, comm, &request);
 
 		MPI_Isend(&matrix[j][lastLine], 1, 
@@ -161,8 +163,8 @@ int main(int argc, char* argv[]){
 		
 		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
-			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2) + 1];
-			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 2];
+			extra[0][n - 1] = matrix[j][n * MATRIXSIZE + 1];
+			extra[1][n - 1] = matrix[j][(n+1) * MATRIXSIZE - 2];
 		}
 
 		MPI_Isend(&extra[0][0], PROBLEM_SIZE, 
@@ -171,7 +173,7 @@ int main(int argc, char* argv[]){
 		MPI_Isend(&extra[1][0], PROBLEM_SIZE, 
 			MPI_INT, direction[RIGHT], tag, comm, &request);
 
-		MPI_Isend(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, 
+		MPI_Isend(&matrix[j][MATRIXSIZE + 1], PROBLEM_SIZE, 
 			MPI_INT, direction[UP], tag, comm, &request);
 
 		MPI_Isend(&matrix[j][lastLine], PROBLEM_SIZE, 
@@ -180,13 +182,13 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][0], 1, MPI_INT, direction[UPLEFT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
+		MPI_Recv(&matrix[j][(MATRIXSIZE-1)], 1, 
 			MPI_INT, direction[UPRIGHT], tag, comm, &status);
 
 		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], 1, 
 			MPI_INT, direction[DOWNLEFT], tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastElement + PROBLEM_SIZE+2 + 1], 1, 
+		MPI_Recv(&matrix[j][lastElement + MATRIXSIZE + 1], 1, 
 			MPI_INT, direction[DOWNRIGHT], tag, comm, &status);
 				
 		MPI_Recv(&extra[2][0], PROBLEM_SIZE, 
@@ -198,13 +200,13 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][1], PROBLEM_SIZE, 
 			MPI_INT, direction[UP], tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 2], PROBLEM_SIZE, 
+		MPI_Recv(&matrix[j][lastLine + MATRIXSIZE], PROBLEM_SIZE, 
 			MPI_INT, direction[DOWN], tag, comm, &status);
 
 		for (n = 0; n < PROBLEM_SIZE; ++n)
 		{
-			matrix[j][(n + 1) * (PROBLEM_SIZE+2)] = extra[2][n];
-			matrix[j][(n + 2) * (PROBLEM_SIZE+2) - 1] = extra[3][n];
+			matrix[j][(n + 1) * MATRIXSIZE] = extra[2][n];
+			matrix[j][(n + 2) * MATRIXSIZE - 1] = extra[3][n];
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
 		j = (j + 1) % 2;
@@ -212,7 +214,7 @@ int main(int argc, char* argv[]){
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 			{
-				fprintf(file, "%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
+				fprintf(file, "%d", matrix[j][l * MATRIXSIZE +n]);
 				
 			}
 			fprintf(file,"\n");
