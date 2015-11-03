@@ -143,7 +143,7 @@ int main(int argc, char* argv[]){
 	printf("me%d UPRIGHT%d DOWNRIGHT%d DOWNLEFT%d UPLEFT%d \n", rank, direction[UPRIGHT], direction[DOWNRIGHT], direction[DOWNLEFT], direction[UPLEFT]);
 	cycles = 2;
 	int lastLine = (PROBLEM_SIZE) * (PROBLEM_SIZE+2) + 1;
- 	int lastElement = lastLine + PROBLEM_SIZE;
+ 	int lastElement = lastLine + PROBLEM_SIZE -1;
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
