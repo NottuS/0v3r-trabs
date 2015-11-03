@@ -102,8 +102,8 @@ int main(int argc, char* argv[]){
     reorder=1;/* ranking may be reordered (true) or not (false) (logical)*/
     tag = 0;
 
- 	int lastLine = (PROBLEM_SIZE+2-1) * (PROBLEM_SIZE+2);
- 	int lastElement = (PROBLEM_SIZE+2) * (PROBLEM_SIZE+2) - 1;
+ 	int lastLine = (PROBLEM_SIZE) * (PROBLEM_SIZE+2) + 1;
+ 	int lastElement = (PROBLEM_SIZE+1) * (PROBLEM_SIZE+2) - 2;
  	int rank_source;
  	int rank_dest;
 
@@ -177,7 +177,7 @@ int main(int argc, char* argv[]){
 		MPI_Isend(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, 
 			MPI_INT, direction[UP], tag, comm, &request);
 
-		MPI_Isend(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, 
+		MPI_Isend(&matrix[j][lastLine], PROBLEM_SIZE, 
 			MPI_INT, direction[DOWN], tag, comm, &request);
 
 		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
@@ -186,10 +186,10 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, direction[DOWNLEFT],
+		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], 1, MPI_FLOAT, direction[DOWNLEFT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
+		MPI_Recv(&matrix[j][lastElement + PROBLEM_SIZE+2], 1, MPI_FLOAT, direction[DOWNRIGHT],
 			 tag, comm, &status);
 				
 		MPI_Recv(&extra[2][0], PROBLEM_SIZE, MPI_INT, direction[LEFT],
@@ -201,10 +201,10 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, MPI_INT, direction[UP],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, MPI_INT, direction[DOWN],
+		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], PROBLEM_SIZE, MPI_INT, direction[DOWN],
 			 tag, comm, &status);
 
-		for (n = 0; n < PROBLEM_SIZE + 1; ++n)
+		for (n = 0; n < PROBLEM_SIZE; ++n)
 		{
 			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n];
 			matrix[j][(n + 1) * (PROBLEM_SIZE+2) - 1] = extra[3][n];
