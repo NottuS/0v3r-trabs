@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
 	printf("me%d LEFT%d RIGHT%d\n", rank, direction[LEFT], direction[RIGHT]);
 
 	MPI_Cart_coords(comm, rank, 2, coords);
-	printf("me%d c0%d c1%d\n", rank, coords[0], coords[0]);
+	printf("me%d c0%d c1%d\n", rank, coords[0], coords[1]);
 	coords[0] ++;
 	coords[1] ++;
 	MPI_Cart_rank(comm, coords, &rank_dest);
