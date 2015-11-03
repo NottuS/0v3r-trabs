@@ -181,7 +181,7 @@ int main(int argc, char* argv[]){
 		MPI_Isend(&matrix[j][lastLine], PROBLEM_SIZE, 
 			MPI_INT, direction[DOWN], tag, comm, &request);
 
-		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
+		MPI_Recv(&matrix[j][0], 1, MPI_INT, direction[UPLEFT],
 			 tag, comm, &status);
 
 		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_INT, direction[UPRIGHT],
@@ -207,8 +207,8 @@ int main(int argc, char* argv[]){
 
 		for (n = 0; n < PROBLEM_SIZE; ++n)
 		{
-			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n];
-			matrix[j][(n + 1) * (PROBLEM_SIZE+2) - 1] = extra[3][n];
+			matrix[j][(n + 1) * (PROBLEM_SIZE+2)] = extra[2][n];
+			matrix[j][(n + 2) * (PROBLEM_SIZE+2) - 1] = extra[3][n];
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
 		j = (j + 1) % 2;
