@@ -73,7 +73,6 @@ void divideMatrix(int n, int *dim){
 	}
 	dim[0] = rows;
 	dim[1] = cols;
-	printf("%d %d %d\n", rows, cols, MATRIXSIZE);
 }
 
 int main(int argc, char* argv[]){
@@ -115,15 +114,13 @@ int main(int argc, char* argv[]){
 	MPI_Cart_shift(comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
 	direction[DOWN] = rank_dest;
-	printf("me%d up%d down%d\n", rank, direction[UP], direction[DOWN]);
-	
+		
 	MPI_Cart_shift( comm, 1, 1, &rank_source, &rank_dest);
 	direction[LEFT] = rank_source;
 	direction[RIGHT] = rank_dest;
-	printf("me%d LEFT%d RIGHT%d\n", rank, direction[LEFT], direction[RIGHT]);
-
+	
 	MPI_Cart_coords(comm, rank, 2, coords);
-	printf("me%d c0%d c1%d\n", rank, coords[0], coords[1]);
+	
 	coords[0] --;
 	coords[1] ++;
 	MPI_Cart_rank(comm, coords, &rank_dest);
@@ -138,7 +135,6 @@ int main(int argc, char* argv[]){
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
 
-	printf("me%d UPRIGHT%d DOWNRIGHT%d DOWNLEFT%d UPLEFT%d \n", rank, direction[UPRIGHT], direction[DOWNRIGHT], direction[DOWNLEFT], direction[UPLEFT]);
 	cycles = 2;
 	int lastLine = (PROBLEM_SIZE) * MATRIXSIZE + 1;
  	int lastElement = lastLine + PROBLEM_SIZE -1;
