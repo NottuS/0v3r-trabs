@@ -118,6 +118,7 @@ int main(int argc, char* argv[]){
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
 	direction[DOWN] = rank_dest;
+	printf("me%d up%d down%d\n", rank, direction[UP], direction[DOWN]);
 	MPI_Cart_shift( comm, 1, 1, &rank_source, &rank_dest);
 	direction[RIGHT] = rank_source;
 	direction[LEFT] = rank_dest;
@@ -175,10 +176,13 @@ int main(int argc, char* argv[]){
 
 		MPI_Recv(&matrix[j][0], 1, MPI_FLOAT, direction[UPLEFT],
 			 tag, comm, &status);
+
 		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_FLOAT, direction[UPRIGHT],
 			 tag, comm, &status);
+
 		MPI_Recv(&matrix[j][lastLine], 1, MPI_FLOAT, direction[DOWNLEFT],
 			 tag, comm, &status);
+
 		MPI_Recv(&matrix[j][lastElement], 1, MPI_FLOAT, direction[DOWNRIGHT],
 			 tag, comm, &status);
 				
@@ -187,7 +191,6 @@ int main(int argc, char* argv[]){
 
 		MPI_Recv(&extra[3][0], PROBLEM_SIZE, MPI_INT, direction[RIGHT],
 			 tag, comm, &status);
-
 		
 		MPI_Recv(&matrix[j][PROBLEM_SIZE + 2 + 1], PROBLEM_SIZE, MPI_INT, direction[UP],
 			 tag, comm, &status);
@@ -211,7 +214,6 @@ int main(int argc, char* argv[]){
 			}
 			fprintf(file,"\n");
 		}
-		
 		
 		tag++;
 	}
