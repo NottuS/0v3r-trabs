@@ -48,9 +48,9 @@ void applyRules(int *write, int *read, int stride, int numProc, int rank, int ex
 			}
 
 			if(liveCount == 2){
-				write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;;
+				write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;
 			}
-			if (liveCount == 3)) {
+			if (liveCount == 3) {
 				write[(i) * (PROBLEM_SIZE + 2) + (j)] = LIVE;
 			}
 			if(liveCount < 2){
