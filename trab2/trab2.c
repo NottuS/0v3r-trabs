@@ -5,7 +5,7 @@
 
 #define EXTRASIZE 1
 #define PROBLEM_SIZE 16
-#define MATRIXSIZE PROBLEM_SIZE + 2
+#define MATRIXSIZE (PROBLEM_SIZE + 2)
 #define UP 0
 #define UPRIGHT 1
 #define RIGHT 2
@@ -73,7 +73,7 @@ void divideMatrix(int n, int *dim){
 	}
 	dim[0] = rows;
 	dim[1] = cols;
-	printf("%d %d\n", rows, cols);
+	printf("%d %d %d\n", rows, cols, MATRIXSIZE);
 }
 
 int main(int argc, char* argv[]){
