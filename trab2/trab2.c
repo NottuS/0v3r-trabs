@@ -3,7 +3,6 @@
 #include <math.h>
 #include <mpi.h>
 
-#define BLOCKSIZE 64
 #define EXTRASIZE 1
 #define PROBLEM_SIZE 16
 #define UP 0
@@ -35,7 +34,7 @@ void applyRules(int *read, int *write){
 			{
 				for (l = -1; l < 2; ++l)
 				{
-					if (k != 0 && l != 0) {
+					if (k || l) {
 						liveCount += read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)];
 					} 
 				}
@@ -87,8 +86,6 @@ int main(int argc, char* argv[]){
 	int extra[4][PROBLEM_SIZE];
 	int extraDiag[4];
 	int direction[8];
-	int *result;
-	int sendMe;
 	FILE * file;
 	char path[100];
 
@@ -113,7 +110,7 @@ int main(int argc, char* argv[]){
 	MPI_Comm_rank(comm, &rank) ;
 	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
 	
-	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
+	MPI_Cart_shift(comm, 0, 1, &rank_source, &rank_dest);
 	direction[UP] = rank_source;
 	direction[DOWN] = rank_dest;
 	printf("me%d up%d down%d\n", rank, direction[UP], direction[DOWN]);
@@ -183,26 +180,26 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][0], 1, MPI_INT, direction[UPLEFT],
 			 tag, comm, &status);
 
-		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, MPI_INT, direction[UPRIGHT],
-			 tag, comm, &status);
+		MPI_Recv(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
+			MPI_INT, direction[UPRIGHT], tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], 1, MPI_INT, direction[DOWNLEFT],
-			 tag, comm, &status);
+		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 1], 1, 
+			MPI_INT, direction[DOWNLEFT], tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastElement + PROBLEM_SIZE+2 + 1], 1, MPI_INT, direction[DOWNRIGHT],
-			 tag, comm, &status);
+		MPI_Recv(&matrix[j][lastElement + PROBLEM_SIZE+2 + 1], 1, 
+			MPI_INT, direction[DOWNRIGHT], tag, comm, &status);
 				
-		MPI_Recv(&extra[2][0], PROBLEM_SIZE, MPI_INT, direction[LEFT],
-			 tag, comm, &status);
+		MPI_Recv(&extra[2][0], PROBLEM_SIZE, 
+			MPI_INT, direction[LEFT], tag, comm, &status);
 
-		MPI_Recv(&extra[3][0], PROBLEM_SIZE, MPI_INT, direction[RIGHT],
-			 tag, comm, &status);
+		MPI_Recv(&extra[3][0], PROBLEM_SIZE, 
+			MPI_INT, direction[RIGHT], tag, comm, &status);
 		
-		MPI_Recv(&matrix[j][1], PROBLEM_SIZE, MPI_INT, direction[UP],
-			 tag, comm, &status);
+		MPI_Recv(&matrix[j][1], PROBLEM_SIZE, 
+			MPI_INT, direction[UP], tag, comm, &status);
 
-		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 2], PROBLEM_SIZE, MPI_INT, direction[DOWN],
-			 tag, comm, &status);
+		MPI_Recv(&matrix[j][lastLine + PROBLEM_SIZE + 2], PROBLEM_SIZE, 
+			MPI_INT, direction[DOWN], tag, comm, &status);
 
 		for (n = 0; n < PROBLEM_SIZE; ++n)
 		{
