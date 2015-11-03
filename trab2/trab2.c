@@ -116,13 +116,13 @@ int main(int argc, char* argv[]){
 	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
 	
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
-	direction[UP] = rank_source;
-	direction[DOWN] = rank_dest;
+	direction[DOWN] = rank_source;
+	direction[UP] = rank_dest;
 	printf("me%d up%d down%d\n", rank, direction[UP], direction[DOWN]);
 	
 	MPI_Cart_shift( comm, 1, 1, &rank_source, &rank_dest);
-	direction[RIGHT] = rank_source;
-	direction[LEFT] = rank_dest;
+	direction[LEFT] = rank_source;
+	direction[RIGHT] = rank_dest;
 	printf("me%d LEFT%d RIGHT%d\n", rank, direction[LEFT], direction[RIGHT]);
 
 	MPI_Cart_coords(comm, rank, 2, coords);
