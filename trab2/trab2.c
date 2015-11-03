@@ -145,7 +145,7 @@ int main(int argc, char* argv[]){
 	
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
-		sprintf(path,"/home/eholiveira/0v3r-trabs/trab2/%d-%d.out",i,rank);
+		sprintf(path,"/home/eholiveira/0v3r-trabs/trab2/gol-%d-%d.out",rank, i);
 	
 		file = fopen(path, "w");
 
