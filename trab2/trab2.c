@@ -24,7 +24,7 @@ void generateMatrix(int n, int *matrix, int rank){
 	}
 }
 
-void applyRules(int *write, int *read){
+void applyRules(int *read, int *write){
 	int i, j, k, l;
 	int liveCount;
 	for (i = 1; i < PROBLEM_SIZE + 1; ++i)
