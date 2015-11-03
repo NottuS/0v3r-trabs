@@ -123,7 +123,9 @@ int main(int argc, char* argv[]){
 	direction[UP] = rank_source;
 	direction[DOWN] = rank_dest;
 	printf("me%d up%d down%d\n", rank, direction[UP], direction[DOWN]);
+
 	MPI_Cart_coords(comm, rank, 2, coords);
+	printf("me%d c0%d c1%d\n", rank, coords[0], coords[0]);
 	coords[0] ++;
 	coords[1] ++;
 	MPI_Cart_rank(comm, coords, &rank_dest);
