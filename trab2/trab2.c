@@ -147,7 +147,6 @@ int main(int argc, char* argv[]){
 		MPI_Isend(&matrix[j][0], 1, 
 			MPI_INT, direction[UPLEFT], tag, comm, &request);
 		
-
 		MPI_Isend(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
 			MPI_INT, direction[UPRIGHT], tag, comm, &request);
 
@@ -207,7 +206,7 @@ int main(int argc, char* argv[]){
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 			{
-				fprintf(file, "%d ", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
+				fprintf(file, "%d", matrix[j][l * (PROBLEM_SIZE + 2) +n]);
 				
 			}
 			fprintf(file,"\n");
