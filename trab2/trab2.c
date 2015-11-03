@@ -201,7 +201,8 @@ int main(int argc, char* argv[]){
 			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
 			matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1] = extra[3][n - 1];
 		}
-		//applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
+		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
+		j = (j + 1) % 2;
 		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
@@ -212,7 +213,7 @@ int main(int argc, char* argv[]){
 			fprintf(file,"\n");
 		}
 		
-		j = (j + 1) % 2;
+		
 		tag++;
 	}
 
