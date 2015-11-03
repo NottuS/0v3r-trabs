@@ -138,6 +138,7 @@ int main(int argc, char* argv[]){
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
 
+	printf("me%d UPRIGHT%d DOWNRIGHT%d DOWNLEFT%d UPLEFT%d \n", rank, direction[UPRIGHT], direction[DOWNRIGHT], direction[DOWNLEFT], direction[UPLEFT]);
 	cycles = 2;
 	
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
