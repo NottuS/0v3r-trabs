@@ -31,7 +31,6 @@ void applyRules(int *read, int *write){
 	{
 		for (j = 1; j < PROBLEM_SIZE + 1; j++){
 			liveCount = 0;
-			//arrumar indices: add stride ou n
 			for (k = -1; k < 2; k++)
 			{
 				for (l = -1; l < 2; ++l)
