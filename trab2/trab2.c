@@ -150,7 +150,7 @@ int main(int argc, char* argv[]){
 	
 		file = fopen(path, "w");
 
-		MPI_Isend(&matrix[j][0], 1, 
+		MPI_Isend(&matrix[j][1], 1, 
 			MPI_INT, direction[UPLEFT], tag, comm, &request);
 		
 		MPI_Isend(&matrix[j][(PROBLEM_SIZE+2-1)], 1, 
@@ -167,6 +167,7 @@ int main(int argc, char* argv[]){
 			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2)];
 			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1];
 		}
+
 		MPI_Isend(&extra[0][0], PROBLEM_SIZE, 
 			MPI_INT, direction[LEFT], tag, comm, &request);
 
@@ -203,10 +204,10 @@ int main(int argc, char* argv[]){
 		MPI_Recv(&matrix[j][lastLine - PROBLEM_SIZE + 1], PROBLEM_SIZE, MPI_INT, direction[DOWN],
 			 tag, comm, &status);
 
-		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
+		for (n = 0; n < PROBLEM_SIZE + 1; ++n)
 		{
-			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
-			matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1] = extra[3][n - 1];
+			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n];
+			matrix[j][(n + 1) * (PROBLEM_SIZE+2) - 1] = extra[3][n];
 		}
 		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
 		j = (j + 1) % 2;
