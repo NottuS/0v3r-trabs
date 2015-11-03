@@ -115,8 +115,8 @@ int main(int argc, char* argv[]){
 	generateMatrix(PROBLEM_SIZE + 2, &matrix[0][0], rank);
 	
 	MPI_Cart_shift( comm, 0, 1, &rank_source, &rank_dest);
-	direction[DOWN] = rank_source;
-	direction[UP] = rank_dest;
+	direction[UP] = rank_source;
+	direction[DOWN] = rank_dest;
 	printf("me%d up%d down%d\n", rank, direction[UP], direction[DOWN]);
 	
 	MPI_Cart_shift( comm, 1, 1, &rank_source, &rank_dest);
@@ -126,17 +126,17 @@ int main(int argc, char* argv[]){
 
 	MPI_Cart_coords(comm, rank, 2, coords);
 	printf("me%d c0%d c1%d\n", rank, coords[0], coords[1]);
-	coords[0] ++;
-	coords[1] ++;
+	coords[0] --;
+	coords[1] --;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPRIGHT] = rank_dest;
-	coords[0] -= 2;
+	coords[0] += 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[DOWNRIGHT] = rank_dest;
 	coords[1] -= 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[DOWNLEFT] = rank_dest;
-	coords[0] += 2;
+	coords[0] -= 2;
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
 
