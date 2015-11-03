@@ -26,27 +26,24 @@ void generateMatrix(int n, int *matrix, int rank){
 	}
 }
 
-void applyRules(int *write, int *read, int stride, int numProc, int rank, int extra){
+void applyRules(int *write, int *read){
 	int i, j, k, l;
-	int deadCount, liveCount;
+	int liveCount;
 	for (i = 1; i < PROBLEM_SIZE + 1; ++i)
 	{
 		for (j = 1; j < PROBLEM_SIZE + 1; j++){
-			deadCount = 0;
 			liveCount = 0;
 			//arrumar indices: add stride ou n
 			for (k = -1; k < 2; k++)
 			{
 				for (l = -1; l < 2; ++l)
 				{
-					if (read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)] && k != 1 && l != 1) {
-						liveCount++;
-					} /*else {
-						deadCount++;
-					}*/
+					if (k != 0 && l != 0) {
+						liveCount += read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)]
+					} 
 				}
 			}
-			write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;
+
 			if(liveCount == 2){
 				write[(i) * (PROBLEM_SIZE + 2) + (j)] = read[(i) * (PROBLEM_SIZE + 2) + (j)] ;
 			}
@@ -205,8 +202,7 @@ int main(int argc, char* argv[]){
 			matrix[j][n * (PROBLEM_SIZE+2)] = extra[2][n - 1];
 			matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1] = extra[3][n - 1];
 		}
-		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0], 0, 
-						numProc, rank, EXTRASIZE);
+		applyRules(&matrix[j][0], &matrix[(j + 1) % 2][0]);
 		for (l = 1; l < PROBLEM_SIZE + 1; ++l)
 		{
 			for (n = 1; n < PROBLEM_SIZE + 1; ++n)
