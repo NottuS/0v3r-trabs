@@ -69,6 +69,7 @@ void divideMatrix(int n, int *dim){
 	int cols, rows;
 
 	cols = n/2;
+	rows = 2;
 	while( i < cols){
 		if(n % i == 0){
 			cols = n / i;
