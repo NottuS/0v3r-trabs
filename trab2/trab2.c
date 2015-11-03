@@ -39,7 +39,7 @@ void applyRules(int *write, int *read){
 				for (l = -1; l < 2; ++l)
 				{
 					if (k != 0 && l != 0) {
-						liveCount += read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)]
+						liveCount += read[(i+k) * (PROBLEM_SIZE + 2) + (j+l)];
 					} 
 				}
 			}
