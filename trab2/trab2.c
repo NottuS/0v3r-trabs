@@ -143,7 +143,7 @@ int main(int argc, char* argv[]){
 	printf("me%d UPRIGHT%d DOWNRIGHT%d DOWNLEFT%d UPLEFT%d \n", rank, direction[UPRIGHT], direction[DOWNRIGHT], direction[DOWNLEFT], direction[UPLEFT]);
 	cycles = 2;
 	int lastLine = (PROBLEM_SIZE) * (PROBLEM_SIZE+2) + 1;
- 	int lastElement = (PROBLEM_SIZE+1) * (PROBLEM_SIZE+2) - 2;
+ 	int lastElement = lastLine + PROBLEM_SIZE;
 
 	for (k = 0, i = 0, j = 0; i < cycles; ++i)
 	{
@@ -165,8 +165,8 @@ int main(int argc, char* argv[]){
 		
 		for (n = 1; n < PROBLEM_SIZE + 1; ++n)
 		{
-			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2 + 1)];
-			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 1];
+			extra[0][n - 1] = matrix[j][n * (PROBLEM_SIZE+2) + 1];
+			extra[1][n - 1] = matrix[j][(n+1) * (PROBLEM_SIZE+2) - 2];
 		}
 
 		MPI_Isend(&extra[0][0], PROBLEM_SIZE, 
