@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
     int coords[2], id;
 	MPI_Status status;
 	MPI_Request request;
-	int *matrix[2][MATRIXSIZE * MATRIXSIZE];
+	int *matrix;
 	int extra[4][PROBLEM_SIZE];
 	int extraDiag[4];
 	int direction[8];
