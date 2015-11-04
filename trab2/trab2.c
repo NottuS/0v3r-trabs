@@ -86,7 +86,7 @@ int main(int argc, char* argv[]){
 	MPI_Status status;
 	MPI_Request request;
 	int *matrix[2];
-	int extra[4][PROBLEM_SIZE];
+	int *extra[4];
 	int extraDiag[4];
 	int direction[8];
 	FILE * file;
@@ -101,6 +101,10 @@ int main(int argc, char* argv[]){
 	cycles = atoi(argv[2]);
 	matrix[0] = (int *)malloc(sizeof(int) * MATRIXSIZE * MATRIXSIZE);
 	matrix[1] = (int *)malloc(sizeof(int) * MATRIXSIZE * MATRIXSIZE);
+	extra[0] = (int *)malloc(sizeof(int) * PROBLEM_SIZE);
+	extra[1] = (int *)malloc(sizeof(int) * PROBLEM_SIZE);
+	extra[2] = (int *)malloc(sizeof(int) * PROBLEM_SIZE);
+	extra[3] = (int *)malloc(sizeof(int) * PROBLEM_SIZE);
 
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
