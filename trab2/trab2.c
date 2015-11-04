@@ -4,8 +4,8 @@
 #include <mpi.h>
 
 #define EXTRASIZE 1
-#define PROBLEM_SIZE 16
-#define MATRIXSIZE (PROBLEM_SIZE + 2)
+/*#define PROBLEM_SIZE 16
+#define MATRIXSIZE (PROBLEM_SIZE + 2)*/
 #define UP 0
 #define UPRIGHT 1
 #define RIGHT 2
@@ -15,6 +15,8 @@
 #define LEFT 6
 #define UPLEFT 7
 
+int PROBLEM_SIZE;
+int MATRIXSIZE;
 
 void generateMatrix(int n, int *matrix, int rank){
 	int i;
@@ -83,15 +85,22 @@ int main(int argc, char* argv[]){
     int coords[2], id;
 	MPI_Status status;
 	MPI_Request request;
-	int matrix[2][MATRIXSIZE * MATRIXSIZE];
+	int *matrix[2][MATRIXSIZE * MATRIXSIZE];
 	int extra[4][PROBLEM_SIZE];
 	int extraDiag[4];
 	int direction[8];
 	FILE * file;
 	char path[100];
 
-	//TODO subistiuir (PROBLEM_SIZE+2) por uma constant
-	
+	if(argc < 3){
+		printf("missing arguments: ./executavel PROBLEM_SIZE CYCLES \n");
+		exit(1);
+	}
+	PROBLEM_SIZE = atoi(argv[1]);
+	MATRIXSIZE =  PROBLEM_SIZE + 2;
+	cycles = atoi(argv[2]);
+	matrix = (int *)malloc(2 * sizeof(int) * MATRIXSIZE * MATRIXSIZE);
+
 	/*dim[0]=sqrt(numProc); dim[1]=srqt(numProc);integer array of size 
 	ndims specifying the number of processes in each dimension*/
     period[0]=1; period[1]=1;/*logical array of size ndims specifying 
@@ -135,7 +144,6 @@ int main(int argc, char* argv[]){
 	MPI_Cart_rank(comm, coords, &rank_dest);
 	direction[UPLEFT] = rank_dest;
 
-	cycles = 2;
 	int lastLine = (PROBLEM_SIZE) * MATRIXSIZE + 1;
  	int lastElement = lastLine + PROBLEM_SIZE -1;
 
