@@ -34,6 +34,14 @@ __kernel void cl_initGoL(__global WORD *iboard, __global WORD *oboard, unsigned 
 	int i, j;
 
 	__local localBoard[4][BLOCKSIZE + 2];
+	int down;
+	int center;
+	int up;
+	leftint sum;
+	int sum2;
+	int table2 = table;
+	right = lIdx + 1;
+	left = lIdx - 1;
 
 	for(j = 0; j < n; j += stride){
 		localBoard[0][lIdx]	= iboard[gIdx + j];
@@ -41,13 +49,9 @@ __kernel void cl_initGoL(__global WORD *iboard, __global WORD *oboard, unsigned 
 		localBoard[3][lIdx] = iboard[(n - 1) * m + gIdx + j];
 		barrier(CLK_LOCAL_MEM_FENCE);
 
-		int sum = 0;
-		int sum2 = 0;
-		int table2 = table;
-
-		sum = localBoard[3][lIdx - 1] + localBoard[3][lIdx] + localBoard[3][lIdx + 1]
-			+ localBoard[0][lIdx - 1] + localBoard[0][lIdx + 1] 
-			+ localBoard[1][lIdx - 1] + localBoard[1][lIdx] + localBoard[1][lIdx + 1];
+		sum = localBoard[3][left] + localBoard[3][lIdx] + localBoard[3][right]
+			+ localBoard[0][left] + localBoard[0][right] 
+			+ localBoard[1][left] + localBoard[1][lIdx] + localBoard[1][right];
 
 		table = (table | 4) & (localBoard[0][lIdx] << 2);
 		oboard[m + gIdx] = (table >> sum) & 1;
@@ -59,13 +63,18 @@ __kernel void cl_initGoL(__global WORD *iboard, __global WORD *oboard, unsigned 
 			localBoard[(i + 1) & 3][lIdx] = iboard[(i + 1) * m + gIdx + j];
 			barrier(CLK_LOCAL_MEM_FENCE);
 
-			sum = localBoard[(i - 2) & 3] [lIdx - 1] + localBoard[(i - 2) & 3][lIdx] + localBoard[(i - 2) & 3][lIdx + 1]
-				+ localBoard[(i - 1) & 3][lIdx - 1] + localBoard[(i - 1) & 3][lIdx + 1]
-				+ localBoard[i & 3][lIdx - 1] + localBoard[i & 3][lIdx] + localBoard[i & 3][lIdx + 1];
+			down = i & 3;
+			center = (i - 1) & 3;
+			up = (i - 2) & 3;
 
-			sum2 = localBoard[(i - 1) & 3][lIdx - 1] + localBoard[(i - 1) & 3][lIdx] + localBoard[(i - 1) & 3][lIdx + 1]
-				+ localBoard[i & 3][lIdx - 1] + localBoard[i & 3][lIdx + 1] + 
-				+ localBoard[(i + 1) & 3][lIdx - 1] + localBoard[(i + 1) & 3][lIdx] + localBoard[(i + 1) & 3][lIdx + 1];
+			sum = localBoard[up][left] + localBoard[up][lIdx] + localBoard[up][right]
+				+ localBoard[center][left] + localBoard[center][right]
+				+ localBoard[down][left] + localBoard[down][lIdx] + localBoard[down][right];
+
+			up = (i + 1) & 3;
+			sum2 = localBoard[center][left] + localBoard[center][lIdx] + localBoard[center][right]
+				+ localBoard[down][left] + localBoard[down][right] + 
+				+ localBoard[up][left] + localBoard[up][lIdx] + localBoard[up][right];
 
 
 			table = (table | 4) & (localBoard[(i - 1) & 3][lIdx] << 2);
@@ -74,16 +83,16 @@ __kernel void cl_initGoL(__global WORD *iboard, __global WORD *oboard, unsigned 
 			oboard[i * m + gIdx + j] = (table2 >> sum2) & 1;
 		}
 
-		int down = i - (n & 1);
-		int lastLine = i - (n & 1) + 1;
-		int up = i - (n & 1) + 2;;
+		down = i - (n & 1);
+		center = down + 1;
+		up = down + 2;
 		localBoard[down][lIdx] = iboard[gIdx + j];
 		
 		barrier(CLK_LOCAL_MEM_FENCE);
 
-		sum = localBoard[up][lIdx - 1] + localBoard[up][lIdx] + localBoard[up][lIdx + 1]
-			+ localBoard[lastLine][lIdx - 1] + localBoard[Line][lIdx + 1] 
-			+ localBoard[down][lIdx - 1] + localBoard[down][lIdx] + localBoard[down][lIdx + 1];
+		sum = localBoard[up][left] + localBoard[up][lIdx] + localBoard[up][right]
+			+ localBoard[center][left] + localBoard[center][right] 
+			+ localBoard[down][left] + localBoard[down][lIdx] + localBoard[down][right];
 
 		table = (table | 4) & (localBoard[0][lIdx] << 2);
 		oboard[(n - 1) * m + gIdx + j] = (table >> sum) & 1;
