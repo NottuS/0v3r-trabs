@@ -34,7 +34,6 @@ __kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard, uns
 								+ iboard[gIdy * m + gIdx * BLOCKSIZE - 1] + iboard[gIdy * m + gIdx + 1]
 								+ iboard[(gIdy + 1) * m + gIdx * BLOCKSIZE - 1 ] + iboard[(gIdy + 1) * m + gIdx * BLOCKSIZE] + iboard[(gIdy + 1) * m + gIdx* BLOCKSIZE + 1];
 	}
-
 }
 
 //TODO garantir quantidade de mem multipla do # de threads.Sempre aloca n+1 linhas

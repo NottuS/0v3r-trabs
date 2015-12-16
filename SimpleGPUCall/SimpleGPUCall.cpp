@@ -32,10 +32,35 @@
 
 void testDevices(int nTests);
 
-int main(int argc, char *argv[]) {
+int run_on_gpu(int n, int m, int cycles){
+	clFactory::setDeviceType(RUN ON GPU);
 	clFactory::startup();
-	testDevices(10);
+
+	vector<char*> kernelNames;
+	kernelNames.push back((char*)"cl_initGoL");
+	kernelNames.push back((char*)"cl_boarderSolver");
+	kernelNames.push back((char*)"cl_innerGoL");
+	startupKernels((char*)"GoL.cl", kernelNames);
+
+	cl_command_queue command_queue = queue->getCommandQueue();
+	cl_device_id_device = queue->getDevice();
+	kernel t* kernel = getKernelInstanceByDevice((char*)"cl_initGoL", device);
+	cl_context_context = queue->getContext();
+
+	CREATE BUFFER(context, CL MEM WRITE ONLY | CL MEM COPY HOST PTR, 
+		(m*wA) * sizeof(float), A, cl A);
+
+	clMemcpyDeviceToHost(command queue, C, cl C, (m*n) * sizeof(float));
+
+	clReleaseMemObject(cl_A);
+
+	//Wait for the kernel to finish.
+	SYNC_QUEUE(command_queue);
 	clFactory::shutdown();
+}
+
+int main(int argc, char *argv[]) {
+
 
 	return 0;
 }
