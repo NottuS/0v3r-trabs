@@ -7,11 +7,12 @@ __kernel void cl_initGoL(__global WORD *board, int seed , unsigned int size){
 	}
 }
 
-__kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard, unsigned int n, unsigned int m, unsigned int stride, unsigned int table){
+__kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard, 
+	unsigned int n, unsigned int m, unsigned int stride, unsigned int table){
 	int gIdx = get_global_id(0);
 	int gIdy = get_global_id(1);
-	int lIdx = get_local_id(0);
-	/*int i;
+	/*int lIdx = get_local_id(0);
+	int i;
 	__local localBoard[3][BLOCKSIZE];
 
 	int down;
@@ -37,7 +38,8 @@ __kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard, uns
 }
 
 //TODO garantir quantidade de mem multipla do # de threads.Sempre aloca n+1 linhas
-__kernel void cl_innerGoL(__global WORD *iboard, __global WORD *oboard, unsigned int n, unsigned int m, unsigned int stride, unsigned int table){
+__kernel void cl_innerGoL(__global WORD *iboard, __global WORD *oboard, 
+	unsigned int n, unsigned int m, unsigned int stride, unsigned int hosTtable){
 	int gIdx = get_global_id(0);
 	//int gIdy = get_global_id(1);
 	int lIdx = get_local_id(0);
@@ -50,6 +52,7 @@ __kernel void cl_innerGoL(__global WORD *iboard, __global WORD *oboard, unsigned
 	int up;
 	leftint sum;
 	int sum2;
+	int table = hosTtable;
 	int table2 = table;
 	right = lIdx + 1;
 	left = lIdx - 1;
