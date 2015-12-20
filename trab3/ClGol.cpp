@@ -25,7 +25,7 @@ void ClGol::initializeCL(){
 	omp_unset_lock(&mutex_self);
 }
 
-int ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
+void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 
 	char deviceName[1024];
 	int *board = new int[n * m];
