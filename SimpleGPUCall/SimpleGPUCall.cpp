@@ -28,6 +28,7 @@
  */
 
 #include "cl/core/clFactory.hpp"
+#include "cl/core/clObject.hpp"
 #include "TestGPU.hpp"
 #include <sys/time.h>
 
@@ -120,7 +121,7 @@ int run_on_gpu(unsigned int n, unsigned int m, unsigned int cycles){
 	clFactory::shutdown();
 }
 
-void print_matrix(WORD *matrix, int n, int m){
+void print_matrix(int *matrix, int n, int m){
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; i < m; ++j)
