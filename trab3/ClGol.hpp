@@ -3,6 +3,7 @@
 #define _CLGOL_HPP_
 
 #include "cl/core/clObject.hpp"
+
 #define BLOCKSIZE 192
 
 class ClGol : public clObject{

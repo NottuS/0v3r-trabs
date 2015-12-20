@@ -34,7 +34,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	clQueue *queue = getCLQueue();
 	cl_command_queue command_queue = queue->getCommandQueue();
 	cl_context context = queue->getContext();
-	cl_device_id_device = queue->getDevice();
+	cl_device_id device = queue->getDevice();
 	kernel_t* kernelInitGoL = getKernelInstanceByDevice((char*)"cl_initGoL"
 		, device);
 	kernel_t* kernelBoarderSolver = getKernelInstanceByDevice((char*)"cl_boarderSolver"
@@ -45,9 +45,9 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	clFactory::getDeviceName(queue, deviceName, 1024);
 	printf("Validating Device [%s - Ptr %p]...\n", deviceName, device);
 
-	int *cl_board[2];
-	int *cl_iboard;
-	int *cl_oboard;
+	cl_mem cl_board[2];
+	cl_mem cl_iboard;
+	cl_mem cl_oboard;
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
 		(m*n) * SIZEOF_WORD, NULL, cl_board[0]);
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
@@ -57,7 +57,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	int threadsSize = 2880;
 	cl_iboard = cl_board[0];
 	CALL_KERNEL(command_queue, kernelInitGoL, size, BLOCKSIZE, 3,
-		sizeof(WORD *), (void*)&cl_iboard,
+		sizeof(cl_mem), (void*)&cl_iboard,
 		sizeof(cl_int), (void*)&seed,
 		sizeof(cl_int), (void*)&size
 	);
@@ -69,8 +69,8 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 		cl_iboard = board[i & 1];
 		cl_oboard = board[(i + 1) & 1];
 		CALL_KERNEL2D(command_queue, kernelBoarderSolver, n, m, BLOCKSIZE, BLOCKSIZE, 6,
-			sizeof(int *), (void*)&cl_iboard,
-			sizeof(int *), (void*)&cl_oboard,
+			sizeof(cl_mem), (void*)&cl_iboard,
+			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&m,
 			sizeof(cl_int), (void*)&threadsSize,
@@ -80,8 +80,8 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 		SYNC_QUEUE(command_queue);
 
 		CALL_KERNEL(command_queue, kernel, size, BLOCKSIZE, 6,
-			sizeof(int *), (void*)&cl_iboard,
-			sizeof(int *), (void*)&cl_oboard,
+			sizeof(cl_mem), (void*)&cl_iboard,
+			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&m,
 			sizeof(cl_int), (void*)&threadsSize,
@@ -95,7 +95,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	
 	clReleaseMemObject(cl_oboard);
 	clReleaseMemObject(cl_iboard);
-
+	delete board;
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 	
