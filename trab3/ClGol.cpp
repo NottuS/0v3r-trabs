@@ -66,8 +66,8 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 
 	for (unsigned int i = 0; i < cycles; ++i) {
 		//Alternar ponteiros de leitura e escrita
-		cl_iboard = board[i & 1];
-		cl_oboard = board[(i + 1) & 1];
+		cl_iboard = board[0];
+		cl_oboard = board[1];
 		CALL_KERNEL2D(command_queue, kernelBoarderSolver, n, m, BLOCKSIZE, BLOCKSIZE, 6,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
@@ -79,7 +79,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
 
-		CALL_KERNEL(command_queue, kernel, size, BLOCKSIZE, 6,
+		CALL_KERNEL(command_queue, kernelInnerGoL, size, BLOCKSIZE, 6,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
@@ -98,7 +98,6 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	delete board;
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
-	
 }
 
 void ClGol::print_matrix(int *matrix, int n, int m){
