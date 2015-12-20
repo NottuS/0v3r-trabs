@@ -50,7 +50,8 @@ __kernel void cl_innerGoL(__global WORD *iboard, __global WORD *oboard,
 	int down;
 	int center;
 	int up;
-	leftint sum;
+	int left;
+	int sum;
 	int sum2;
 	int table = hosTtable;
 	int table2 = table;
