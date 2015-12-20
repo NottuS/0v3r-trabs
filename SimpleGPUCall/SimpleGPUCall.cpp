@@ -29,49 +29,52 @@
 
 #include "cl/core/clFactory.hpp"
 #include "TestGPU.hpp"
+#include <sys/time.h>
 
 #define BLOCKSIZE 192
 
 void testDevices(int nTests);
+void print_matrix(WORD *matrix, int n, int m);
 
 int run_on_gpu(unsigned int n, unsigned int m, unsigned int cycles){
-	clFactory::setDeviceType(RUN ON GPU);
+	clFactory::setDeviceType(RUN_ON_GPU);
 	clFactory::startup();
-	WORD *board = new WORD[n * m];
+	char deviceName[1024];
+	int *board = new int[n * m];
 	int table = 8;
 
 	//TODO init table
 	vector<char*> kernelNames;
-	kernelNames.push back((char*)"cl_initGoL");
-	kernelNames.push back((char*)"cl_boarderSolver");
-	kernelNames.push back((char*)"cl_innerGoL");
+	kernelNames.push_back((char*)"cl_initGoL");
+	kernelNames.push_back((char*)"cl_boarderSolver");
+	kernelNames.push_back((char*)"cl_innerGoL");
 	startupKernels((char*)"GoL.cl", kernelNames);
 
 	clQueue *queue = getCLQueue();
 	cl_command_queue command_queue = queue->getCommandQueue();
 	cl_context context = queue->getContext();
 	cl_device_id_device = queue->getDevice();
-	kernel t* kernelInitGoL = getKernelInstanceByDevice((char*)"cl_initGoL"
+	kernel_t* kernelInitGoL = getKernelInstanceByDevice((char*)"cl_initGoL"
 		, device);
-	kernel t* kernelBoarderSolver = getKernelInstanceByDevice((char*)"cl_boarderSolver"
+	kernel_t* kernelBoarderSolver = getKernelInstanceByDevice((char*)"cl_boarderSolver"
 		, device);
-	kernel t* kernelInnerGoL = getKernelInstanceByDevice((char*)"cl_innerGoL"
+	kernel_t* kernelInnerGoL = getKernelInstanceByDevice((char*)"cl_innerGoL"
 		, device);
 
 	clFactory::getDeviceName(queue, deviceName, 1024);
 	printf("Validating Device [%s - Ptr %p]...\n", deviceName, device);
 
-	WORD *cl_board[2];
-	WORD *cl_iboard;
-	WORD *cl_oboard;
-	CREATE BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
+	int *cl_board[2];
+	int *cl_iboard;
+	int *cl_oboard;
+	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
 		(m*n) * SIZEOF_WORD, NULL, cl_board[0]);
-	CREATE BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
+	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
 		(m*n) * SIZEOF_WORD, NULL, cl_board[1]);
 	int seed = 31;
 	int size = n * m;
 	int threadsSize = 2880;
-	cl_iboard = cl_board[0]);
+	cl_iboard = cl_board[0];
 	CALL_KERNEL(command_queue, kernelInitGoL, size, BLOCKSIZE, 3,
 		sizeof(WORD *), (void*)&cl_iboard,
 		sizeof(cl_int), (void*)&seed,
@@ -80,13 +83,13 @@ int run_on_gpu(unsigned int n, unsigned int m, unsigned int cycles){
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 
-	for (int i = 0; i < cycles; ++i) {
+	for (unsigned int i = 0; i < cycles; ++i) {
 		//Alternar ponteiros de leitura e escrita
 		cl_iboard = board[i & 1];
 		cl_oboard = board[(i + 1) & 1];
 		CALL_KERNEL2D(command_queue, kernelBoarderSolver, n, m, BLOCKSIZE, BLOCKSIZE, 6,
-			sizeof(WORD *), (void*)&cl_iboard,
-			sizeof(WORD *), (void*)&cl_oboard,
+			sizeof(int *), (void*)&cl_iboard,
+			sizeof(int *), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&m,
 			sizeof(cl_int), (void*)&threadsSize,
@@ -96,8 +99,8 @@ int run_on_gpu(unsigned int n, unsigned int m, unsigned int cycles){
 		SYNC_QUEUE(command_queue);
 
 		CALL_KERNEL(command_queue, kernel, size, BLOCKSIZE, 6,
-			sizeof(WORD *), (void*)&cl_iboard,
-			sizeof(WORD *), (void*)&cl_oboard,
+			sizeof(int *), (void*)&cl_iboard,
+			sizeof(int *), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&m,
 			sizeof(cl_int), (void*)&threadsSize,
@@ -142,8 +145,8 @@ int main(int argc, char *argv[]) {
 double timestamp(){
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
-	return (double)(tp.tv sec +
-	tp.tv usec / 1000000.0);
+	return (double)(tp.tv_sec +
+	tp.tv_usec / 1000000.0);
 }
 
 void testDevices(int nTests){
