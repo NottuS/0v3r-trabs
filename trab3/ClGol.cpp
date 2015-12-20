@@ -1,6 +1,6 @@
 #include "ClGol.hpp"
 
-bool TestGPU::started = false;
+bool ClGol::started = false;
 ClGol::~ClGol(){
 	omp_set_lock(&mutex_self);
 	if(started){
