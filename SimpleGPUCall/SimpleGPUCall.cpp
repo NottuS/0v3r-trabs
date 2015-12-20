@@ -29,12 +29,10 @@
 
 #include "cl/core/clFactory.hpp"
 #include "cl/core/clObject.hpp"
-#include "TestGPU.hpp"
 #include <sys/time.h>
 
 #define BLOCKSIZE 192
 
-void testDevices(int nTests);
 void print_matrix(WORD *matrix, int n, int m);
 
 int run_on_gpu(unsigned int n, unsigned int m, unsigned int cycles){
@@ -44,7 +42,6 @@ int run_on_gpu(unsigned int n, unsigned int m, unsigned int cycles){
 	int *board = new int[n * m];
 	int table = 8;
 
-	//TODO init table
 	vector<char*> kernelNames;
 	kernelNames.push_back((char*)"cl_initGoL");
 	kernelNames.push_back((char*)"cl_boarderSolver");
@@ -148,16 +145,4 @@ double timestamp(){
 	gettimeofday(&tp, NULL);
 	return (double)(tp.tv_sec +
 	tp.tv_usec / 1000000.0);
-}
-
-void testDevices(int nTests){
-	TestGPU *testGPU = new TestGPU();
-	for(int i=0; i < nTests; i++){
-		testGPU->setCLQueue(clFactory::getQueue());
-		testGPU->initializeCL();
-		testGPU->runKernel();
-	}
-	printf("Number of queues tested: %i\n", testGPU->numQueuesTested());
-	printf("Number of devices tested: %i\n", testGPU->numDevicesTested());
-	delete testGPU;
 }
