@@ -4,7 +4,7 @@
 
 #include "cl/core/clObject.hpp"
 
-#define BLOCKSIZE 192
+#define BLOCKSIZE 256
 
 class ClGol : public clObject{
 private:
