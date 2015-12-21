@@ -1,13 +1,13 @@
 #define BLOCKSIZE 192
 
-__kernel void cl_initGoL(__global WORD *board, int seed , unsigned int size){
+__kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 	int gIdx = get_global_id(0);
 	if(gIdx < size){
 		board[gIdx] = (gIdx * board[gIdx] * seed + gIdx) & 1;
 	}
 }
 
-__kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard, 
+__kernel void cl_boarderSolver(__global int *iboard, __global int *oboard, 
 	unsigned int n, unsigned int m, unsigned int stride, unsigned int table){
 	int gIdx = get_global_id(0);
 	int gIdy = get_global_id(1);
@@ -38,7 +38,7 @@ __kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard,
 }
 
 //TODO garantir quantidade de mem multipla do # de threads.Sempre aloca n+1 linhas
-__kernel void cl_innerGoL(__global WORD *iboard, __global WORD *oboard, 
+__kernel void cl_innerGoL(__global int *iboard, __global int *oboard, 
 	unsigned int n, unsigned int m, unsigned int stride, unsigned int hosTtable){
 	int gIdx = get_global_id(0);
 	//int gIdy = get_global_id(1);
