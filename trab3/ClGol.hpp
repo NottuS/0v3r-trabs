@@ -18,6 +18,7 @@ public:
 	void initializeCL();
 	void runGolkernels(unsigned int n, unsigned int m, unsigned int cycles);
 	void print_matrix(int *matrix, int n, int m);
+	void runKernel();
 	void loadToDevice(){}
 };
 

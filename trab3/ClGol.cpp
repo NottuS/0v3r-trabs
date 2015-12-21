@@ -110,3 +110,7 @@ void ClGol::print_matrix(int *matrix, int n, int m){
 		printf("\n");
 	}
 }
+
+void ClGol::runKernel(){
+	
+}
