@@ -1,4 +1,4 @@
-#define BLOCKSIZE 192
+#define BLOCKSIZE 256
 
 __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 	int gIdx = get_global_id(0);
