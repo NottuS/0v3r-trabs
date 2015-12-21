@@ -13,7 +13,7 @@ __kernel void cl_boarderSolver(__global WORD *iboard, __global WORD *oboard,
 	int gIdy = get_global_id(1);
 	/*int lIdx = get_local_id(0);
 	int i;
-	__local localBoard[3][BLOCKSIZE];
+	__local int localBoard[3][BLOCKSIZE];
 
 	int down;
 	int center;
@@ -46,11 +46,12 @@ __kernel void cl_innerGoL(__global WORD *iboard, __global WORD *oboard,
 	//int lIdy = get_local_id(1);
 	int i, j;
 
-	__local localBoard[4][BLOCKSIZE + 2];
+	__local int localBoard[4][BLOCKSIZE + 2];
 	int down;
 	int center;
 	int up;
 	int left;
+	int right;
 	int sum;
 	int sum2;
 	int table = hosTtable;
