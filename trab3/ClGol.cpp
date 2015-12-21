@@ -45,7 +45,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	clFactory::getDeviceName(queue, deviceName, 1024);
 	printf("Validating Device [%s - Ptr %p]...\n", deviceName, device);
 
-	cl_mem *cl_board = new cl_mem[2]
+	cl_mem *cl_board = new cl_mem[2];
 	cl_mem cl_iboard;
 	cl_mem cl_oboard;
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
