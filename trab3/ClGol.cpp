@@ -48,10 +48,10 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 	cl_mem cl_board[2];
 	cl_mem cl_iboard;
 	cl_mem cl_oboard;
-	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
-		(m*n) * SIZEOF_WORD, NULL, cl_board[0]);
-	CREATE_BUFFER(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, 
-		(m*n) * SIZEOF_WORD, NULL, cl_board[1]);
+	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
+		(m*n) * sizeof(int), NULL, cl_board[0]);
+	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
+		(m*n) * sizeof(int), NULL, cl_board[1]);
 	int seed = 31;
 	int size = n * m;
 	int threadsSize = 2880;
