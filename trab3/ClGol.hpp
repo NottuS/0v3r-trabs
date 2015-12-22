@@ -3,6 +3,7 @@
 #define _CLGOL_HPP_
 
 #include "cl/core/clObject.hpp"
+#include <sys/time.h>
 
 #define BLOCKSIZE 256
 
@@ -16,8 +17,8 @@ private:
 public:
 	~ClGol();
 	void initializeCL();
-	void runGolkernels(unsigned int n, unsigned int m, unsigned int cycles);
-	void print_matrix(int *matrix, int n, int m, int printBoard);
+	void runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, int printBoard);
+	void print_matrix(int *matrix, int n, int m);
 	double timestamp();
 	void runKernel();
 	void loadToDevice(){}

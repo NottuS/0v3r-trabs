@@ -1,4 +1,3 @@
-#include <sys/time.h>
 #include <stdlib.h>
 #include "cl/core/clFactory.hpp"
 #include "ClGol.hpp"
