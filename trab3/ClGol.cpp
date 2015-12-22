@@ -33,7 +33,6 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 
 	clQueue *queue = getCLQueue();
 	cl_command_queue command_queue = queue->getCommandQueue();
-	cl_command_queue command_queue2 = queue->getCommandQueue();
 	cl_context context = queue->getContext();
 	cl_device_id device = queue->getDevice();
 	kernel_t* kernelInitGoL = getKernelInstanceByDevice((char*)"cl_initGoL"
@@ -92,7 +91,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Wait for the kernel to finish.
 		//SYNC_QUEUE(command_queue);
 
-		CALL_KERNEL(command_queue2, kernelInnerGoL, size, BLOCKSIZE, 6,
+		CALL_KERNEL(command_queue, kernelInnerGoL, size, BLOCKSIZE, 6,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
@@ -101,9 +100,9 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 			sizeof(cl_int), (void*)&table
 		);
 		//Wait for the kernel to finish.
-		SYNC_QUEUE(command_queue2);
+		SYNC_QUEUE(command_queue);
 		if(printBoard){
-			clMemcpyDeviceToHost(command_queue2, board, cl_oboard, (m*n) * SIZEOF_WORD);
+			clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * SIZEOF_WORD);
 			print_matrix(board, n, m);
 		}
 	}
