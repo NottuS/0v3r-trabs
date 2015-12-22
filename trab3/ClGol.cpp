@@ -25,7 +25,7 @@ void ClGol::initializeCL(){
 	omp_unset_lock(&mutex_self);
 }
 
-void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
+void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, int printBoard){
 
 	char deviceName[1024];
 	int *board = new int[n * m];
@@ -41,6 +41,15 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 		, device);
 	kernel_t* kernelInnerGoL = getKernelInstanceByDevice((char*)"cl_innerGoL"
 		, device);
+
+	bool contains = false;
+	for(int i=0; i < (int)queues.size(); i++){
+		if(queues[i] == queue){
+			contains = true;
+			break;
+		}
+	}
+	if(!contains) queues.push_back(queue);
 
 	clFactory::getDeviceName(queue, deviceName, 1024);
 	printf("Validating Device [%s - Ptr %p]...\n", deviceName, device);
@@ -61,9 +70,11 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 		sizeof(cl_int), (void*)&seed,
 		sizeof(cl_int), (void*)&size
 	);
+
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 
+	double start_t = timestamp();
 	for (unsigned int i = 0; i < cycles; ++i) {
 		//Alternar ponteiros de leitura e escrita
 		cl_iboard = cl_board[i & 1];
@@ -89,10 +100,13 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles){
 		);
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
-		clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * SIZEOF_WORD);
-		print_matrix(board, n, m);
+		if(printBoard){
+			clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * SIZEOF_WORD);
+			print_matrix(board, n, m);
+		}
 	}
-	
+	printf("time: %f\n", timestamp() - start_t);
+
 	clReleaseMemObject(cl_oboard);
 	clReleaseMemObject(cl_iboard);
 	delete board;
@@ -113,4 +127,11 @@ void ClGol::print_matrix(int *matrix, int n, int m){
 
 void ClGol::runKernel(){
 	
+}
+
+double ClGol::timestamp(){
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	return (double)(tp.tv_sec +
+	tp.tv_usec / 1000000.0);
 }
