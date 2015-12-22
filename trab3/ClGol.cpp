@@ -71,7 +71,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		sizeof(cl_int), (void*)&size
 	);
 
-	printf("%d %d %d\n", n,m,size);
+	printf("%d %d %d %d\n", n,m,size, printBoard);
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 
@@ -91,12 +91,11 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Wait for the kernel to finish.
 		//SYNC_QUEUE(command_queue);
 
-		CALL_KERNEL(command_queue, kernelInnerGoL, size, BLOCKSIZE, 6,
+		CALL_KERNEL(command_queue, kernelInnerGoL, size, BLOCKSIZE, 5,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&m,
-			sizeof(cl_int), (void*)&threadsSize,
 			sizeof(cl_int), (void*)&table
 		);
 		//Wait for the kernel to finish.
