@@ -38,7 +38,7 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 	right = lIdx + 1;
 	left = lIdx - 1;
 
-	for(j = 0; j < n; j += stride){
+	/*for(j = 0; j < n; j += stride){
 		localBoard[0][lIdx]	= iboard[gIdx + j];
 		localBoard[1][lIdx] = iboard[m + gIdx + j];
 		localBoard[3][lIdx] = iboard[(n - 1) * m + gIdx + j];
@@ -89,5 +89,5 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 
 		table = (table | 4) & (localBoard[0][lIdx] << 2);
 		oboard[(n - 1) * m + gIdx + j] = (table >> sum) & 1;
-	}
+	}*/
 }
