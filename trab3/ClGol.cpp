@@ -71,6 +71,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		sizeof(cl_int), (void*)&size
 	);
 
+	printf("%d %d %d\n", n,m,size);
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 
