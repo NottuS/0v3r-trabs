@@ -90,7 +90,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
-			sizeof(cl_int), (void*)&m,
+			sizeof(cl_int), (void*)&blockSzM,
 			sizeof(cl_int), (void*)&table
 		);
 		//Wait for the kernel to finish.
@@ -100,7 +100,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
-			sizeof(cl_int), (void*)&m,
+			sizeof(cl_int), (void*)&blockSzM,
 			sizeof(cl_int), (void*)&table
 		);
 		//Wait for the kernel to finish.
@@ -129,6 +129,7 @@ void ClGol::print_matrix(int *matrix, int n, int m, int blockSzN, int blockSzM){
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
 void ClGol::runKernel(){
