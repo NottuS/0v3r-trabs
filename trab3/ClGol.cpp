@@ -58,11 +58,11 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	cl_mem cl_iboard;
 	cl_mem cl_oboard;
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
-		(m*n) * sizeof(int), NULL, cl_board[0]);
+		m * n * sizeof(int), NULL, cl_board[0]);
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
-		(m*n) * sizeof(int), NULL, cl_board[1]);
+		m * n * sizeof(int), NULL, cl_board[1]);
 	int seed = 31;
-	int size = n * m;
+	int size = (n * m);
 	int threadsSize = 2880;
 	cl_iboard = cl_board[0];
 	CALL_KERNEL(command_queue, kernelInitGoL, size, BLOCKSIZE, 3,
@@ -71,7 +71,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		sizeof(cl_int), (void*)&size
 	);
 
-	printf("%d %d %d %d\n", n,m,size, printBoard);
+	printf("%d %d %d %d\n", n, m,size, printBoard);
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 
@@ -80,18 +80,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Alternar ponteiros de leitura e escrita
 		cl_iboard = cl_board[i & 1];
 		cl_oboard = cl_board[(i + 1) & 1];
-		/*CALL_KERNEL2D(command_queue, kernelBoarderSolver, n, m, BLOCKSIZE, BLOCKSIZE, 6,
-			sizeof(cl_mem), (void*)&cl_iboard,
-			sizeof(cl_mem), (void*)&cl_oboard,
-			sizeof(cl_int), (void*)&n,
-			sizeof(cl_int), (void*)&m,
-			sizeof(cl_int), (void*)&threadsSize,
-			sizeof(cl_int), (void*)&table
-		);*/
-		//Wait for the kernel to finish.
-		//SYNC_QUEUE(command_queue);
-
-		CALL_KERNEL(command_queue, kernelInnerGoL, size, BLOCKSIZE, 5,
+		CALL_KERNEL(command_queue, kernelInnerGoL, m, BLOCKSIZE, 5,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
@@ -100,6 +89,17 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		);
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
+
+		CALL_KERNEL(command_queue, kernelBoarderSolver, n, BLOCKSIZE, 5,
+			sizeof(cl_mem), (void*)&cl_iboard,
+			sizeof(cl_mem), (void*)&cl_oboard,
+			sizeof(cl_int), (void*)&n,
+			sizeof(cl_int), (void*)&m,
+			sizeof(cl_int), (void*)&table
+		);
+		//Wait for the kernel to finish.
+		SYNC_QUEUE(command_queue);
+
 		if(printBoard){
 			clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * SIZEOF_WORD);
 			print_matrix(board, n, m);
@@ -115,9 +115,9 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 }
 
 void ClGol::print_matrix(int *matrix, int n, int m){
-	for (int i = 0; i < n; ++i)
+	for (int i = 1; i <= n; ++i)
 	{
-		for (int j = 0; i < m; ++j)
+		for (int j = 1; i <= m; ++j)
 		{
 			printf("%c",matrix[i*m + j] ? 'X' : ' ');
 		}

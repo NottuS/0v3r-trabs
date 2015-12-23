@@ -8,21 +8,68 @@ __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 }
 
 __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard, 
-	unsigned int n, unsigned int m, unsigned int stride, unsigned int table){
+	unsigned int n, unsigned int m, unsigned int table){
 	int gIdx = get_global_id(0);
-	int gIdy = get_global_id(1);
-	
-	if(gIdx < n && gIdy < m){
-		oboard[gIdy * m + gIdx] = iboard[(gIdy - 1) * m + gIdx * BLOCKSIZE - 1] + iboard[(gIdy - 1) * m + gIdx * BLOCKSIZE] + iboard[(gIdy - 1) * m + gIdx* BLOCKSIZE + 1]
-								+ iboard[gIdy * m + gIdx * BLOCKSIZE - 1] + iboard[gIdy * m + gIdx + 1]
-								+ iboard[(gIdy + 1) * m + gIdx * BLOCKSIZE - 1 ] + iboard[(gIdy + 1) * m + gIdx * BLOCKSIZE] + iboard[(gIdy + 1) * m + gIdx* BLOCKSIZE + 1];
+	int lIdx = get_local_id(0) + 1;
+	int i;
+	int sum;
+	int sum2;
+	int table = hosTtable;
+	int table2 = table;
+	int left;
+	int plusLeft;
+	int right;
+	int down = lIdx + 1;
+	int up = lIdx - 1;
+
+	__local int localBoard[BLOCKSIZE + 2][4];
+
+	for(i = BLOCKSIZE; i < m; i += BLOCKSIZE){
+ 		plusLeft = i - 2;
+ 		left = i - 1;
+ 		right = i + 1;
+ 		localBoard[lIdx][0] = iboard[gIdx * m + plusLeft];
+ 		localBoard[lIdx][1] = iboard[gIdx * m + left];
+ 		localBoard[lIdx][2] = iboard[gIdx * m + i];
+ 		localBoard[lIdx][3] = iboard[gIdx * m + right];
+ 		barrier(CLK_LOCAL_MEM_FENCE);
+		sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
+			+ localBoard[lIdx][0] + localBoard[lIdx][2]
+			+ localBoard[down][0] + localBoard[down][1] + localBoard[down][2];
+
+		sum2 = localBoard[up][1] + localBoard[up][2 + localBoard[up][3]
+			+ localBoard[lIdx][1] + localBoard[lIdx][3] + 
+			+ localBoard[down][1] + localBoard[down][2] + localBoard[down][3];
+
+		table = (table | 4) & (localBoard[lIdx][1] << 2);
+		table2 = (table2 | 4) & (localBoard[lIdx][2] << 2);
+		oboard[gIdx * m + left] = (table >> sum) & 1;
+		oboard[gIdx * m + i] = (table2 >> sum2) & 1;
 	}
+
+	localBoard[lIdx][0] = iboard[gIdx * m + n - 2];
+	localBoard[lIdx][1] = iboard[gIdx * m + n - 1];
+	localBoard[lIdx][2] = iboard[gIdx * m];
+	localBoard[lIdx][3] = iboard[gIdx * m + 1];
+	barrier(CLK_LOCAL_MEM_FENCE);
+	sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
+		+ localBoard[lIdx][0] + localBoard[lIdx][2]
+		+ localBoard[down][0] + localBoard[down][1] + localBoard[down][2];
+
+	sum2 = localBoard[up][1] + localBoard[up][2] + localBoard[up][3]
+		+ localBoard[lIdx][1] + localBoard[lIdx][3] + 
+		+ localBoard[down][1] + localBoard[down][2] + localBoard[down][3];
+
+	table = (table | 4) & (localBoard[lIdx][1] << 2);
+	table2 = (table2 | 4) & (localBoard[lIdx][2] << 2);
+	oboard[gIdx * m + n - 1] = (table >> sum) & 1;
+	oboard[gIdx * m] = (table2 >> sum2) & 1;
 }
 
 __kernel void cl_innerGoL(__global int *iboard, __global int *oboard, 
 	unsigned int n, unsigned int m, unsigned int hosTtable){
 	int gIdx = get_global_id(0);
-	int lIdx = get_local_id(0);
+	int lIdx = get_local_id(0) + 1;
 	int i;
 
 	__local int localBoard[4][BLOCKSIZE + 2];
@@ -68,16 +115,15 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			+ localBoard[down][left] + localBoard[down][right] + 
 			+ localBoard[up][left] + localBoard[up][lIdx] + localBoard[up][right];
 
-
 		table = (table | 4) & (localBoard[center][lIdx] << 2);
 		table2 = (table2 | 4) & (localBoard[down][lIdx] << 2);
-		oboard[(i - 1) * m + gIdx + j] = (table >> sum) & 1;
-		oboard[i * m + gIdx + j] = (table2 >> sum2) & 1;
+		oboard[(i - 1) * m + gIdx] = (table >> sum) & 1;
+		oboard[i * m + gIdx] = (table2 >> sum2) & 1;
 	}
 	down = i - (n & 1);
 	center = down + 1;
 	up = down + 2;
-	localBoard[down][lIdx] = iboard[gIdx + j];
+	localBoard[down][lIdx] = iboard[gIdx];
 	
 	barrier(CLK_LOCAL_MEM_FENCE);
 
@@ -86,5 +132,5 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 		+ localBoard[down][left] + localBoard[down][lIdx] + localBoard[down][right];
 
 	table = (table | 4) & (localBoard[0][lIdx] << 2);
-	oboard[(n - 1) * m + gIdx + j] = (table >> sum) & 1;
+	oboard[(n - 1) * m + gIdx] = (table >> sum) & 1;
 }
