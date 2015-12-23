@@ -4,6 +4,7 @@
 
 #include "cl/core/clObject.hpp"
 #include <sys/time.h>
+#include <math.h>
 
 #define BLOCKSIZE 256
 
