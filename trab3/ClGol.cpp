@@ -60,8 +60,8 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	int seed = 31;
 	
 	int threadsSize = 2880;
-	int blockSzM = (ceil(m/BLOCKSIZE) * BLOCKSIZE);
-	int blockSzN = (ceil(n/BLOCKSIZE) * BLOCKSIZE);
+	int blockSzM = (ceil((m + 0.0)/BLOCKSIZE) * BLOCKSIZE);
+	int blockSzN = (ceil((n + 0.0)/BLOCKSIZE) * BLOCKSIZE);
 	int size = (blockSzN * blockSzM);
 
 	int *board = new int[size];
