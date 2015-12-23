@@ -101,7 +101,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		SYNC_QUEUE(command_queue);
 
 		if(printBoard){
-			clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * SIZEOF_WORD);
+			clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * sizeof(cl_int));
 			print_matrix(board, n, m);
 		}
 	}
@@ -115,11 +115,11 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 }
 
 void ClGol::print_matrix(int *matrix, int n, int m){
-	for (int i = 1; i <= n; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 1; i <= m; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			printf("%c",matrix[i*m + j] ? 'X' : ' ');
+			printf("%c",matrix[i*m + j] ? 'X' : '0');
 		}
 		printf("\n");
 	}
