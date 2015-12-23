@@ -71,18 +71,11 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
 		size * sizeof(int), NULL, cl_board[1]);
 	cl_iboard = cl_board[0];
-	CALL_KERNEL(command_queue, kernelInitGoL, size, BLOCKSIZE, 3,
-		sizeof(cl_mem), (void*)&cl_iboard,
-		sizeof(cl_int), (void*)&seed,
-		sizeof(cl_int), (void*)&size
-	);
-
+	generateMatrix(size, board, seed);
 	printf("%d %d %d %d %d %d\n", n, m,size, printBoard, blockSzM, blockSzN);
 	//Wait for the kernel to finish.
-	SYNC_QUEUE(command_queue);
-
+	clMemcpyHostToDevice(command_queue, cl_iboard, board, size * sizeof(cl_int));
 	if(printBoard){
-		clMemcpyDeviceToHost(command_queue, board, cl_iboard, size * sizeof(cl_int));
 		print_matrix(board, n, m, blockSzN, blockSzM);
 	}
 
@@ -130,7 +123,7 @@ void ClGol::print_matrix(int *matrix, int n, int m, int blockSzN, int blockSzM){
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			printf("%c",matrix[i*blockSzM + j] ? 'X' : '0');
+			printf("%c",matrix[i*blockSzM + j]);
 		}
 		printf("\n");
 	}
@@ -146,4 +139,13 @@ double ClGol::timestamp(){
 	gettimeofday(&tp, NULL);
 	return (double)(tp.tv_sec +
 	tp.tv_usec / 1000000.0);
+}
+
+void ClGol::generateMatrix(int n, int *matrix, int rank){
+	int i;
+
+	srand(time(NULL) + rank);
+	for (i = 0; i < n * n; ++i)	{
+		matrix[i] = rand() % 2;
+	}
 }

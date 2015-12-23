@@ -2,8 +2,8 @@
 
 __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 	int gIdx = get_global_id(0);
-	int *aux = ((seed + gIdx) * 0x5DEECE66DL + 0xBL) & (1L << 48);
-	board[gIdx] =  (*aux * (seed + gIdx) * 0x5DEECE66DL)  & 1;
+	
+	board[gIdx] =  ((seed + gIdx) * 0x5DEECE66DL + 0xBL) & (1L << 48) & 1;
 }
 
 __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard, 
