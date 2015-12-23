@@ -120,9 +120,9 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 		oboard[(i - 1) * m + gIdx] = (table >> sum) & 1;
 		oboard[i * m + gIdx] = (table2 >> sum2) & 1;
 	}
-	down = i - (n & 1);
-	center = down + 1;
-	up = down + 2;
+    down = (i - (n & 1)) & 3;
+    center = (down + 1) & 3;
+    up = (down + 2) & 3;
 	localBoard[down][lIdx] = iboard[gIdx];
 	
 	barrier(CLK_LOCAL_MEM_FENCE);

@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 	n = atoi(argv[1]);
 	m = atoi(argv[2]);
 	cycles = atoi(argv[3]);
-	cycles = atoi(argv[4]);
+	printBoard = atoi(argv[4]);
 	clFactory::setDeviceType(RUN_ON_GPU);
 	clFactory::startup();
 	ClGol *clGol =  new ClGol();
