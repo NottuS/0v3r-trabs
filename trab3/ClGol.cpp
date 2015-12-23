@@ -70,6 +70,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		size * sizeof(int), NULL, cl_board[0]);
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
 		size * sizeof(int), NULL, cl_board[1]);
+	cl_iboard = cl_board[0];
 	CALL_KERNEL(command_queue, kernelInitGoL, size, BLOCKSIZE, 3,
 		sizeof(cl_mem), (void*)&cl_iboard,
 		sizeof(cl_int), (void*)&seed,
@@ -79,7 +80,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	printf("%d %d %d %d\n", n, m,size, printBoard);
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
-	cl_iboard = cl_board[0];
+
 	if(printBoard){
 		clMemcpyDeviceToHost(command_queue, board, cl_iboard, size * sizeof(cl_int));
 		print_matrix(board, n, m, blockSzN, blockSzM);
