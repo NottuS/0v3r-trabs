@@ -73,11 +73,12 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	cl_iboard = cl_board[0];
 	generateMatrix(size, board, seed);
 	printf("%d %d %d %d %d %d\n", n, m,size, printBoard, blockSzM, blockSzN);
-	//Wait for the kernel to finish.
-	clMemcpyHostToDevice(command_queue, cl_iboard, board, size * sizeof(cl_int));
 	if(printBoard){
 		print_matrix(board, n, m, blockSzN, blockSzM);
 	}
+	//Wait for the kernel to finish.
+	clMemcpyHostToDevice(command_queue, cl_iboard, board, size * sizeof(cl_int));
+
 
 	double start_t = timestamp();
 	for (unsigned int i = 0; i < cycles; ++i) {
@@ -145,7 +146,7 @@ void ClGol::generateMatrix(int n, int *matrix, int rank){
 	int i;
 
 	srand(time(NULL) + rank);
-	for (i = 0; i < n * n; ++i)	{
+	for (i = 0; i < n; ++i)	{
 		matrix[i] = rand() % 2;
 	}
 }

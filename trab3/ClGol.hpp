@@ -5,6 +5,7 @@
 #include "cl/core/clObject.hpp"
 #include <sys/time.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define BLOCKSIZE 256
 
@@ -21,7 +22,7 @@ public:
 	void runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, int printBoard);
 	void print_matrix(int *matrix, int n, int m, int blockSzN, int blockSzM);
 	double timestamp();
-	void generateMatrix(int n, int *matrix, int rank)
+	void generateMatrix(int n, int *matrix, int rank);
 	void runKernel();
 	void loadToDevice(){}
 };
