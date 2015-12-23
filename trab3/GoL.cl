@@ -8,7 +8,7 @@ __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 }
 
 __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard, 
-	unsigned int n, unsigned int m, unsigned int table){
+	unsigned int n, unsigned int m, unsigned int hosTtable){
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
@@ -37,8 +37,8 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 			+ localBoard[lIdx][0] + localBoard[lIdx][2]
 			+ localBoard[down][0] + localBoard[down][1] + localBoard[down][2];
 
-		sum2 = localBoard[up][1] + localBoard[up][2 + localBoard[up][3]
-			+ localBoard[lIdx][1] + localBoard[lIdx][3] + 
+		sum2 = localBoard[up][1] + localBoard[up][2] + localBoard[up][3]
+			+ localBoard[lIdx][1] + localBoard[lIdx][3]
 			+ localBoard[down][1] + localBoard[down][2] + localBoard[down][3];
 
 		table = (table | 4) & (localBoard[lIdx][1] << 2);
@@ -57,7 +57,7 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 		+ localBoard[down][0] + localBoard[down][1] + localBoard[down][2];
 
 	sum2 = localBoard[up][1] + localBoard[up][2] + localBoard[up][3]
-		+ localBoard[lIdx][1] + localBoard[lIdx][3] + 
+		+ localBoard[lIdx][1] + localBoard[lIdx][3]
 		+ localBoard[down][1] + localBoard[down][2] + localBoard[down][3];
 
 	table = (table | 4) & (localBoard[lIdx][1] << 2);
@@ -112,7 +112,7 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 
 		up = (i + 1) & 3;
 		sum2 = localBoard[center][left] + localBoard[center][lIdx] + localBoard[center][right]
-			+ localBoard[down][left] + localBoard[down][right] + 
+			+ localBoard[down][left] + localBoard[down][right] 
 			+ localBoard[up][left] + localBoard[up][lIdx] + localBoard[up][right];
 
 		table = (table | 4) & (localBoard[center][lIdx] << 2);
