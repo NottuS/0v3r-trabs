@@ -19,7 +19,7 @@ public:
 	~ClGol();
 	void initializeCL();
 	void runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, int printBoard);
-	void print_matrix(int *matrix, int n, int m);
+	void print_matrix(int *matrix, int n, int m, int blockSzN, int blockSzM);
 	double timestamp();
 	void runKernel();
 	void loadToDevice(){}

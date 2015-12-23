@@ -28,7 +28,6 @@ void ClGol::initializeCL(){
 void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, int printBoard){
 
 	char deviceName[1024];
-	int *board = new int[n * m];
 	int table = 8;
 
 	clQueue *queue = getCLQueue();
@@ -65,6 +64,8 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	int blockSzM = (ceil(m/BLOCKSIZE) * BLOCKSIZE);
 	int blockSzN = (ceil(n/BLOCKSIZE) * BLOCKSIZE);
 	int size = (blockSzN * blockSzM);
+
+	int *board = new int[size];
 
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
 		size * sizeof(int), NULL, cl_board[0]);
@@ -106,8 +107,8 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		SYNC_QUEUE(command_queue);
 
 		if(printBoard){
-			clMemcpyDeviceToHost(command_queue, board, cl_oboard, (m*n) * sizeof(cl_int));
-			print_matrix(board, n, m);
+			clMemcpyDeviceToHost(command_queue, board, cl_oboard, size * sizeof(cl_int));
+			print_matrix(board, n, m, blockSzN, blockSzM);
 		}
 	}
 	printf("time: %f\n", timestamp() - start_t);
@@ -119,12 +120,12 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	SYNC_QUEUE(command_queue);
 }
 
-void ClGol::print_matrix(int *matrix, int n, int m){
+void ClGol::print_matrix(int *matrix, int n, int m, int blockSzN, int blockSzM){
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			printf("%c",matrix[i*m + j] ? 'X' : '0');
+			printf("%c",matrix[i*blockSzM + j] ? 'X' : '0');
 		}
 		printf("\n");
 	}
