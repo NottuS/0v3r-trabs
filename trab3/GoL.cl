@@ -39,12 +39,12 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
  			localBoard[0][2] = iboard[aux * m + i];
  			localBoard[0][3] = iboard[aux * m + right];
  		}
- 		if(lIdx == limit){
+ 		if(lIdx == 256 || gIdx + 1 == n){
  			aux = (gIdx + 1) % n;
- 			localBoard[limit + 1][0] = iboard[aux * m + plusLeft];
- 			localBoard[limit + 1][1] = iboard[aux * m + left];
- 			localBoard[limit + 1][2] = iboard[aux * m + i];
- 			localBoard[limit + 1][3] = iboard[aux * m + right];
+ 			localBoard[down][0] = iboard[aux * m + plusLeft];
+ 			localBoard[down][1] = iboard[aux * m + left];
+ 			localBoard[down][2] = iboard[aux * m + i];
+ 			localBoard[down][3] = iboard[aux * m + right];
  		}
  		barrier(CLK_LOCAL_MEM_FENCE);
  		sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
@@ -72,12 +72,12 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 		localBoard[0][2] = iboard[aux * m + i];
 		localBoard[0][3] = iboard[aux * m + right];
 	}
-	if(lIdx == limit){
+	if(lIdx == 256 || gIdx + 1 == n){
 		aux = (gIdx + 1) % n;
-		localBoard[limit + 1][0] = iboard[aux * m + plusLeft];
-		localBoard[limit + 1][1] = iboard[aux * m + left];
-		localBoard[limit + 1][2] = iboard[aux * m + i];
-		localBoard[limit + 1][3] = iboard[aux * m + right];
+		localBoard[down][0] = iboard[aux * m + plusLeft];
+		localBoard[down][1] = iboard[aux * m + left];
+		localBoard[down][2] = iboard[aux * m + i];
+		localBoard[down][3] = iboard[aux * m + right];
 	}
 	barrier(CLK_LOCAL_MEM_FENCE);
 	sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
