@@ -79,7 +79,6 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	//Wait for the kernel to finish.
 	clMemcpyHostToDevice(command_queue, cl_iboard, board, size * sizeof(cl_int));
 
-
 	double start_t = timestamp();
 	for (unsigned int i = 0; i < cycles; ++i) {
 		//Alternar ponteiros de leitura e escrita
@@ -124,7 +123,7 @@ void ClGol::print_matrix(int *matrix, int n, int m, int blockSzN, int blockSzM){
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			printf("%c",matrix[i*blockSzM + j]);
+			printf("%d",matrix[i*blockSzM + j]);
 		}
 		printf("\n");
 	}
