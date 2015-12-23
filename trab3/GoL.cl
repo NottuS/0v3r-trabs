@@ -19,7 +19,8 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 	int plusLeft;
 	int right;
 	int down = lIdx + 1;
-	int up = lIdx - 1;
+	int up = (lIdx - 1);
+	int aux;
 
 	__local int localBoard[BLOCKSIZE + 2][4];
 
@@ -31,8 +32,22 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
  		localBoard[lIdx][1] = iboard[gIdx * m + left];
  		localBoard[lIdx][2] = iboard[gIdx * m + i];
  		localBoard[lIdx][3] = iboard[gIdx * m + right];
+ 		if(lIdx == 1){
+ 			aux = (gIdx + n - 1) % n;
+ 			localBoard[0][0] = iboard[aux * m + plusLeft];
+ 			localBoard[0][1] = iboard[aux * m + left];
+ 			localBoard[0][2] = iboard[aux * m + i];
+ 			localBoard[0][3] = iboard[aux * m + right];
+ 		}
+ 		if(lIdx == 256){
+ 			aux = (gIdx + 1) % n;
+ 			localBoard[257][0] = iboard[aux * m + plusLeft];
+ 			localBoard[257][1] = iboard[aux * m + left];
+ 			localBoard[257][2] = iboard[aux * m + i];
+ 			localBoard[257][3] = iboard[aux * m + right];
+ 		}
  		barrier(CLK_LOCAL_MEM_FENCE);
-		sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
+ 		sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
 			+ localBoard[lIdx][0] + localBoard[lIdx][2]
 			+ localBoard[down][0] + localBoard[down][1] + localBoard[down][2];
 
@@ -50,6 +65,20 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 	localBoard[lIdx][1] = iboard[gIdx * m + n - 1];
 	localBoard[lIdx][2] = iboard[gIdx * m];
 	localBoard[lIdx][3] = iboard[gIdx * m + 1];
+	if(lIdx == 1){
+		aux = (gIdx + n - 1) % n;
+		localBoard[0][0] = iboard[aux * m + plusLeft];
+		localBoard[0][1] = iboard[aux * m + left];
+		localBoard[0][2] = iboard[aux * m + i];
+		localBoard[0][3] = iboard[aux * m + right];
+	}
+	if(lIdx == 256){
+		aux = (gIdx + 1) % n;
+		localBoard[257][0] = iboard[aux * m + plusLeft];
+		localBoard[257][1] = iboard[aux * m + left];
+		localBoard[257][2] = iboard[aux * m + i];
+		localBoard[257][3] = iboard[aux * m + right];
+	}
 	barrier(CLK_LOCAL_MEM_FENCE);
 	sum = localBoard[up][0] + localBoard[up][1] + localBoard[up][2]
 		+ localBoard[lIdx][0] + localBoard[lIdx][2]
