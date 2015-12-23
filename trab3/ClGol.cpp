@@ -79,6 +79,12 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	//Wait for the kernel to finish.
 	clMemcpyHostToDevice(command_queue, cl_iboard, board, size * sizeof(cl_int));
 
+	int limit;
+	if(256 > n){
+		limit = n;
+	} else {
+		limit = 256;
+	}
 	double start_t = timestamp();
 	for (unsigned int i = 0; i < cycles; ++i) {
 		//Alternar ponteiros de leitura e escrita
@@ -94,12 +100,13 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
 
-		CALL_KERNEL(command_queue, kernelBoarderSolver, blockSzN, BLOCKSIZE, 5,
+		CALL_KERNEL(command_queue, kernelBoarderSolver, blockSzN, BLOCKSIZE, 6,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&blockSzM,
-			sizeof(cl_int), (void*)&table
+			sizeof(cl_int), (void*)&table,
+			sizeof(cl_int), (void*)&limit
 		);
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
