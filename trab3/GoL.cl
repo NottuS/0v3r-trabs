@@ -3,7 +3,7 @@
 __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 	int gIdx = get_global_id(0);
 	if(gIdx < size){
-		board[gIdx] = (gIdx * board[gIdx] * seed) & 1;
+		board[gIdx] = ((randoms + globalID) * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1) & 1;
 	}
 }
 

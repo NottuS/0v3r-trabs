@@ -65,6 +65,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	int size = (n * m);
 	int threadsSize = 2880;
 	cl_iboard = cl_board[0];
+	int blockSz = siz
 	CALL_KERNEL(command_queue, kernelInitGoL, size, BLOCKSIZE, 3,
 		sizeof(cl_mem), (void*)&cl_iboard,
 		sizeof(cl_int), (void*)&seed,
