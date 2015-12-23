@@ -60,7 +60,6 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	int seed = 31;
 	
 	int threadsSize = 2880;
-	cl_iboard = cl_board[0];
 	int blockSzM = (ceil(m/BLOCKSIZE) * BLOCKSIZE);
 	int blockSzN = (ceil(n/BLOCKSIZE) * BLOCKSIZE);
 	int size = (blockSzN * blockSzM);
@@ -80,9 +79,9 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	printf("%d %d %d %d\n", n, m,size, printBoard);
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
-
+	cl_iboard = cl_board[0];
 	if(printBoard){
-		clMemcpyDeviceToHost(command_queue, board, cl_oboard, size * sizeof(cl_int));
+		clMemcpyDeviceToHost(command_queue, board, cl_iboard, size * sizeof(cl_int));
 		print_matrix(board, n, m, blockSzN, blockSzM);
 	}
 
