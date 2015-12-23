@@ -81,6 +81,11 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	//Wait for the kernel to finish.
 	SYNC_QUEUE(command_queue);
 
+	if(printBoard){
+		clMemcpyDeviceToHost(command_queue, board, cl_oboard, size * sizeof(cl_int));
+		print_matrix(board, n, m, blockSzN, blockSzM);
+	}
+
 	double start_t = timestamp();
 	for (unsigned int i = 0; i < cycles; ++i) {
 		//Alternar ponteiros de leitura e escrita
