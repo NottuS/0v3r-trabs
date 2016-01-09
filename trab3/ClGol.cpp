@@ -34,8 +34,6 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	cl_command_queue command_queue = queue->getCommandQueue();
 	cl_context context = queue->getContext();
 	cl_device_id device = queue->getDevice();
-	kernel_t* kernelInitGoL = getKernelInstanceByDevice((char*)"cl_initGoL"
-		, device);
 	kernel_t* kernelBoarderSolver = getKernelInstanceByDevice((char*)"cl_boarderSolver"
 		, device);
 	kernel_t* kernelInnerGoL = getKernelInstanceByDevice((char*)"cl_innerGoL"
@@ -59,7 +57,6 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 
 	int seed = 31;
 	
-	int threadsSize = 2880;
 	int blockSzM = (ceil((m + 0.0)/BLOCKSIZE) * BLOCKSIZE);
 	int blockSzN = (ceil((n + 0.0)/BLOCKSIZE) * BLOCKSIZE);
 	int size = (blockSzN * blockSzM);
@@ -90,26 +87,24 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Alternar ponteiros de leitura e escrita
 		cl_iboard = cl_board[i & 1];
 		cl_oboard = cl_board[(i + 1) & 1];
-		CALL_KERNEL(command_queue, kernelInnerGoL, blockSzM, BLOCKSIZE, 5,
+		CALL_KERNEL(command_queue, kernelInnerGoL, blockSzM, BLOCKSIZE, 4,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&blockSzM,
-			sizeof(cl_int), (void*)&table
 		);
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
 
-		CALL_KERNEL(command_queue, kernelBoarderSolver, blockSzN, BLOCKSIZE, 6,
+		/*CALL_KERNEL(command_queue, kernelBoarderSolver, blockSzN, BLOCKSIZE, 5,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&blockSzM,
-			sizeof(cl_int), (void*)&table,
 			sizeof(cl_int), (void*)&limit
 		);
 		//Wait for the kernel to finish.
-		SYNC_QUEUE(command_queue);
+		SYNC_QUEUE(command_queue);*/
 
 		if(printBoard){
 			clMemcpyDeviceToHost(command_queue, board, cl_oboard, size * sizeof(cl_int));

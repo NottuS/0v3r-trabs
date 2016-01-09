@@ -7,14 +7,14 @@ __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 }
 
 __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard, 
-	unsigned int n, unsigned int m, unsigned int hosTtable, int limit){
+	unsigned int n, unsigned int m, int limit){
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
 	int sum;
 	int sum2;
-	int table = hosTtable;
-	int table2 = table;
+	int table = 8;
+	int table2 = 8;
 	int left;
 	int plusLeft;
 	int right;
@@ -95,7 +95,7 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 }
 
 __kernel void cl_innerGoL(__global int *iboard, __global int *oboard, 
-	unsigned int n, unsigned int m, unsigned int hosTtable){
+	unsigned int n, unsigned int m){
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
@@ -108,8 +108,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 	int right;
 	int sum;
 	int sum2;
-	int table = hosTtable;
-	int table2 = table;
+	int table = 8;
+	int table2 = 8;
 	right = lIdx + 1;
 	left = lIdx - 1;
 
