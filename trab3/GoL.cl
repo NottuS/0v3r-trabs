@@ -127,7 +127,7 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 
 		table = table | (localBoard[0][lIdx] << 2);
 		oboard[gIdx] = (table >> sum) & 1;
-		
+		table = 8;
 		for(i = 2; i < n; i+=2){
 			localBoard[i & 3][lIdx] = iboard[i * m + gIdx];
 			localBoard[(i + 1) & 3][lIdx] = iboard[(i + 1) * m + gIdx];
