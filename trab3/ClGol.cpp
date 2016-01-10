@@ -64,7 +64,7 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 	int *test = new int[size];
 	cl_mem cl_test;
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
-		size * sizeof(int), NULL, test);
+		size * sizeof(int), NULL, cl_test);
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
 		size * sizeof(int), NULL, cl_board[0]);
 	CREATE_BUFFER(context, CL_MEM_READ_WRITE, 
