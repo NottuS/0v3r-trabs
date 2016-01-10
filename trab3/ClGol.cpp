@@ -86,12 +86,12 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Alternar ponteiros de leitura e escrita
 		cl_iboard = cl_board[i & 1];
 		cl_oboard = cl_board[(i + 1) & 1];
-		CALL_KERNEL(command_queue, kernelInnerGoL, blockSzM, BLOCKSIZE, m,4,
+		CALL_KERNEL(command_queue, kernelInnerGoL, blockSzM, BLOCKSIZE, m,5,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&blockSzM,
-			sizeof(cl_int), (void*)&m,
+			sizeof(cl_int), (void*)&m
 		);
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
