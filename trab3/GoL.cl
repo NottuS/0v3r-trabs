@@ -95,7 +95,7 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 }
 
 __kernel void cl_innerGoL(__global int *iboard, __global int *oboard, 
-	unsigned int n, unsigned int m, unsigned int colSize){
+	unsigned int n, unsigned int m, unsigned int colSize, __global int *test){
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
@@ -148,8 +148,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			table2 = table2 | (localBoard[down][lIdx] << 2);
 			oboard[(i - 1) * m + gIdx] = (table >> sum) & 1;
 			oboard[i * m + gIdx] = (table2 >> sum2) & 1;
-			oboard[(i - 1) * m + gIdx] = sum;
-			oboard[i * m + gIdx] = sum2;
+			test[(i - 1) * m + gIdx] = sum;
+			test[i * m + gIdx] = sum2;
 		}
 	    down = (i - (n & 1)) & 3;
 	    center = (down + 1) & 3;
