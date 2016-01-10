@@ -55,8 +55,8 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 			+ localBoard[lIdx][1] + localBoard[lIdx][3]
 			+ localBoard[down][1] + localBoard[down][2] + localBoard[down][3];
 
-		table = (table | 4) & (localBoard[lIdx][1] << 2);
-		table2 = (table2 | 4) & (localBoard[lIdx][2] << 2);
+		table = table | (localBoard[lIdx][1] << 2);
+		table2 = table2 | (localBoard[lIdx][2] << 2);
 		oboard[gIdx * m + left] = (table >> sum) & 1;
 		oboard[gIdx * m + i] = (table2 >> sum2) & 1;
 	}
@@ -88,8 +88,8 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 		+ localBoard[lIdx][1] + localBoard[lIdx][3]
 		+ localBoard[down][1] + localBoard[down][2] + localBoard[down][3];
 
-	table = (table | 4) & (localBoard[lIdx][1] << 2);
-	table2 = (table2 | 4) & (localBoard[lIdx][2] << 2);
+	table = table | (localBoard[lIdx][1] << 2);
+	table2 = table2 | (localBoard[lIdx][2] << 2);
 	oboard[gIdx * m + n - 1] = (table >> sum) & 1;
 	oboard[gIdx * m] = (table2 >> sum2) & 1;
 }
@@ -148,6 +148,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			table2 = table2 | (localBoard[down][lIdx] << 2);
 			oboard[(i - 1) * m + gIdx] = (table >> sum) & 1;
 			oboard[i * m + gIdx] = (table2 >> sum2) & 1;
+			oboard[(i - 1) * m + gIdx] = sum;
+			oboard[i * m + gIdx] = sum2;
 		}
 	    down = (i - (n & 1)) & 3;
 	    center = (down + 1) & 3;
