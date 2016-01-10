@@ -99,7 +99,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
-
+	oboard[gIdx] = lIdx;
+	
 	if(gIdx < 0){
 		__local int localBoard[4][BLOCKSIZE + 2];
 		int down;
