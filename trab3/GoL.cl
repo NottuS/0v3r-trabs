@@ -123,8 +123,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			+ localBoard[0][left] + localBoard[0][right] 
 			+ localBoard[1][left] + localBoard[1][lIdx] + localBoard[1][right];
 
-		table = (table | 4) & (localBoard[0][lIdx] << 2);
-		oboard[gIdx] = sum;
+		table = table | (localBoard[0][lIdx] << 2);
+		oboard[gIdx] = (table >> sum) & 1;
 		
 		for(i = 2; i < n; i+=2){
 			localBoard[i & 3][lIdx] = iboard[i * m + gIdx];
@@ -144,12 +144,10 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 				+ localBoard[down][left] + localBoard[down][right] 
 				+ localBoard[up][left] + localBoard[up][lIdx] + localBoard[up][right];
 
-			table = (table | 4) & (localBoard[center][lIdx] << 2);
-			table2 = (table2 | 4) & (localBoard[down][lIdx] << 2);
+			table = table | (localBoard[center][lIdx] << 2);
+			table2 = table2 | (localBoard[down][lIdx] << 2);
 			oboard[(i - 1) * m + gIdx] = (table >> sum) & 1;
 			oboard[i * m + gIdx] = (table2 >> sum2) & 1;
-			oboard[(i - 1) * m + gIdx] = sum;
-			oboard[i * m + gIdx] = sum2;
 		}
 	    down = (i - (n & 1)) & 3;
 	    center = (down + 1) & 3;
@@ -162,7 +160,7 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			+ localBoard[center][left] + localBoard[center][right] 
 			+ localBoard[down][left] + localBoard[down][lIdx] + localBoard[down][right];
 
-		table = (table | 4) & (localBoard[0][lIdx] << 2);
+		table = table | (localBoard[0][lIdx] << 2);
 		oboard[(n - 1) * m + gIdx] = (table >> sum) & 1;
 	}
 }
