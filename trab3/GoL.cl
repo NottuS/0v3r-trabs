@@ -99,9 +99,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
-	oboard[gIdx] = lIdx;
-	
-	if(gIdx < 0){
+
+	if(gIdx < colSize){
 		__local int localBoard[4][BLOCKSIZE + 2];
 		int down;
 		int center;
@@ -125,7 +124,7 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			+ localBoard[1][left] + localBoard[1][lIdx] + localBoard[1][right];
 
 		table = (table | 4) & (localBoard[0][lIdx] << 2);
-		oboard[gIdx] = (table >> sum) & 1;
+		oboard[gIdx] = sum;
 		
 		for(i = 2; i < n; i+=2){
 			localBoard[i & 3][lIdx] = iboard[i * m + gIdx];
