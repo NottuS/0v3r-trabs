@@ -148,6 +148,8 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 			table2 = (table2 | 4) & (localBoard[down][lIdx] << 2);
 			oboard[(i - 1) * m + gIdx] = (table >> sum) & 1;
 			oboard[i * m + gIdx] = (table2 >> sum2) & 1;
+			oboard[(i - 1) * m + gIdx] = sum;
+			oboard[i * m + gIdx] = sum2;
 		}
 	    down = (i - (n & 1)) & 3;
 	    center = (down + 1) & 3;
