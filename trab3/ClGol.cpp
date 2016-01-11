@@ -100,15 +100,16 @@ void ClGol::runGolkernels(unsigned int n, unsigned int m, unsigned int cycles, i
 		//Wait for the kernel to finish.
 		SYNC_QUEUE(command_queue);
 
-		/*CALL_KERNEL(command_queue, kernelBoarderSolver, blockSzN, BLOCKSIZE, 5,
+		CALL_KERNEL(command_queue, kernelBoarderSolver, blockSzN, BLOCKSIZE, 6,
 			sizeof(cl_mem), (void*)&cl_iboard,
 			sizeof(cl_mem), (void*)&cl_oboard,
 			sizeof(cl_int), (void*)&n,
 			sizeof(cl_int), (void*)&blockSzM,
-			sizeof(cl_int), (void*)&limit
+			sizeof(cl_int), (void*)&limit,
+			sizeof(cl_mem), (void*)&cl_test
 		);
 		//Wait for the kernel to finish.
-		SYNC_QUEUE(command_queue);*/
+		SYNC_QUEUE(command_queue);
 
 		if(printBoard){
 			clMemcpyDeviceToHost(command_queue, board, cl_oboard, size * sizeof(cl_int));

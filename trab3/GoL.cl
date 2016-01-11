@@ -7,7 +7,7 @@ __kernel void cl_initGoL(__global int *board, int seed , unsigned int size){
 }
 
 __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard, 
-	unsigned int n, unsigned int m, int limit){
+	unsigned int n, unsigned int m, int limit, __global int *test){
 	int gIdx = get_global_id(0);
 	int lIdx = get_local_id(0) + 1;
 	int i;
@@ -21,7 +21,7 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 	int down = (lIdx + 1) % n;
 	int up = (lIdx - 1);
 	int aux;
-
+	if(gIdx < n){
 	__local int localBoard[BLOCKSIZE + 2][4];
 
 	for(i = BLOCKSIZE; i < m; i += BLOCKSIZE){
@@ -59,6 +59,8 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 		table2 = table2 | (localBoard[lIdx][2] << 2);
 		oboard[gIdx * m + left] = (table >> sum) & 1;
 		oboard[gIdx * m + i] = (table2 >> sum2) & 1;
+		test[gIdx * m + left] = sum;
+		test[gIdx * m + i] = sum2;
 		table = 8;
 		table2 = 8;
 	}
@@ -94,6 +96,9 @@ __kernel void cl_boarderSolver(__global int *iboard, __global int *oboard,
 	table2 = table2 | (localBoard[lIdx][2] << 2);
 	oboard[gIdx * m + n - 1] = (table >> sum) & 1;
 	oboard[gIdx * m] = (table2 >> sum2) & 1;
+	test[gIdx * m + n - 1] = sum;
+	test[gIdx * m] = sum2;
+	}
 }
 
 __kernel void cl_innerGoL(__global int *iboard, __global int *oboard, 
