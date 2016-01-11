@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	clGol =  new ClGol();
 	clGol->setCLQueue(clFactory::getQueue());
     clGol->initializeCL();
-    clGol->runGolkernels(n, m, cycles);
+    clGol->runGolkernels(n, m, cycles, printBoard);
 	clFactory::shutdown();
 
 	delete clGol;
