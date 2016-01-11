@@ -132,6 +132,7 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 
 		table = table | (localBoard[0][lIdx] << 2);
 		oboard[gIdx] = (table >> sum) & 1;
+		test[gIdx] = sum;
 		table = 8;
 		for(i = 2; i < n; i+=2){
 			localBoard[i & 3][lIdx] = iboard[i * m + gIdx];
@@ -173,5 +174,6 @@ __kernel void cl_innerGoL(__global int *iboard, __global int *oboard,
 
 		table = table | (localBoard[0][lIdx] << 2);
 		oboard[(n - 1) * m + gIdx] = (table >> sum) & 1;
+		test[(n - 1) * m + gIdx] = sum;
 	}
 }
