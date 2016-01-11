@@ -21,12 +21,15 @@ int main(int argc, char *argv[]) {
     clGol->runGolkernels(n, m, cycles, printBoard);
 	clFactory::shutdown();
 
-	/*clFactory::setDeviceType(RUN_ON_CPU);
+	delete clGol;
+
+	clFactory::setDeviceType(RUN_ON_CPU);
 	clFactory::startup();
+	clGol =  new ClGol();
 	clGol->setCLQueue(clFactory::getQueue());
     clGol->initializeCL();
     clGol->runGolkernels(n, m, cycles);
-	clFactory::shutdown();*/
+	clFactory::shutdown();
 
 	delete clGol;
 
