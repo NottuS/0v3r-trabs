@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
 	clFactory::setDeviceType(RUN_ON_CPU);
 	clFactory::startup();
-	clGol =  new ClGol();
+	ClGol *clGol =  new ClGol();
 	clGol->setCLQueue(clFactory::getQueue());
     clGol->initializeCL();
     clGol->runGolkernels(n, m, cycles, printBoard);
