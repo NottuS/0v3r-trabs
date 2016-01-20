@@ -7,6 +7,12 @@
 int main(int argc, char *argv[]) {
 	int n, m, cycles, printBoard;
 
+	if(argc < 5){
+		printf("usage: ./trab3 linhas colunas ciclos flag \n");
+		printf("\t flag:0 - não  imprime resultado, 1 - para imprimir resultado.\n");
+		exit(1);
+	}
+
 	n = atoi(argv[1]);
 	m = atoi(argv[2]);
 	cycles = atoi(argv[3]);
@@ -25,7 +31,7 @@ int main(int argc, char *argv[]) {
 
 	/*clFactory::setDeviceType(RUN_ON_CPU);
 	clFactory::startup();
-	clGol =  new ClGol();
+	ClGol *clGol =  new ClGol();
 	clGol->setCLQueue(clFactory::getQueue());
     clGol->initializeCL();
     clGol->runGolkernels(n, m, cycles, printBoard);

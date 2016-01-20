@@ -4,7 +4,7 @@ CUDA_HOME=/usr/local/cuda
 # Compilation begins.
 SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
-EXEC=SimpleGPUCall
+EXEC=trab3
 
 .PHONY: all clean list
 
